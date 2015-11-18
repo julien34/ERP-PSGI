@@ -30,7 +30,7 @@ public class PanelAchat extends JPanel
 	private JLabel labelNom = new JLabel("Nom");
 	private JLabel labelAdresse = new JLabel("Adresse");
 	private JButton btnValider = new JButton("Valider");
-	private String nomFournisseur, prenomFournisseur, adresseFournisseur, numSiret;
+	private String nomFournisseur, prenomFournisseur, adresseFournisseur, numSiretEntreprise;
 	
 	public PanelAchat(FenetrePrincipale framePrincipale)
 	{
