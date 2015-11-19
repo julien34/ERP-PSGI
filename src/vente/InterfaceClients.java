@@ -17,7 +17,7 @@ import javax.swing.JTextField;
 import principal.FenetrePrincipale;
 
 /**
- * nouveau commentaire
+ * 
  * @author Simon
  * Classes qui genere l'interface 
  */
