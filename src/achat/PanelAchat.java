@@ -13,9 +13,12 @@ import javax.swing.JTextField;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 
-public class PanelAchat extends JPanel 
-{
+public class PanelAchat extends JPanel {
 	private static FenetrePrincipale framePrincipale;
+	
+	//On crÃ©er le menu
+	JButton btnFournisseur = new JButton("Fournisseur");
+	/*COUCOU*/
 	
 	private JPanel wrap = new JPanel(new BorderLayout(10,10));
 	private JPanel panelTexteTop = new JPanel(new FlowLayout(FlowLayout.CENTER,20,10));
@@ -26,7 +29,7 @@ public class PanelAchat extends JPanel
 	private JTextField champsAdresse = new JTextField();
 	private String message = "Pour ajouter un fournisseur, remplissez les champs suivants :";
 	private JLabel labelTitre = new JLabel(message);
-	private JLabel labelPrenom = new JLabel("Prénom");
+	private JLabel labelPrenom = new JLabel("Prï¿½nom");
 	private JLabel labelNom = new JLabel("Nom");
 	private JLabel labelAdresse = new JLabel("Adresse");
 	private JButton btnValider = new JButton("Valider");
@@ -74,7 +77,7 @@ public class PanelAchat extends JPanel
 		});
 	}
 	
-	//Récupère les champs
+	//Rï¿½cupï¿½re les champs
 	private void recupereDonnees()
 	{
 		this.nomFournisseur = champsNom.getText();
@@ -82,7 +85,7 @@ public class PanelAchat extends JPanel
 		this.adresseFournisseur = champsAdresse.getText();
 	}
 		
-	//remet les champs à zéro
+	//remet les champs ï¿½zï¿½ro
 	private void effacerDonnees()
 	{
 		this.nomFournisseur = "";
@@ -95,7 +98,7 @@ public class PanelAchat extends JPanel
 		
 	private void afficherMessageOK() 
 	{
-		this.message = "Fournisseur ajouté dans la base de données. \nPour ajouter à  nouveau un fournisseur, remplissez les champs suivants.";
+		this.message = "Fournisseur ajoutï¿½ dans la base de donnï¿½es. \nPour ajouter ï¿½ nouveau un fournisseur, remplissez les champs suivants.";
 		labelTitre.repaint();
 	}
 }
