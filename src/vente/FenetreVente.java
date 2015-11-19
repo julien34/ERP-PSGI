@@ -18,7 +18,7 @@ import principal.FenetrePrincipale;
 
 public class FenetreVente extends JDialog{
 	
-
+//test
 	
 	// Création des Objets 
 	  private JLabel InformationClient = new JLabel("Information Client");
