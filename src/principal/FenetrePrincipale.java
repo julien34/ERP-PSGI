@@ -13,8 +13,10 @@ import achat.PanelAchat;
 import components.ButtonTabComponent;
 import jdbc.DatabaseConnection;
 import jdbc.FenetreConnexion;
-import production.ModifierProduits;
 import production.PanelProduits;
+import vente.FenetreVente;
+import vente.InterfaceClients;
+import vente.InterfaceDevis;
 import vente.PanelVente;
 
 public class FenetrePrincipale extends JFrame
@@ -56,6 +58,14 @@ public class FenetrePrincipale extends JFrame
    	//Production
    	private static PanelProduits panelProduits;
    	
+   	public FenetrePrincipale()
+   	{
+   		initFenetre();
+   		initElements();
+   		initHandlers();
+   		setVisible(true);   		
+   	}
+   	
    	public void initFenetre()
    	{
    		//Paramétrage de la fenêtre
@@ -66,38 +76,45 @@ public class FenetrePrincipale extends JFrame
    		setResizable(false);
    	}
    	
-   	public JMenuBar createMenuBar() 
-    {
-   		//Ajouter les menus
-        	//Base de données
-   			menu.add(menuBdd);
-   			menuBdd.add(menuBddConnexion);
-   			menuBdd.add(menuBddDeconnexion);
-        
-	        //Achats
-   			menu.add(menuAchats);
-   			menuAchats.add(menuAchatAjouterFournisseur);
-	        
-	        //Ventes
-   			menu.add(menuVentes);
-   			menuVentes.add(menuVentesFenetreVente);
-   			menuVentes.add(menuVentesClients);
-   			menuVentes.add(menuVentesDevis);
-	        	        
-	        //Production
-   			menu.add(menuProduction);
-   			menuProduction.add(menuProductionProduits);        
-
-        return menu;
-    }
 
    	public void initElements()
    	{
-   		//Ajouter le menu
-   		setJMenuBar(createMenuBar());
+	   	//Ajouter les menus
+	    	//Base de données
+				menu.add(menuBdd);
+				menuBdd.add(menuBddConnexion);
+				menuBdd.add(menuBddDeconnexion);
+	    
+	        //Achats
+				menu.add(menuAchats);
+				menuAchats.add(menuAchatAjouterFournisseur);
+	        
+	        //Ventes
+				menu.add(menuVentes);
+				menuVentes.add(menuVentesFenetreVente);
+				menuVentes.add(menuVentesClients);
+				menuVentes.add(menuVentesDevis);
+	        	        
+	        //Production
+				menu.add(menuProduction);
+				menuProduction.add(menuProductionProduits);   
+				
+   		setJMenuBar(menu);
+   		menuAchats.setEnabled(false);
+   		menuVentes.setEnabled(false);
+   		menuProduction.setEnabled(false);
+   		menuBddDeconnexion.setEnabled(false);
    		
    		//Ajouter les onglets
    		add(onglets); 
+   		
+   		//Mise en mémoire des interfaces
+	   		//Achats
+	   		
+	   		//Ventes
+	   		
+	   		//Production
+	   		panelProduits = new PanelProduits(framePrincipale);
    	}
    	
    	public void initHandlers()
@@ -108,7 +125,7 @@ public class FenetrePrincipale extends JFrame
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
-	   				new FenetreConnexion(framePrincipale); 
+	   				new FenetreConnexion(framePrincipale);
 	   			}
 	   		});
 	   		menuBddDeconnexion.addActionListener(new ActionListener()
@@ -116,6 +133,7 @@ public class FenetrePrincipale extends JFrame
 	   			public void actionPerformed(ActionEvent e)
 	   			{
 	   				DatabaseConnection.disconnect();
+	   				connexionClosed();
 	   			}
 	   		});	
 	   		
@@ -133,21 +151,21 @@ public class FenetrePrincipale extends JFrame
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
-	   				
+	   				new FenetreVente(framePrincipale);
 	   			}
 	   		});	
 	   		menuVentesClients.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
-	   				
+	   				new InterfaceClients(framePrincipale);
 	   			}
 	   		});	
 	   		menuVentesDevis.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e)
-	   			{
-	   				
+	   			{	   				
+	   				new InterfaceDevis(framePrincipale);
 	   			}
 	   		});	
 	   		
@@ -156,7 +174,8 @@ public class FenetrePrincipale extends JFrame
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
-	   				ajouterOnglet("Gérer les produits",panelProduits = new PanelProduits(framePrincipale));
+	   				ajouterOnglet("Gérer les produits",panelProduits);
+	   				panelProduits.fillTable();
 	   			}
 	   		});	
    	}
@@ -166,7 +185,7 @@ public class FenetrePrincipale extends JFrame
    		if (onglets.indexOfTab(name) < 0)
 		{
 			int i = onglets.getTabCount();
-	   	    onglets.addTab(name,panel);
+	   	    onglets.addTab(name, panel);
 	   	    onglets.setTabComponentAt(i,new ButtonTabComponent(onglets));
 	   	    onglets.setSelectedIndex(i);
 		}
@@ -178,16 +197,26 @@ public class FenetrePrincipale extends JFrame
    	}
    	
    	public static void main(String[] args)
-   	{	
-   		//Connexion
-   		DatabaseConnection.connect("162.38.222.149","1521","iut","licencepsgi","123");
-   		
+   	{	   		
    		//Création de la fenêtre
    		framePrincipale = new FenetrePrincipale();
-   		framePrincipale.initFenetre();
-   		framePrincipale.initElements();
-   		framePrincipale.initHandlers();
-   		framePrincipale.setVisible(true);
    	}
+
+	public void connexionOpened()
+	{
+   		menuAchats.setEnabled(true);
+   		menuVentes.setEnabled(true);
+   		menuProduction.setEnabled(true);
+   		menuBddDeconnexion.setEnabled(true);
+	}
+
+	public void connexionClosed()
+	{
+   		menuAchats.setEnabled(false);
+   		menuVentes.setEnabled(false);
+   		menuProduction.setEnabled(false);
+   		menuBddDeconnexion.setEnabled(false);
+   		onglets.removeAll();
+	}
 }  
 

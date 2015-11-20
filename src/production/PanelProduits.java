@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -29,9 +30,30 @@ public class PanelProduits extends JPanel
 	private JButton supprimer = new JButton("Supprimer");	
 	private JTable table;
 	private JScrollPane scrollPane;
-	private static DefaultTableModel model;
-	private String[] columnNames = {"codeProduit","description","categorie","prixVente","prixAchat","udm"};
+	private final String[] columnNames = {"codeProduit","description","categorie","prixVente","prixAchat","udm"};
+	private static DefaultTableModel model = new DefaultTableModel(0,6)
+	{
+        Class[] types = { Integer.class, String.class, String.class, Float.class, Float.class, Float.class };
+
+        @Override
+        public Class getColumnClass(int columnIndex) 
+        {
+            return Integer.class;
+        }
+        
+        @Override
+        public boolean isCellEditable(int row, int column)
+        {  
+            return false;  
+        }
+    };
 	private int produitChoisi = -1;
+	
+	public void fillTable()
+	{
+		model.setDataVector(DatabaseConnection.remplirListeProduits(), columnNames);
+		table.getRowSorter().toggleSortOrder(0);
+	}
 	
 	public PanelProduits(FenetrePrincipale framePrincipale)
 	{
@@ -43,21 +65,6 @@ public class PanelProduits extends JPanel
 	private void initElements() 
 	{
 		//Remplir, configurer et créer la table
-		model = new DefaultTableModel(DatabaseConnection.remplirListeProduits(),columnNames)
-		{
-            Class[] types = { Integer.class, String.class, String.class, Float.class, Float.class, Float.class };
-
-            @Override
-            public Class getColumnClass(int columnIndex) 
-            {
-                return Integer.class;
-            }
-            
-            public boolean isCellEditable(int row, int column)
-            {  
-                return false;  
-            }
-        };
 		table = new JTable(model);
 		table.setAutoCreateRowSorter(true);
 		table.getRowSorter().toggleSortOrder(0);

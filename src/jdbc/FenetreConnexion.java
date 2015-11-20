@@ -46,23 +46,22 @@ public class FenetreConnexion extends JDialog
 	{
 		//Création des boutons
 		JLabel labelIp = new JLabel("adresse ip ");
-		JTextField textIp = new JTextField(10);
-		
+		JTextField textIp = new JTextField("162.38.222.149",10);
+
 		JLabel labelPort = new JLabel("port ");
-		JTextField textPort = new JTextField(10);
+		JTextField textPort = new JTextField("1521",10);
 
 		JLabel labelSid = new JLabel("identifiant de sécurité (SID) ");
-		JTextField textSid = new JTextField(10);
+		JTextField textSid = new JTextField("iut",10);
 		
 		JLabel labelUser = new JLabel("utilisateur ");
-		JTextField textUser = new JTextField(10);
+		JTextField textUser = new JTextField("licencepsgi",10);
 
 		JLabel labelPass = new JLabel("mot de passe ");
-		JTextField textPass = new JTextField(10);
+		JTextField textPass = new JTextField("123",10);
 
 		JButton connexion = new JButton("Connexion");
 		JButton retour = new JButton("Retour");
-		connexion.setEnabled(false);
 		
 		JLabel error = new JLabel("");
 		
@@ -73,6 +72,12 @@ public class FenetreConnexion extends JDialog
 		array.add(textUser);
 		array.add(textPass);
 		
+		for (JTextField t : array) 
+        {
+        	if(t.getText().length() <= 0)
+        	connexion.setEnabled(false);
+		}
+				
 		//Ajouter les élements			
 		panelGrid.add(labelIp);
 		panelGrid.add(textIp);
@@ -128,8 +133,15 @@ public class FenetreConnexion extends JDialog
 			{			
 				//Si la requete à réussie
 				if(DatabaseConnection.connect(array.get(0).getText(),array.get(1).getText(),array.get(2).getText(),array.get(3).getText(),array.get(4).getText()) == true)
-				dispose();
-				else error.setText("<html><font color=red>Connexion à la base de données impossible !</html>");
+				{
+					frame.connexionOpened();
+					dispose();
+				}
+				else 
+				{
+					frame.connexionClosed();
+					error.setText("<html><font color=red>Connexion à la base de données impossible !</html>");
+				}
 			}
 		});
 		retour.addActionListener(new ActionListener()

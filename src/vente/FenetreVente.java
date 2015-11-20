@@ -75,7 +75,7 @@ public void initFenetre()
 	setSize(500,400); // taille de la fenetre
 	setLocation(300,400); // position de la fenetre
 
-	Annuler.addActionListener(frame -> System.exit(0)); // quand bouton annuler appuyé action
+	Annuler.addActionListener(frame -> dispose()); // quand bouton annuler appuyé action
     Valider.addActionListener(frame -> Envoyer()); // quand bouton envoyé action
    
     Carte.setSelected(true);
