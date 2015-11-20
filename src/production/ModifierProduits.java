@@ -35,7 +35,7 @@ public class ModifierProduits extends JDialog
 	 */
 	public ModifierProduits(FenetrePrincipale frame, String val1, String val2, String val3, String val4, String val5, String val6)
 	{
-		super(frame,"Ajouter un produit",true);
+		super(frame,"Modifier un produit",true);
 		this.frame = frame;
 		value1 = val1;
 		
@@ -64,7 +64,6 @@ public class ModifierProduits extends JDialog
 	public void initFenetre()
 	{
 		//Paramétrage de la fenêtre
-		setTitle("Ajouter un produit");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(512,288);	
 		setLocationRelativeTo(null);
@@ -142,7 +141,7 @@ public class ModifierProduits extends JDialog
 				//Si la requete à réussie
 				if(DatabaseConnection.requete("UPDATE PRODUITS SET description = '"+value2+"', categorie = '"+value3+"', prixVente = "+value4+", prixAchat = "+value5+", udm = "+value6+" WHERE codeProduit = "+value1) == true)
 				{
-					frame.raffraichirLigne(value1,value2,value3,value4,value5,value6);
+					frame.getPanelProduits().raffraichirLigne(value1,value2,value3,value4,value5,value6);
 					error.setText("<html><font color=lime>Ligne modifiée !</html>");
 				}
 				else error.setText("<html><font color=red>Erreur d'ajout de ligne, vérifiez vos variables !</html>");

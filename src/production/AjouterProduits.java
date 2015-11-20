@@ -36,7 +36,6 @@ public class AjouterProduits extends JDialog
 	public void initFenetre()
 	{
 		//Paramétrage de la fenêtre
-		setTitle("Ajouter un produit");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(512,288);	
 		setLocationRelativeTo(null);
@@ -129,7 +128,7 @@ public class AjouterProduits extends JDialog
 				//Si la requete à réussie
 				if(DatabaseConnection.requete("INSERT INTO PRODUITS(codeProduit,description,categorie,prixVente,prixAchat,udm) VALUES ("+value1+",'"+value2+"','"+value3+"',"+value4+","+value5+","+value6+")") == true)
 				{
-					frame.raffraichirListe(value1,value2,value3,value4,value5,value6);
+					frame.getPanelProduits().raffraichirListe(value1,value2,value3,value4,value5,value6);
 					error.setText("<html><font color=lime>Ligne ajoutée !</html>");
 				}
 				else error.setText("<html><font color=red>Erreur d'ajout de ligne, vérifiez vos variables !</html>");
