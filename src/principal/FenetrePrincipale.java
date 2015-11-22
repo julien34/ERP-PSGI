@@ -15,7 +15,7 @@ import jdbc.DatabaseConnection;
 import jdbc.FenetreConnexion;
 import production.PanelProduits;
 import vente.FenetreVente;
-import vente.InterfaceClients;
+import vente.PanelClient;
 import vente.InterfaceDevis;
 import vente.PanelVente;
 
@@ -53,7 +53,8 @@ public class FenetrePrincipale extends JFrame
    	private static PanelAchat panelAchat;	
    	
    	//Vente
-   	private static PanelVente panelVente;	
+   	private static PanelVente panelVente;
+   	private static PanelClient panelClient;
    		
    	//Production
    	private static PanelProduits panelProduits;
@@ -112,6 +113,7 @@ public class FenetrePrincipale extends JFrame
 	   		//Achats
 	   		
 	   		//Ventes
+	   		panelClient = new PanelClient(framePrincipale);
 	   		
 	   		//Production
 	   		panelProduits = new PanelProduits(framePrincipale);
@@ -158,7 +160,7 @@ public class FenetrePrincipale extends JFrame
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
-	   				new InterfaceClients(framePrincipale);
+	   				ajouterOnglet("Gestion des clients", panelClient);
 	   			}
 	   		});	
 	   		menuVentesDevis.addActionListener(new ActionListener()

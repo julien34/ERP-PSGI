@@ -45,7 +45,7 @@ public class PanelVente extends JPanel
 		interfaceClient.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
-			{ new InterfaceClients(framePrincipale); }
+			{ new PanelClient(framePrincipale); }
 		});
 		interfaceDevis.addActionListener(new ActionListener()
 		{
