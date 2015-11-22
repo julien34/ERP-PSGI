@@ -99,7 +99,46 @@ public class DatabaseConnection
 			return null;
 		}
 	}
-
+	
+	static public Object[][] remplirListeClient()
+	{
+		int longueurTableau = 0;
+		int indexActuel = 0;
+			
+		try
+		{
+			stat = con.createStatement();
+			ResultSet resultat = stat.executeQuery("SELECT COUNT(*) FROM VENTE_CLIENTS");
+			while(resultat.next())
+			{
+				longueurTableau = resultat.getInt("COUNT(*)");
+			}
+			resultat.close();
+			Object[][] databaseData = new Object[longueurTableau][7];
+			
+			resultat = stat.executeQuery("SELECT * FROM VENTE_CLIENTS");
+			while(resultat.next())
+			{
+				databaseData[indexActuel][0] = resultat.getString("idclient");
+				databaseData[indexActuel][1] = resultat.getString("nomclient");
+				databaseData[indexActuel][2] = resultat.getString("prenomclient");
+				databaseData[indexActuel][3] = resultat.getString("adresseclient");
+				databaseData[indexActuel][4] = resultat.getString("emailclient");
+				databaseData[indexActuel][5] = resultat.getString("telclient");
+				databaseData[indexActuel][6] = resultat.getString("codecategorieclient");
+				indexActuel++;
+			}
+			resultat.close();		
+			stat.close();
+			return databaseData;
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
+	
 	/**
 	 * Ferme la connexion au serveur SQL.
 	 */

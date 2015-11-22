@@ -199,6 +199,11 @@ public class FenetrePrincipale extends JFrame
    		return panelProduits;
    	}
    	
+   	public PanelClient getPanelClient(){
+		return panelClient;
+   		
+   	}
+   	
    	public static void main(String[] args)
    	{	   		
    		//Création de la fenêtre
