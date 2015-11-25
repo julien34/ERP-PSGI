@@ -1,6 +1,7 @@
 package vente;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,15 +18,23 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
+import javax.swing.table.DefaultTableModel;
 
+import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 
-public class InterfaceDevis extends JDialog implements ActionListener{
+public class InterfaceDevis extends JPanel{
 
-	private InterfaceDevis frameVente;
+	//private InterfaceDevis frameVente;
 	
+	private static FenetrePrincipale framePrincipale;
 	
+	private Dimension dimensionBouttons = new Dimension(140,26);
+	private JPanel contenu = new JPanel(new BorderLayout(10,10));
+	
+	private Dimension dimensionTable = new Dimension(540, 224);
 	private JMenuBar menuBar = new JMenuBar();
 	private JButton  fileMenu = new JButton ("Accueil");
 	private JButton bt_enregistrer = new JButton("Enregistrer");
@@ -55,51 +64,78 @@ public class InterfaceDevis extends JDialog implements ActionListener{
 		private JLabel lbl_save = new JLabel ("Enregistrement reussi !");
 		private JButton bt_OK = new JButton ("OK");
 	  
-	  Object[][] data ={
+		private JTable tableDevis;
+		private JScrollPane scrollPane;
+		private final String[] Colonnes = {"description","udm","prix"};
+		private static DefaultTableModel modelTableDevis = new DefaultTableModel(0,3){
+			Class[] types = {String.class, String.class, String.class};
+			
+	        @Override
+	        public Class getColumnClass(int columnIndex) 
+	        {
+	            return Integer.class;
+	        }
+	        
+	        @Override
+	        public boolean isCellEditable(int row, int column)
+	        {  
+	            return false;  
+	        }
+		};
+			/*  Object[][] data ={
 			  {1,1,1,1}
 			 
 	  };
 	  
      String title[] = { "Ref","Designation","Quantité","PrixUnitaire"};
 	  
-	  JTable tableau = new JTable(data,title);
+	  JTable tableau = new JTable(data,title);*/
 	  
-	  
-	  //Initialisation de la fenetre vente
-	  public InterfaceDevis(FenetrePrincipale frame){
-		  super(frame,"Interface devis",true);
-		  initUI();		
+		public void remplirtableDevis(){
+			modelTableDevis.setDataVector(DatabaseConnection.remplirListeProduits(), Colonnes);
+			tableDevis.getRowSorter().toggleSortOrder(0);
+		}
+		
+	  //Initialisation de la fenetre devis
+	  public InterfaceDevis(FenetrePrincipale framePrincipal){
+	//	  super(frame,"Interface devis",true);
+		  this.framePrincipale = framePrincipal;
+		  initElements();
+		  initHandlers();
 	  }
-    public void initUI() {
+	  
+    public void initElements() {
     	
    
-    	setSize(500,400); // taille de la fenetre
-    	setLocation(300,400); // position de la fenetre
     	
-        final JFrame frame = new JFrame("Gestion de Commandes");
-        //frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-
-     
+        tableDevis = new JTable(modelTableDevis);
+		tableDevis.setAutoCreateRowSorter(true); //permet de trier les colonnes
+		tableDevis.getRowSorter().toggleSortOrder(0);
+		tableDevis.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane = new JScrollPane(tableDevis);
+		tableDevis.setPreferredScrollableViewportSize(dimensionTable);
+	
+		
+		add(contenu);
         menuBar.add(fileMenu);
         menuBar.add(bt_enregistrer);
-        bt_enregistrer.addActionListener(this);
+        bt_enregistrer.setPreferredSize(dimensionBouttons);
         menuBar.add(Imprimer);
         menuBar.add(Ajouter);
         menuBar.add(Retirer);
         menuBar.add(Ouvrir);
         
-         setJMenuBar(menuBar);
-        JPanel FenetrePrincipal = new JPanel(new GridLayout(3, 1));
+        contenu.add(menuBar, BorderLayout.NORTH);
+        JPanel FenetrePrincipal1 = new JPanel(new GridLayout(3, 1));
         JPanel FenetreHaut = new JPanel(new GridLayout(4,1,1,10 ));
         JPanel FenetreMilieu = new JPanel(new GridLayout(1, 1));
         JPanel FenetreBas = new JPanel(new GridLayout(3, 2));
              
-        getContentPane().add(FenetrePrincipal);
+        contenu.add(FenetrePrincipal1);
   	    
-        FenetrePrincipal.add(FenetreHaut);
-        FenetrePrincipal.add(FenetreMilieu);
-        FenetrePrincipal.add(FenetreBas);
+        FenetrePrincipal1.add(FenetreHaut);
+        FenetrePrincipal1.add(FenetreMilieu);
+        FenetrePrincipal1.add(FenetreBas);
         
         FenetreHaut.add(Bon);
         FenetreHaut.add(ChampTextBon);
@@ -114,39 +150,48 @@ public class InterfaceDevis extends JDialog implements ActionListener{
         FenetreHaut.add(Date);
         FenetreHaut.add(ChampTextDate);
 	    
-       FenetreMilieu.add(new JScrollPane(tableau)); // affichage du tableau de commande
+      // FenetreMilieu.add(new JScrollPane(tableau)); // affichage du tableau de commande
         
         
         FenetreBas.add(Montant);
         FenetreBas.add(ChampTextMontant);
 	    
-	  // FenetreMilieu.add(new JScrollPane(tableau)); // affichage du tableau de commande
+	   FenetreMilieu.add(tableDevis); // affichage du tableau de commande
 	    
 	   
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		setVisible(true);
+       // frame.setLocationRelativeTo(null);
+     //   frame. setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		//setVisible(true);
     }
 	
-	public void actionPerformed(ActionEvent event) {
 
-		if(event.getSource() == bt_enregistrer){
-			enregistrer();
-		}
-	}
+public void initHandlers(){
 	
+	bt_enregistrer.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			JFrame enregistrer = new JFrame ("Enregistrement");
+			JPanel contenuSave = new JPanel (new GridLayout(3,3));
+			enregistrer.setSize(500,300 );
+			enregistrer.setLocationRelativeTo( null );
+			enregistrer.setVisible( true );
+			enregistrer.add(contenuSave);
+			contenuSave.add(lbl_save);
+			contenuSave.add(bt_OK);
+			bt_OK.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e){
+					enregistrer.setVisible(false);	
+			}
+		}); 
+		
+	}
+	});
+}
 
-	private void enregistrer(){
-		//code qui sauvegarde
-		JFrame enregistrer = new JFrame ("Enregistrement");
-		JPanel contenuSave = new JPanel (new GridLayout(3,3));
-		enregistrer.setSize(500,300 );
-		enregistrer.setLocationRelativeTo( null );
-		enregistrer.setVisible( true );
-		enregistrer.add(contenuSave);
-		contenuSave.add(lbl_save);
-		contenuSave.add(bt_OK);
-		bt_OK.addActionListener(e -> enregistrer.setVisible(false));
+	public void refreshListeTableDevis(String description, String udm, String prix){
+		int quant = Integer.parseInt(udm);
+		int prix1 = Integer.parseInt(prix);
+		Object[] obj = {description, quant, prix1};
+		modelTableDevis.addRow(obj);
 	}
     
     /*public static void main(String[] args) {
@@ -160,4 +205,5 @@ public class InterfaceDevis extends JDialog implements ActionListener{
 		
         
     }*/
+
 }

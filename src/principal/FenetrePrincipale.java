@@ -56,7 +56,8 @@ public class FenetrePrincipale extends JFrame
    	//Vente
    	private static PanelVente panelVente;
    	private static PanelClient panelClient;
-   		
+   	private static InterfaceDevis InterfaceDevis;	
+   	
    	//Production
    	private static PanelProduits panelProduits;
    	
@@ -115,6 +116,7 @@ public class FenetrePrincipale extends JFrame
 	   		
 	   		//Ventes
 	   		panelClient = new PanelClient(framePrincipale);
+	   		InterfaceDevis = new InterfaceDevis(framePrincipale);
 	   		
 	   		//Production
 	   		panelProduits = new PanelProduits(framePrincipale);
@@ -168,9 +170,11 @@ public class FenetrePrincipale extends JFrame
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{	   				
-	   				new InterfaceDevis(framePrincipale);
+	   				ajouterOnglet("Gestion des Devis", InterfaceDevis);
 	   			}
 	   		});	
+	   		
+	   		
 	   		
 	   		//Production
 	   		menuProductionProduits.addActionListener(new ActionListener()
@@ -201,6 +205,11 @@ public class FenetrePrincipale extends JFrame
    	
    	public PanelClient getPanelClient(){
 		return panelClient;
+   		
+   	}
+   	
+   	public InterfaceDevis getInterfaceDevis(){
+		return InterfaceDevis;
    		
    	}
    	
