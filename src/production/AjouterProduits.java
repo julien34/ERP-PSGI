@@ -43,10 +43,7 @@ public class AjouterProduits extends JDialog
 	
 	public void initElements()
 	{
-		//Création des boutons
-		JLabel codeProduitLabel = new JLabel("<html>code produit <font color='red'>*</html> ");
-		JTextField codeProduit = new JTextField(10);
-		
+		//Création des boutons		
 		JLabel descriptionLabel = new JLabel("description ");
 		JTextField description = new JTextField(10);
 
@@ -76,58 +73,43 @@ public class AjouterProduits extends JDialog
 		panelGrid.add(panelFlow3);
 		panelGrid.add(panelFlow4);
 		panelGrid.add(panelFlow5);
-		
-		panelFlow1.add(codeProduitLabel);
-		panelFlow1.add(codeProduit);
 
 		panelFlow1.add(descriptionLabel);
 		panelFlow1.add(description);
 
-		panelFlow2.add(categorieLabel);
-		panelFlow2.add(categorie);
+		panelFlow1.add(categorieLabel);
+		panelFlow1.add(categorie);
 
 		panelFlow2.add(prixVenteLabel);
 		panelFlow2.add(prixVente);
 		
-		panelFlow3.add(prixAchatLabel);
-		panelFlow3.add(prixAchat);
+		panelFlow2.add(prixAchatLabel);
+		panelFlow2.add(prixAchat);
 
 		panelFlow3.add(udmLabel);
 		panelFlow3.add(udm);
+		
 		
 		panelFlow4.add(required);
 		panelFlow4.add(ajouter);
 		panelFlow4.add(retour);		
 		panelFlow5.add(error);
 		
-		//Handler du champ clé primaire
-		codeProduit.addKeyListener(new KeyAdapter() 
-		{
-	        public void keyReleased(KeyEvent e) 
-	        {
-	            super.keyReleased(e);
-	            if(codeProduit.getText().length() > 0)
-	            ajouter.setEnabled(true);
-	            else ajouter.setEnabled(false);
-	        }
-	    });
-		
 		//Action si click sur bouton
 		ajouter.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				String value1 = codeProduit.getText();
-				String value2 = description.getText();
-				String value3 = categorie.getText();
-				String value4 = prixVente.getText();
-				String value5 = prixAchat.getText();
-				String value6 = udm.getText();
+				String value1 = description.getText();
+				String value2 = categorie.getText();
+				String value3 = prixVente.getText();
+				String value4 = prixAchat.getText();
+				String value5 = udm.getText();
 				
 				//Si la requete à réussie
-				if(DatabaseConnection.requete("INSERT INTO PRODUITS(codeProduit,description,categorie,prixVente,prixAchat,udm) VALUES ("+value1+",'"+value2+"','"+value3+"',"+value4+","+value5+","+value6+")"))
+				if(DatabaseConnection.requete("CALL procedure("+value1+",'"+value2+"','"+value3+"',"+value4+","+value5+")"))
 				{
-					FenetrePrincipale.getPanelProduits().raffraichirListe(value1,value2,value3,value4,value5,value6);
+					FenetrePrincipale.getPanelProduits().raffraichirListe(value1,value2,value3,value4,value5);
 					JOptionPane.showMessageDialog(null, "Produit ajouté avec succès.", "Ajout de produit", JOptionPane.INFORMATION_MESSAGE);
 				}
 				else JOptionPane.showMessageDialog(null, "Erreur d'ajout du produit. Vérifiez vos variables.", "Ajout de produit", JOptionPane.WARNING_MESSAGE);

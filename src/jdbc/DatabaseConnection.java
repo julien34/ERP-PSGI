@@ -76,17 +76,16 @@ public class DatabaseConnection
 				longueurTableau = resultat.getInt("COUNT(*)");
 			}
 			resultat.close();
-			Object[][] databaseData = new Object[longueurTableau][6];
+			Object[][] databaseData = new Object[longueurTableau][5];
 			
 			resultat = stat.executeQuery("SELECT * FROM PRODUITS");
 			while(resultat.next())
 			{
-				databaseData[indexActuel][0] = resultat.getInt("codeProduit");
-				databaseData[indexActuel][1] = resultat.getString("description");
-				databaseData[indexActuel][2] = resultat.getString("categorie");
-				databaseData[indexActuel][3] = resultat.getFloat("prixVente");
-				databaseData[indexActuel][4] = resultat.getFloat("prixAchat");
-				databaseData[indexActuel][5] = resultat.getFloat("udm");
+				databaseData[indexActuel][0] = resultat.getString("description");
+				databaseData[indexActuel][1] = resultat.getString("categorie");
+				databaseData[indexActuel][2] = resultat.getFloat("prixVente");
+				databaseData[indexActuel][3] = resultat.getFloat("prixAchat");
+				databaseData[indexActuel][4] = resultat.getFloat("udm");
 				indexActuel++;
 			}
 			resultat.close();		
@@ -139,12 +138,31 @@ public class DatabaseConnection
 		}
 	}
 	
+	/**
+	 * Methode pour obtenir la cl� primaire de la table produits
+	 */
+	static public int getCodeProduit(String value1,String value2,String value3,String value4,String value5)
+	{
+		try
+		{
+			stat = con.createStatement();
+			int codeProduit = stat.executeUpdate("SELECT codeProduit FROM produits WHERE description = "+value1+" AND categorie = "+value2+" AND prixVente = "+value3+" AND prixAchat = "+value4+" AND udm = "+value5);
+			stat.close();
+			
+			return codeProduit;			
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e.getMessage());
+			return -1;
+		}
+	}
 	
 	/**
 	 * Méthode qui retourne la connection à la base de donnée.
 	 * @return la connection de la base de donnée
 	 */
-	public Connection getCon(){
+	static public Connection getCon(){
 		return con;
 	}
 	
