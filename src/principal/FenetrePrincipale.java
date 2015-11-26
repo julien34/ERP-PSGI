@@ -28,8 +28,8 @@ public class FenetrePrincipale extends JFrame
     JMenuBar menu = new JMenuBar();
     
     //Boutons de menu
-    	//Base de donn�es
-        JMenu menuBdd = new JMenu("Base de donn�es");
+    	//Base de donnï¿½es
+        JMenu menuBdd = new JMenu("Base de donnï¿½es");
         JMenuItem menuBddConnexion = new JMenuItem("Connexion");
         JMenuItem menuBddDeconnexion = new JMenuItem("Deconnexion");
     
@@ -45,7 +45,7 @@ public class FenetrePrincipale extends JFrame
         	        
         //Production
         JMenu menuProduction = new JMenu("Production");
-        JMenuItem menuProductionProduits = new JMenuItem("G�rer les produits");
+        JMenuItem menuProductionProduits = new JMenuItem("Gï¿½rer les produits");
    	
     //Onglets
     private JTabbedPane onglets = new JTabbedPane();
@@ -71,7 +71,7 @@ public class FenetrePrincipale extends JFrame
    	
    	public void initFenetre()
    	{
-   		//Param�trage de la fen�tre
+   		//Paramï¿½trage de la fenï¿½tre
    		setTitle("Projet PSGI");
    		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
    		setSize(960,540);	
@@ -83,7 +83,7 @@ public class FenetrePrincipale extends JFrame
    	public void initElements()
    	{
 	   	//Ajouter les menus
-	    	//Base de donn�es
+	    	//Base de donnï¿½es
 				menu.add(menuBdd);
 				menuBdd.add(menuBddConnexion);
 				menuBdd.add(menuBddDeconnexion);
@@ -111,7 +111,7 @@ public class FenetrePrincipale extends JFrame
    		//Ajouter les onglets
    		add(onglets); 
    		
-   		//Mise en m�moire des interfaces
+   		//Mise en mï¿½moire des interfaces
 	   		//Achats
 	   		
 	   		//Ventes
@@ -125,7 +125,7 @@ public class FenetrePrincipale extends JFrame
    	public void initHandlers()
    	{
    		//Handler des bouttons de menu
-	   		//Base de donn�es
+	   		//Base de donnï¿½es
 	   		menuBddConnexion.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e)
@@ -181,7 +181,7 @@ public class FenetrePrincipale extends JFrame
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
-	   				ajouterOnglet("G�rer les produits",panelProduits);
+	   				ajouterOnglet("Gï¿½rer les produits",panelProduits);
 	   				panelProduits.fillTable();
 	   			}
 	   		});	
@@ -232,7 +232,7 @@ public class FenetrePrincipale extends JFrame
    	
    	public static void main(String[] args)
    	{	   		
-   		//Cr�ation de la fen�tre
+   		//Crï¿½ation de la fenï¿½tre
    		framePrincipale = new FenetrePrincipale();
    		
    	}

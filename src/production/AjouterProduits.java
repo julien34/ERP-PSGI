@@ -19,7 +19,7 @@ public class AjouterProduits extends JDialog
 	private JPanel panelFlow5 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	
 	/**
-	 * Le constructeur par défaut fait appel à la fonction init
+	 * Le constructeur par dï¿½faut fait appel ï¿½ la fonction init
 	 */
 	public AjouterProduits()
 	{
@@ -30,11 +30,11 @@ public class AjouterProduits extends JDialog
 	}	
 	
 	/**
-	 * Initialise la fenetre associée
+	 * Initialise la fenetre associï¿½e
 	 */
 	public void initFenetre()
 	{
-		//Paramétrage de la fenêtre
+		//Paramï¿½trage de la fenï¿½tre
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(512,288);	
 		setLocationRelativeTo(null);
@@ -43,8 +43,8 @@ public class AjouterProduits extends JDialog
 	
 	public void initElements()
 	{
-		//Création des boutons		
-		JLabel descriptionLabel = new JLabel("description ");
+		//Crï¿½ation des boutons		
+		JLabel descriptionLabel = new JLabel("nom ");
 		JTextField description = new JTextField(10);
 
 		JLabel categorieLabel = new JLabel("categorie ");
@@ -56,7 +56,7 @@ public class AjouterProduits extends JDialog
 		JLabel prixAchatLabel = new JLabel("prix d'achat ");
 		JTextField prixAchat = new JTextField(10);
 
-		JLabel udmLabel = new JLabel("unité de mesure ");
+		JLabel udmLabel = new JLabel("unitï¿½ de mesure ");
 		JTextField udm = new JTextField(10);
 
 		JLabel required = new JLabel("<html><font color='red'>* </font>champs obligatoire</html> ");
@@ -65,7 +65,7 @@ public class AjouterProduits extends JDialog
 		
 		JLabel error = new JLabel("");
 		
-		//Ajouter les élements	
+		//Ajouter les ï¿½lements	
 		add(panelGrid);
 		panelGrid.add(panelFlow1);
 		panelGrid.add(panelFlow2);
@@ -105,13 +105,13 @@ public class AjouterProduits extends JDialog
 				String value4 = prixAchat.getText();
 				String value5 = udm.getText();
 				
-				//Si la requete à réussie
-				if(DatabaseConnection.requete("CALL procedure("+value1+",'"+value2+"','"+value3+"',"+value4+","+value5+")"))
+				//Si la requete ï¿½ rï¿½ussie
+				if(DatabaseConnection.requete("CALL nouveauProduit ('"+value1+"','"+value2+"',"+Float.parseFloat(value3)+","+Float.parseFloat(value4)+","+Float.parseFloat(value5)+")"))
 				{
 					FenetrePrincipale.getPanelProduits().raffraichirListe(value1,value2,value3,value4,value5);
-					JOptionPane.showMessageDialog(null, "Produit ajouté avec succès.", "Ajout de produit", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Produit ajoutï¿½ avec succï¿½s.", "Ajout de produit", JOptionPane.INFORMATION_MESSAGE);
 				}
-				else JOptionPane.showMessageDialog(null, "Erreur d'ajout du produit. Vérifiez vos variables.", "Ajout de produit", JOptionPane.WARNING_MESSAGE);
+				else JOptionPane.showMessageDialog(null, "Erreur d'ajout du produit. Vï¿½rifiez vos variables.", "Ajout de produit", JOptionPane.WARNING_MESSAGE);
 			}
 		});
 		retour.addActionListener(new ActionListener()
@@ -122,7 +122,7 @@ public class AjouterProduits extends JDialog
 			}
 		});
 
-		//Afficher la fenêtre
+		//Afficher la fenï¿½tre
 		setVisible(true);
 	}
 }

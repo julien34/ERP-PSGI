@@ -73,7 +73,7 @@ public class ModifierProduits extends JDialog
 	public void initElements()
 	{
 		//Création des boutons		
-		JLabel descriptionLabel = new JLabel("description ");
+		JLabel descriptionLabel = new JLabel("nom ");
 		JTextField description = new JTextField(value1,10);
 		
 		JLabel categorieLabel = new JLabel("categorie ");
