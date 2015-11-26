@@ -9,14 +9,13 @@ import principal.FenetrePrincipale;
 
 public class ModifierProduits extends JDialog
 {	
-	private static FenetrePrincipale frame;
-	JPanel panelGrid = new JPanel(new GridLayout(5,1));
-	JPanel panelFlow1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-	JPanel panelFlow2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-	JPanel panelFlow3 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-	JPanel panelFlow4 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-	JPanel panelFlow5 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-	String value1,value2,value3,value4,value5,value6;
+	private JPanel panelGrid = new JPanel(new GridLayout(5,1));
+	private JPanel panelFlow1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	private JPanel panelFlow2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	private JPanel panelFlow3 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	private JPanel panelFlow4 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	private JPanel panelFlow5 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	private String value1,value2,value3,value4,value5,value6;
 	
 	/**
 	 * Rend un champ null égal a un string vide
@@ -33,10 +32,10 @@ public class ModifierProduits extends JDialog
 	/**
 	 * Le constructeur par défaut fait appel à la fonction init
 	 */
-	public ModifierProduits(FenetrePrincipale frame, String val1, String val2, String val3, String val4, String val5, String val6)
+	public ModifierProduits(String val1, String val2, String val3, String val4, String val5, String val6)
 	{
-		super(frame,"Modifier un produit",true);
-		this.frame = frame;
+		setTitle("Modifier un produit");
+		setModal(true);
 		value1 = val1;
 		
 		value2 = val2;
@@ -141,10 +140,10 @@ public class ModifierProduits extends JDialog
 				//Si la requete à réussie
 				if(DatabaseConnection.requete("UPDATE PRODUITS SET description = '"+value2+"', categorie = '"+value3+"', prixVente = "+value4+", prixAchat = "+value5+", udm = "+value6+" WHERE codeProduit = "+value1) == true)
 				{
-					frame.getPanelProduits().raffraichirLigne(value1,value2,value3,value4,value5,value6);
-					error.setText("<html><font color=lime>Ligne modifiée !</html>");
+					FenetrePrincipale.getPanelProduits().raffraichirLigne(value1,value2,value3,value4,value5,value6);
+					JOptionPane.showMessageDialog(null, "Produit modifié avec succès.", "Modification de produit", JOptionPane.INFORMATION_MESSAGE);
 				}
-				else error.setText("<html><font color=red>Erreur d'ajout de ligne, vérifiez vos variables !</html>");
+				else JOptionPane.showMessageDialog(null, "Erreur de modification du produit. Vérifiez vos variables.", "Modification de produit", JOptionPane.WARNING_MESSAGE);
 			}
 		});
 		retour.addActionListener(new ActionListener()

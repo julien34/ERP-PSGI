@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -21,8 +22,6 @@ import principal.FenetrePrincipale;
 
 public class PanelProduits extends JPanel 
 {
-	private static FenetrePrincipale framePrincipale;
-	
 	private JPanel panelTable = new JPanel(new BorderLayout(10,10));
 	private JPanel panelBouttons = new JPanel(new FlowLayout(FlowLayout.CENTER,40,0));
 	private JButton ajouter = new JButton("Ajouter");
@@ -55,9 +54,8 @@ public class PanelProduits extends JPanel
 		table.getRowSorter().toggleSortOrder(0);
 	}
 	
-	public PanelProduits(FenetrePrincipale framePrincipale)
+	public PanelProduits()
 	{
-		this.framePrincipale = framePrincipale;
 		initElements();
 		initHandlers();
 	}
@@ -107,7 +105,7 @@ public class PanelProduits extends JPanel
 		ajouter.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
-			{ new AjouterProduits(framePrincipale); }
+			{ new AjouterProduits(); }
 		});
 		modifier.addActionListener(new ActionListener()
 		{
@@ -119,19 +117,23 @@ public class PanelProduits extends JPanel
 				String value4 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 3));
 				String value5 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 4));
 				String value6 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 5));
-				new ModifierProduits(framePrincipale,value1,value2,value3,value4,value5,value6); 
+				new ModifierProduits(value1,value2,value3,value4,value5,value6); 
 			}
 		});
 		supprimer.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				if (produitChoisi != -1)
+				int option = JOptionPane.showConfirmDialog(null, "Confirmer la suppression du produit ?", "Suppression de produit", JOptionPane.YES_NO_OPTION);
+				if(option == JOptionPane.YES_OPTION)
 				{
-					String value = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 0));
+					if (produitChoisi != -1)
+					{						
+						String value = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 0));
 					
-					if (DatabaseConnection.requete("DELETE FROM PRODUITS WHERE codeProduit = "+value) == true)
-					{ model.removeRow(table.convertRowIndexToModel(produitChoisi)); }
+						if (DatabaseConnection.requete("DELETE FROM PRODUITS WHERE codeProduit = "+value))
+						{ model.removeRow(table.convertRowIndexToModel(produitChoisi)); }
+					}
 				}
 			}
 		});	
