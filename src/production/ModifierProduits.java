@@ -141,9 +141,9 @@ public class ModifierProduits extends JDialog
 				if(DatabaseConnection.requete("UPDATE PRODUITS SET description = '"+value2+"', categorie = '"+value3+"', prixVente = "+value4+", prixAchat = "+value5+", udm = "+value6+" WHERE codeProduit = "+value1) == true)
 				{
 					FenetrePrincipale.getPanelProduits().raffraichirLigne(value1,value2,value3,value4,value5,value6);
-					error.setText("<html><font color=lime>Ligne modifiée !</html>");
+					JOptionPane.showMessageDialog(null, "Produit modifié avec succès.", "Modification de produit", JOptionPane.INFORMATION_MESSAGE);
 				}
-				else error.setText("<html><font color=red>Erreur d'ajout de ligne, vérifiez vos variables !</html>");
+				else JOptionPane.showMessageDialog(null, "Erreur de modification du produit. Vérifiez vos variables.", "Modification de produit", JOptionPane.WARNING_MESSAGE);
 			}
 		});
 		retour.addActionListener(new ActionListener()

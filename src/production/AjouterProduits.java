@@ -128,9 +128,9 @@ public class AjouterProduits extends JDialog
 				if(DatabaseConnection.requete("INSERT INTO PRODUITS(codeProduit,description,categorie,prixVente,prixAchat,udm) VALUES ("+value1+",'"+value2+"','"+value3+"',"+value4+","+value5+","+value6+")"))
 				{
 					FenetrePrincipale.getPanelProduits().raffraichirListe(value1,value2,value3,value4,value5,value6);
-					error.setText("<html><font color=lime>Ligne ajoutée !</html>");
+					JOptionPane.showMessageDialog(null, "Produit ajouté avec succès.", "Ajout de produit", JOptionPane.INFORMATION_MESSAGE);
 				}
-				else error.setText("<html><font color=red>Erreur d'ajout de ligne, vérifiez vos variables !</html>");
+				else JOptionPane.showMessageDialog(null, "Erreur d'ajout du produit. Vérifiez vos variables.", "Ajout de produit", JOptionPane.WARNING_MESSAGE);
 			}
 		});
 		retour.addActionListener(new ActionListener()
