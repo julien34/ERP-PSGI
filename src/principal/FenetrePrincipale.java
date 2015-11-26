@@ -3,6 +3,7 @@ package principal;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -10,6 +11,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import achat.PanelDevis;
 import achat.PanelFournisseur;
 import components.ButtonTabComponent;
 import jdbc.DatabaseConnection;
@@ -36,6 +38,7 @@ public class FenetrePrincipale extends JFrame
         //Achats
         JMenu menuAchats = new JMenu("Achats");
         JMenuItem menuAchatFournisseur = new JMenuItem("Fournisseurs");
+        JMenuItem menuAchatDevis = new JMenuItem("Devis");
         
         //Ventes
         JMenu menuVentes = new JMenu("Ventes");
@@ -51,7 +54,8 @@ public class FenetrePrincipale extends JFrame
     private JTabbedPane onglets = new JTabbedPane();
    	
    	//Achat
-   	private static PanelFournisseur panelFournisseur;	
+   	private static PanelFournisseur panelFournisseur;
+   	private static PanelDevis panelDevis;
    	
    	//Vente
    	private static PanelVente panelVente;
@@ -91,6 +95,7 @@ public class FenetrePrincipale extends JFrame
 	        //Achats
 				menu.add(menuAchats);
 				menuAchats.add(menuAchatFournisseur);
+				menuAchats.add(menuAchatDevis);
 	        
 	        //Ventes
 				menu.add(menuVentes);
@@ -150,6 +155,15 @@ public class FenetrePrincipale extends JFrame
 	   				ajouterOnglet("Fournisseurs",panelFournisseur = new PanelFournisseur(framePrincipale));
 	   			}
 	   		});	
+	   		
+	   		menuAchatDevis.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					ajouterOnglet("Devis", panelDevis = new PanelDevis(framePrincipale));
+					
+				}
+			});
 	   		
 	   		//Ventes
 	   		menuVentesFenetreVente.addActionListener(new ActionListener()
