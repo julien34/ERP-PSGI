@@ -10,7 +10,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import achat.PanelAchat;
+import achat.PanelFournisseur;
 import components.ButtonTabComponent;
 import jdbc.DatabaseConnection;
 import jdbc.FenetreConnexion;
@@ -28,14 +28,14 @@ public class FenetrePrincipale extends JFrame
     JMenuBar menu = new JMenuBar();
     
     //Boutons de menu
-    	//Base de données
-        JMenu menuBdd = new JMenu("Base de données");
+    	//Base de donnï¿½es
+        JMenu menuBdd = new JMenu("Base de donnï¿½es");
         JMenuItem menuBddConnexion = new JMenuItem("Connexion");
         JMenuItem menuBddDeconnexion = new JMenuItem("Deconnexion");
     
         //Achats
         JMenu menuAchats = new JMenu("Achats");
-        JMenuItem menuAchatAjouterFournisseur = new JMenuItem("Ajouter un fournisseur");
+        JMenuItem menuAchatFournisseur = new JMenuItem("Fournisseurs");
         
         //Ventes
         JMenu menuVentes = new JMenu("Ventes");
@@ -45,13 +45,13 @@ public class FenetrePrincipale extends JFrame
         	        
         //Production
         JMenu menuProduction = new JMenu("Production");
-        JMenuItem menuProductionProduits = new JMenuItem("Gérer les produits");
+        JMenuItem menuProductionProduits = new JMenuItem("Gï¿½rer les produits");
    	
     //Onglets
     private JTabbedPane onglets = new JTabbedPane();
    	
    	//Achat
-   	private static PanelAchat panelAchat;	
+   	private static PanelFournisseur panelFournisseur;	
    	
    	//Vente
    	private static PanelVente panelVente;
@@ -71,7 +71,7 @@ public class FenetrePrincipale extends JFrame
    	
    	public void initFenetre()
    	{
-   		//Paramétrage de la fenêtre
+   		//Paramï¿½trage de la fenï¿½tre
    		setTitle("Projet PSGI");
    		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
    		setSize(960,540);	
@@ -83,14 +83,14 @@ public class FenetrePrincipale extends JFrame
    	public void initElements()
    	{
 	   	//Ajouter les menus
-	    	//Base de données
+	    	//Base de donnï¿½es
 				menu.add(menuBdd);
 				menuBdd.add(menuBddConnexion);
 				menuBdd.add(menuBddDeconnexion);
 	    
 	        //Achats
 				menu.add(menuAchats);
-				menuAchats.add(menuAchatAjouterFournisseur);
+				menuAchats.add(menuAchatFournisseur);
 	        
 	        //Ventes
 				menu.add(menuVentes);
@@ -111,7 +111,7 @@ public class FenetrePrincipale extends JFrame
    		//Ajouter les onglets
    		add(onglets); 
    		
-   		//Mise en mémoire des interfaces
+   		//Mise en mï¿½moire des interfaces
 	   		//Achats
 	   		
 	   		//Ventes
@@ -125,7 +125,7 @@ public class FenetrePrincipale extends JFrame
    	public void initHandlers()
    	{
    		//Handler des bouttons de menu
-	   		//Base de données
+	   		//Base de donnï¿½es
 	   		menuBddConnexion.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e)
@@ -143,11 +143,11 @@ public class FenetrePrincipale extends JFrame
 	   		});	
 	   		
 	   		//Achats
-	   		menuAchatAjouterFournisseur.addActionListener(new ActionListener()
+	   		menuAchatFournisseur.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
-	   				ajouterOnglet("Créer un fournisseur",panelAchat = new PanelAchat(framePrincipale));
+	   				ajouterOnglet("Fournisseurs",panelFournisseur = new PanelFournisseur(framePrincipale));
 	   			}
 	   		});	
 	   		
@@ -181,7 +181,7 @@ public class FenetrePrincipale extends JFrame
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
-	   				ajouterOnglet("Gérer les produits",panelProduits);
+	   				ajouterOnglet("Gï¿½rer les produits",panelProduits);
 	   				panelProduits.fillTable();
 	   			}
 	   		});	
@@ -215,7 +215,7 @@ public class FenetrePrincipale extends JFrame
    	
    	public static void main(String[] args)
    	{	   		
-   		//Création de la fenêtre
+   		//Crï¿½ation de la fenï¿½tre
    		framePrincipale = new FenetrePrincipale();
    	}
 

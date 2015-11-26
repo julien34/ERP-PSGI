@@ -13,14 +13,14 @@ public class DatabaseConnection
 	
 	public DatabaseConnection() 
 	{
-
+		
 	}
 	
 	/**
-	 * Ouvre la connexion avec le serveur SQL spécifié par les 5 arguments suivants.
+	 * Ouvre la connexion avec le serveur SQL spï¿½cifiï¿½ par les 5 arguments suivants.
 	 * @param ip adresse IP du serveur SQL
 	 * @param port numero de port du serveur SQL
-	 * @param sid identificateur de sécurité
+	 * @param sid identificateur de sï¿½curitï¿½
 	 * @param user utilisateur
 	 * @param password mot de passe
 	 */
@@ -39,8 +39,8 @@ public class DatabaseConnection
 	}
 	
 	/**
-	 * Exécute la requête SQL passée en paramètre.
-	 * @param sql La requête SQL à exécuter
+	 * Exï¿½cute la requï¿½te SQL passï¿½e en paramï¿½tre.
+	 * @param sql La requï¿½te SQL ï¿½ exï¿½cuter
 	 */
 	static public boolean requete(String sql)
 	{
@@ -138,6 +138,16 @@ public class DatabaseConnection
 			return null;
 		}
 	}
+	
+	
+	/**
+	 * MÃ©thode qui retourne la connection Ã  la base de donnÃ©e.
+	 * @return la connection de la base de donnÃ©e
+	 */
+	public Connection getCon(){
+		return con;
+	}
+	
 	
 	/**
 	 * Ferme la connexion au serveur SQL.
