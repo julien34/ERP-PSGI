@@ -29,7 +29,7 @@ public class PanelProduits extends JPanel
 	private JButton supprimer = new JButton("Supprimer");	
 	private JTable table;
 	private JScrollPane scrollPane;
-	private final String[] columnNames = {"description","categorie","prixVente","prixAchat","udm"};
+	private final String[] columnNames = {"nom","categorie","prix de vente","prix d'achat","udm"};
 	private static DefaultTableModel model = new DefaultTableModel(0,5)
 	{
         Class[] types = { String.class, String.class, Float.class, Float.class, Float.class };
@@ -127,10 +127,16 @@ public class PanelProduits extends JPanel
 				if(option == JOptionPane.YES_OPTION)
 				{
 					if (produitChoisi != -1)
-					{						
-						String value = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 0));
-					
-						if (DatabaseConnection.requete("DELETE FROM PRODUITS WHERE codeProduit = "+value))
+					{	
+						String value1 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 0));
+						String value2 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 1));
+						String value3 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 2));
+						String value4 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 3));
+						String value5 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 4));	
+						
+						int codeProduit = DatabaseConnection.getCodeProduit(value1,value2,value3,value4,value5);
+						
+						if (DatabaseConnection.requete("DELETE FROM PRODUITS WHERE codeProduit = "+codeProduit))
 						{ model.removeRow(table.convertRowIndexToModel(produitChoisi)); }
 					}
 				}

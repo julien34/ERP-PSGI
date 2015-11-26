@@ -62,7 +62,6 @@ public class AjouterProduits extends JDialog
 		JLabel required = new JLabel("<html><font color='red'>* </font>champs obligatoire</html> ");
 		JButton ajouter = new JButton("Ajouter");
 		JButton retour = new JButton("Retour");
-		ajouter.setEnabled(false);
 		
 		JLabel error = new JLabel("");
 		

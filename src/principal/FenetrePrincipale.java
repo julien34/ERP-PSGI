@@ -212,12 +212,6 @@ public class FenetrePrincipale extends JFrame
 		return InterfaceDevis;
    		
    	}
-   	
-   	public static void main(String[] args)
-   	{	   		
-   		//Cr�ation de la fen�tre
-   		framePrincipale = new FenetrePrincipale();
-   	}
 
 	public void connexionOpened()
 	{
@@ -235,5 +229,12 @@ public class FenetrePrincipale extends JFrame
    		menuBddDeconnexion.setEnabled(false);
    		onglets.removeAll();
 	}
+   	
+   	public static void main(String[] args)
+   	{	   		
+   		//Cr�ation de la fen�tre
+   		framePrincipale = new FenetrePrincipale();
+   		
+   	}
 }  
 
