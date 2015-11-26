@@ -11,21 +11,20 @@ import principal.FenetrePrincipale;
 
 public class AjouterProduits extends JDialog
 {	
-	private static FenetrePrincipale frame;
-	JPanel panelGrid = new JPanel(new GridLayout(5,1));
-	JPanel panelFlow1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-	JPanel panelFlow2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-	JPanel panelFlow3 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-	JPanel panelFlow4 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-	JPanel panelFlow5 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	private JPanel panelGrid = new JPanel(new GridLayout(5,1));
+	private JPanel panelFlow1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	private JPanel panelFlow2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	private JPanel panelFlow3 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	private JPanel panelFlow4 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	private JPanel panelFlow5 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	
 	/**
 	 * Le constructeur par défaut fait appel à la fonction init
 	 */
-	public AjouterProduits(FenetrePrincipale frame)
+	public AjouterProduits()
 	{
-		super(frame,"Ajouter un produit",true);
-		this.frame = frame;
+		setTitle("Ajouter un produit");
+		setModal(true);
 		initFenetre();
 		initElements();
 	}	
@@ -126,9 +125,9 @@ public class AjouterProduits extends JDialog
 				String value6 = udm.getText();
 				
 				//Si la requete à réussie
-				if(DatabaseConnection.requete("INSERT INTO PRODUITS(codeProduit,description,categorie,prixVente,prixAchat,udm) VALUES ("+value1+",'"+value2+"','"+value3+"',"+value4+","+value5+","+value6+")") == true)
+				if(DatabaseConnection.requete("INSERT INTO PRODUITS(codeProduit,description,categorie,prixVente,prixAchat,udm) VALUES ("+value1+",'"+value2+"','"+value3+"',"+value4+","+value5+","+value6+")"))
 				{
-					frame.getPanelProduits().raffraichirListe(value1,value2,value3,value4,value5,value6);
+					FenetrePrincipale.getPanelProduits().raffraichirListe(value1,value2,value3,value4,value5,value6);
 					error.setText("<html><font color=lime>Ligne ajoutée !</html>");
 				}
 				else error.setText("<html><font color=red>Erreur d'ajout de ligne, vérifiez vos variables !</html>");

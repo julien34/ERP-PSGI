@@ -119,7 +119,7 @@ public class FenetrePrincipale extends JFrame
 	   		InterfaceDevis = new InterfaceDevis(framePrincipale);
 	   		
 	   		//Production
-	   		panelProduits = new PanelProduits(framePrincipale);
+	   		panelProduits = new PanelProduits();
    	}
    	
    	public void initHandlers()
@@ -198,7 +198,7 @@ public class FenetrePrincipale extends JFrame
 		}
 	}
    	
-   	public PanelProduits getPanelProduits()
+   	public static PanelProduits getPanelProduits()
    	{
    		return panelProduits;
    	}
