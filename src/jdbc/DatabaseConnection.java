@@ -81,11 +81,11 @@ public class DatabaseConnection
 			resultat = stat.executeQuery("SELECT * FROM PRODUITS");
 			while(resultat.next())
 			{
-				databaseData[indexActuel][0] = resultat.getString("description");
-				databaseData[indexActuel][1] = resultat.getString("categorie");
-				databaseData[indexActuel][2] = resultat.getFloat("prixVente");
-				databaseData[indexActuel][3] = resultat.getFloat("prixAchat");
-				databaseData[indexActuel][4] = resultat.getFloat("udm");
+				databaseData[indexActuel][0] = resultat.getString(2);
+				databaseData[indexActuel][1] = resultat.getString(3);
+				databaseData[indexActuel][2] = resultat.getFloat(4);
+				databaseData[indexActuel][3] = resultat.getFloat(5);
+				databaseData[indexActuel][4] = resultat.getFloat(6);
 				indexActuel++;
 			}
 			resultat.close();		
@@ -146,7 +146,13 @@ public class DatabaseConnection
 		try
 		{
 			stat = con.createStatement();
-			int codeProduit = stat.executeUpdate("SELECT codeProduit FROM produits WHERE description = "+value1+" AND categorie = "+value2+" AND prixVente = "+value3+" AND prixAchat = "+value4+" AND udm = "+value5);
+			ResultSet resultat = stat.executeQuery("SELECT codeProduit FROM produits WHERE description = '"+value1+"' AND categorie = '"+value2+"' AND prixVente = "+Float.parseFloat(value3)+" AND prixAchat = "+Float.parseFloat(value4)+" AND udm = "+Float.parseFloat(value5));
+			
+			int codeProduit = -1;
+			
+			if(resultat.next())
+			codeProduit = resultat.getInt(1);
+			
 			stat.close();
 			
 			return codeProduit;			

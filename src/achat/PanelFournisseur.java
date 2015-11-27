@@ -1,6 +1,12 @@
 package achat;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,12 +14,14 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import achat.popup.PopupAjoutFournisseur;
+import achat.popup.PopupModifFournisseur;
 import principal.FenetrePrincipale;
 import jdbc.DatabaseConnection;
 
@@ -25,9 +33,13 @@ public class PanelFournisseur extends JPanel{
 	private Statement st;
 	private Connection cn;
 	
-	private JTable tableau = new JTable(new DefaultTableModel());
+	private JScrollPane scrollPane;
+	private static JTable tableau = new JTable(new DefaultTableModel());
+	private static UneditableTableModel modele;
+	private static String[] titres = {"Entreprise","N° SIRET","Adresse","N° Tél"};
 	
-	private ArrayList<Fournisseur> liste = new ArrayList<Fournisseur>();
+	private static ArrayList<Fournisseur> liste = new ArrayList<Fournisseur>();
+	private static Object[][] tabFn;
 	
 	
 	/**
@@ -38,24 +50,21 @@ public class PanelFournisseur extends JPanel{
 		
 		this.framePrincipale = f;
 		
-		JPanel panelBoutonsSud = new JPanel();//On créer un JPanel qui va recevoir les boutons
+		JPanel panelBoutonsSud = new JPanel(new FlowLayout(FlowLayout.CENTER,40,0));//On créer un JPanel qui va recevoir les boutons
 		JPanel panelGridCentre = new JPanel(new BorderLayout(10,10));//On créer le panel qui va recevoir la grid
-		JPanel panelTitreNord = new JPanel();//On créer le panel qui va recevoir le titre
 		
 		//On créer nos composants
 		JButton btnAjouter = new JButton("Ajouter");
 		JButton btnModifier = new JButton("Modifier");
 		JButton btnSupprimer = new JButton("Supprimer");
-		JLabel titre = new JLabel("Gestion des fournisseurs");
 		
-		//On créer un modèle pour la grid
-		JScrollPane scrollPane = new JScrollPane();
+		btnModifier.setEnabled(false);
+		btnSupprimer.setEnabled(false);
 		
 		//On ajoute les composants aux différents panels
 		panelBoutonsSud.add(btnAjouter);
 		panelBoutonsSud.add(btnModifier);
 		panelBoutonsSud.add(btnSupprimer);
-		panelTitreNord.add(titre);
 		
 		//On récupère l'ensemble des founisseurs présents dans la BDD
 		try {
@@ -67,16 +76,41 @@ public class PanelFournisseur extends JPanel{
 		//On remplit la JTable
 		this.remplirTableau();
 		
-		//On ajoute le tableau au scrollpanel
-		panelGridCentre.add(this.tableau);
-		
-		//On ajoute le scrollPane à la grid du centre
-		//panelGridCentre.add(scrollPane);
+		panelGridCentre.add("North",this.scrollPane);
 		
 		//On ajoute les panel à la frame principale
-		this.add(panelTitreNord, BorderLayout.NORTH);
-		this.add(panelGridCentre, BorderLayout.CENTER);
-		this.add(panelBoutonsSud, BorderLayout.SOUTH);
+		this.add(panelGridCentre);
+		this.add("South",panelBoutonsSud);
+		
+		
+		//handler boutons :
+		btnModifier.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PopupModifFournisseur popupModifFournisseur = new PopupModifFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()),tableau.getSelectedRow());
+			}
+		});
+		
+		btnAjouter.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				PopupAjoutFournisseur popupAjoutFournisseur = new PopupAjoutFournisseur();
+			}
+		});
+		
+		//Handler sur la liste qui permet de "dégriser" un bouton
+		this.tableau.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				btnModifier.setEnabled(true);
+				btnSupprimer.setEnabled(true);
+			}
+		});;
+		
+		
+		
 	}
 	
 	
@@ -105,14 +139,17 @@ public class PanelFournisseur extends JPanel{
 		return this.liste;
 	}
 	
+	public ArrayList<Fournisseur> getListe(){
+		return this.liste;
+	}
+	
 	
 	/**
 	 * Méthode qui remplit la JTable à partir de l'arraylist récupérée
 	 */
-	private void remplirTableau(){
-		String[] titres = {"Entreprise","N° SIRET","Adresse","N° Tél"};
+	public void remplirTableau(){
 		int lgTableau = this.liste.size();
-		Object[][] tabFn = new Object[lgTableau][4];
+		tabFn = new Object[lgTableau][4];
 		
 		//On remplit le tableau d'objet avec les fn de l'arraylist
 		for(Fournisseur fn : this.liste){
@@ -122,9 +159,66 @@ public class PanelFournisseur extends JPanel{
 			tabFn[this.liste.indexOf(fn)][3] = fn.tel;
 		}
 		
+		modele = new UneditableTableModel(0,4);
+		modele.setDataVector(tabFn,titres);
 		
-		//On attribue la grid au tableau courant
-		this.tableau = new JTable(tabFn,titres);
+		this.tableau = new JTable(modele);
+		
+		this.tableau.setAutoCreateRowSorter(false);
+		this.tableau.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		this.tableau.setPreferredScrollableViewportSize(new Dimension(540, 224));
+		
+		scrollPane = new JScrollPane(this.tableau);
+		
+		//On créer une listeSelectionModel pour savoir lequel on a sélectionné
+		ListSelectionModel listeDeSelection = this.tableau.getSelectionModel();
+		
+		//Lors d'un double clic sur une ligne
+		this.tableau.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount()%2 == 0){
+					PopupModifFournisseur popupModifFournisseur = new PopupModifFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()),tableau.getSelectedRow());
+				}
+			}
+		});	
+	}
+	
+	public Statement getSt(){
+		return this.st;
 	}
 
+	
+	public static void setTableau(Fournisseur f, int indice){
+		liste.remove(indice);
+		liste.add(indice,f);
+		
+		tabFn[indice][0] = f.nom;
+		tabFn[indice][1] = f.siret;
+		tabFn[indice][2] = f.tel;
+		tabFn[indice][3] = f.adresse;
+		
+		modele.setDataVector(tabFn,titres);
+	}
+	
+	public static void majTableau(Fournisseur f){
+		liste.add(f);
+		
+		int nouvelleLongueur = tabFn.length+1;
+		
+		tabFn = new Object[nouvelleLongueur][4];
+		
+		for(Fournisseur fn : liste){
+			tabFn[liste.indexOf(fn)][0] = fn.nom;
+			tabFn[liste.indexOf(fn)][1] = fn.siret;
+			tabFn[liste.indexOf(fn)][2] = fn.adresse;
+			tabFn[liste.indexOf(fn)][3] = fn.tel;
+		}
+		
+		modele.setDataVector(tabFn,titres);
+	}
+
+	public static ArrayList<Fournisseur> getTableau(){
+		return liste;
+	}
+	
 }

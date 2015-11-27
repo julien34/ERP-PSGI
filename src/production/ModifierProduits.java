@@ -16,6 +16,7 @@ public class ModifierProduits extends JDialog
 	private JPanel panelFlow4 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	private JPanel panelFlow5 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	private String value1,value2,value3,value4,value5;
+	private int codeProduit;
 	
 	/**
 	 * Rend un champ null égal a un string vide
@@ -51,6 +52,8 @@ public class ModifierProduits extends JDialog
 		value5 = val5;
 		value5 = notNull(value5);
 		
+		codeProduit = DatabaseConnection.getCodeProduit(value1,value2,value3,value4,value5);
+		
 		initFenetre();
 		initElements();
 	}	
@@ -70,7 +73,7 @@ public class ModifierProduits extends JDialog
 	public void initElements()
 	{
 		//Création des boutons		
-		JLabel descriptionLabel = new JLabel("description ");
+		JLabel descriptionLabel = new JLabel("nom ");
 		JTextField description = new JTextField(value1,10);
 		
 		JLabel categorieLabel = new JLabel("categorie ");
@@ -126,10 +129,9 @@ public class ModifierProduits extends JDialog
 				String value3 = prixVente.getText();
 				String value4 = prixAchat.getText();
 				String value5 = udm.getText();
-				int codeProduit = DatabaseConnection.getCodeProduit(value1,value2,value3,value4,value5);
 				
 				//Si la requete à réussie
-				if(DatabaseConnection.requete("UPDATE PRODUITS SET description = '"+value1+"', categorie = '"+value2+"', prixVente = "+value3+", prixAchat = "+value4+", udm = "+value5+" WHERE codeProduit = "+codeProduit))
+				if(DatabaseConnection.requete("UPDATE PRODUITS SET description = '"+value1+"', categorie = '"+value2+"', prixVente = "+Float.parseFloat(value3)+", prixAchat = "+Float.parseFloat(value4)+", udm = "+Float.parseFloat(value5)+" WHERE codeProduit = "+codeProduit))
 				{
 					FenetrePrincipale.getPanelProduits().raffraichirLigne(value1,value2,value3,value4,value5);
 					JOptionPane.showMessageDialog(null, "Produit modifié avec succès.", "Modification de produit", JOptionPane.INFORMATION_MESSAGE);

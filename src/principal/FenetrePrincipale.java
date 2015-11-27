@@ -3,6 +3,7 @@ package principal;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -10,6 +11,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import achat.PanelDevis;
 import achat.PanelFournisseur;
 import components.ButtonTabComponent;
 import jdbc.DatabaseConnection;
@@ -28,14 +30,15 @@ public class FenetrePrincipale extends JFrame
     JMenuBar menu = new JMenuBar();
     
     //Boutons de menu
-    	//Base de donn�es
-        JMenu menuBdd = new JMenu("Base de donn�es");
+    	//Base de donnï¿½es
+        JMenu menuBdd = new JMenu("Base de donnï¿½es");
         JMenuItem menuBddConnexion = new JMenuItem("Connexion");
         JMenuItem menuBddDeconnexion = new JMenuItem("Deconnexion");
     
         //Achats
         JMenu menuAchats = new JMenu("Achats");
         JMenuItem menuAchatFournisseur = new JMenuItem("Fournisseurs");
+        JMenuItem menuAchatDevis = new JMenuItem("Devis");
         
         //Ventes
         JMenu menuVentes = new JMenu("Ventes");
@@ -45,13 +48,14 @@ public class FenetrePrincipale extends JFrame
         	        
         //Production
         JMenu menuProduction = new JMenu("Production");
-        JMenuItem menuProductionProduits = new JMenuItem("G�rer les produits");
+        JMenuItem menuProductionProduits = new JMenuItem("Gï¿½rer les produits");
    	
     //Onglets
     private JTabbedPane onglets = new JTabbedPane();
    	
    	//Achat
-   	private static PanelFournisseur panelFournisseur;	
+   	private static PanelFournisseur panelFournisseur = null;
+   	private static PanelDevis panelDevis = null;
    	
    	//Vente
    	private static PanelVente panelVente;
@@ -71,7 +75,7 @@ public class FenetrePrincipale extends JFrame
    	
    	public void initFenetre()
    	{
-   		//Param�trage de la fen�tre
+   		//Paramï¿½trage de la fenï¿½tre
    		setTitle("Projet PSGI");
    		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
    		setSize(960,540);	
@@ -83,7 +87,7 @@ public class FenetrePrincipale extends JFrame
    	public void initElements()
    	{
 	   	//Ajouter les menus
-	    	//Base de donn�es
+	    	//Base de donnï¿½es
 				menu.add(menuBdd);
 				menuBdd.add(menuBddConnexion);
 				menuBdd.add(menuBddDeconnexion);
@@ -91,6 +95,7 @@ public class FenetrePrincipale extends JFrame
 	        //Achats
 				menu.add(menuAchats);
 				menuAchats.add(menuAchatFournisseur);
+				menuAchats.add(menuAchatDevis);
 	        
 	        //Ventes
 				menu.add(menuVentes);
@@ -111,9 +116,10 @@ public class FenetrePrincipale extends JFrame
    		//Ajouter les onglets
    		add(onglets); 
    		
-   		//Mise en m�moire des interfaces
+   		//Mise en mï¿½moire des interfaces
 	   		//Achats
-	   		
+   		
+   		
 	   		//Ventes
 	   		panelClient = new PanelClient(framePrincipale);
 	   		InterfaceDevis = new InterfaceDevis(framePrincipale);
@@ -125,7 +131,7 @@ public class FenetrePrincipale extends JFrame
    	public void initHandlers()
    	{
    		//Handler des bouttons de menu
-	   		//Base de donn�es
+	   		//Base de donnï¿½es
 	   		menuBddConnexion.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e)
@@ -145,11 +151,23 @@ public class FenetrePrincipale extends JFrame
 	   		//Achats
 	   		menuAchatFournisseur.addActionListener(new ActionListener()
 	   		{
-	   			public void actionPerformed(ActionEvent e)
-	   			{
-	   				ajouterOnglet("Fournisseurs",panelFournisseur = new PanelFournisseur(framePrincipale));
+	   			public void actionPerformed(ActionEvent e){
+	   				if(PanelFournisseur.getTableau().isEmpty()){
+	   					ajouterOnglet("Fournisseurs", panelFournisseur = new PanelFournisseur(framePrincipale));
+	   				}
+	   				else {
+	   					ajouterOnglet("Fournisseurs", panelFournisseur);
+	   				}
 	   			}
 	   		});	
+	   		
+	   		menuAchatDevis.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					ajouterOnglet("Devis", panelDevis = new PanelDevis(framePrincipale));
+				}
+			});
 	   		
 	   		//Ventes
 	   		menuVentesFenetreVente.addActionListener(new ActionListener()
@@ -181,7 +199,7 @@ public class FenetrePrincipale extends JFrame
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
-	   				ajouterOnglet("G�rer les produits",panelProduits);
+	   				ajouterOnglet("Gï¿½rer les produits",panelProduits);
 	   				panelProduits.fillTable();
 	   			}
 	   		});	
@@ -212,12 +230,6 @@ public class FenetrePrincipale extends JFrame
 		return InterfaceDevis;
    		
    	}
-   	
-   	public static void main(String[] args)
-   	{	   		
-   		//Cr�ation de la fen�tre
-   		framePrincipale = new FenetrePrincipale();
-   	}
 
 	public void connexionOpened()
 	{
@@ -235,5 +247,12 @@ public class FenetrePrincipale extends JFrame
    		menuBddDeconnexion.setEnabled(false);
    		onglets.removeAll();
 	}
+   	
+   	public static void main(String[] args)
+   	{	   		
+   		//Crï¿½ation de la fenï¿½tre
+   		framePrincipale = new FenetrePrincipale();
+   		
+   	}
 }  
 
