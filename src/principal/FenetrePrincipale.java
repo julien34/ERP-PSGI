@@ -208,7 +208,7 @@ public class FenetrePrincipale extends JFrame
    		
    	}
    	
-   	public InterfaceDevis getInterfaceDevis(){
+   	public static InterfaceDevis getInterfaceDevis(){
 		return InterfaceDevis;
    		
    	}

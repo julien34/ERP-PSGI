@@ -5,8 +5,14 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Vector;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -14,6 +20,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -30,7 +37,7 @@ public class InterfaceDevis extends JPanel{
 	//private InterfaceDevis frameVente;
 	
 	private static FenetrePrincipale framePrincipale;
-	
+	private ResultSet client;
 	private Dimension dimensionBouttons = new Dimension(140,26);
 	private JPanel contenu = new JPanel(new BorderLayout(10,10));
 	
@@ -48,8 +55,9 @@ public class InterfaceDevis extends JPanel{
 	  private JTextField ChampTextBon = new JTextField("");
 
 	  private JLabel Client = new JLabel("Client : ");
-	  private JScrollPane ChampTextClient = new JScrollPane();
-
+	  private JComboBox ChampTextClient = new JComboBox();;
+	  
+	  private JScrollBar bar =new JScrollBar();
 	  private JLabel Code = new JLabel("Code : ");
 	  private JTextField ChampTextCode = new JTextField("");
 
@@ -63,12 +71,15 @@ public class InterfaceDevis extends JPanel{
 	  
 		private JLabel lbl_save = new JLabel ("Enregistrement reussi !");
 		private JButton bt_OK = new JButton ("OK");
+		
+		
 	  
 		private JTable tableDevis;
 		private JScrollPane scrollPane;
-		private final String[] Colonnes = {"description","udm","prix"};
-		private static DefaultTableModel modelTableDevis = new DefaultTableModel(0,3){
-			Class[] types = {String.class, String.class, String.class};
+		private final String[] Colonnes = {"description","quantité","udm","prix"};
+		private static DefaultTableModel modelTableDevis = new DefaultTableModel(0,4)
+		{
+			Class[] types = {String.class, Integer.class, Float.class, Float.class};
 			
 	        @Override
 	        public Class getColumnClass(int columnIndex) 
@@ -117,7 +128,7 @@ public class InterfaceDevis extends JPanel{
 	
 		
 		add(contenu);
-        menuBar.add(fileMenu);
+        //menuBar.add(fileMenu);
         menuBar.add(bt_enregistrer);
         bt_enregistrer.setPreferredSize(dimensionBouttons);
         menuBar.add(Imprimer);
@@ -162,6 +173,7 @@ public class InterfaceDevis extends JPanel{
        // frame.setLocationRelativeTo(null);
      //   frame. setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		//setVisible(true);
+	
     }
 	
 
@@ -185,6 +197,14 @@ public void initHandlers(){
 		
 	}
 	});
+	
+	Ajouter.addActionListener(new ActionListener(){
+		public void actionPerformed(ActionEvent e){
+			
+			new AjouterCommande(framePrincipale);
+			
+		}
+	}); 
 }
 
 	public void refreshListeTableDevis(String description, String udm, String prix){
@@ -194,6 +214,8 @@ public void initHandlers(){
 		modelTableDevis.addRow(obj);
 	}
     
+	
+	
     /*public static void main(String[] args) {
     	
     	
@@ -206,4 +228,12 @@ public void initHandlers(){
         
     }*/
 
+	
+	public void raffraichirListe(String numProd, String nom, String quantite)
+	{
+		int val1 = Integer.parseInt(numProd); 
+		float val3 = Float.parseFloat(quantite); 		
+		Object[] obj = {numProd,nom,quantite,};
+		modelTableDevis.addRow(obj);
+	}
 }
