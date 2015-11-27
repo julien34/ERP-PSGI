@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class DatabaseConnection 
 {	
@@ -163,6 +164,32 @@ public class DatabaseConnection
 			return -1;
 		}
 	}
+	/**
+	 * recupere une arraylist pour la comboBox
+	 * @return ArrayList
+	 */
+	public static  ArrayList Combo(String query) 
+    { 
+        ArrayList Array = new ArrayList(); 
+        try 
+        { 
+        	ResultSet resultat = stat.executeQuery("SELECT * FROM CLIENTS"); 
+            resultat.beforeFirst(); 
+            int i = 0; 
+            while (resultat.next()) 
+            { 
+                i++; 
+                Array.add(resultat.getString(i)); 
+             
+            } 
+        } 
+        catch (SQLException queryE) 
+        { 
+            System.out.println("Erreur de requ�te : " + queryE); 
+        } 
+        return Array; 
+    }
+	
 	
 	/**
 	 * Méthode qui retourne la connection à la base de donnée.

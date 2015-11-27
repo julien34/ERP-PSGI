@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
@@ -50,12 +51,12 @@ public class InterfaceDevis extends JPanel{
 	private JButton Retirer = new JButton("Retirer");
 	private JButton Ouvrir = new JButton("Ouvrir");
 	//private JButton bt_enregistrer = new JButton("Enr");
-	  
+	  private String query;
 	  private JLabel Bon = new JLabel("Bon de Commande : ");
 	  private JTextField ChampTextBon = new JTextField("");
 
 	  private JLabel Client = new JLabel("Client : ");
-	  private JComboBox ChampTextClient = new JComboBox();;
+	  private JComboBox<ArrayList<?>> ChampTextClient = new JComboBox<ArrayList<?>>();;
 	  
 	  private JScrollBar bar =new JScrollBar();
 	  private JLabel Code = new JLabel("Code : ");
@@ -82,7 +83,7 @@ public class InterfaceDevis extends JPanel{
 			Class[] types = {String.class, Integer.class, Float.class, Float.class};
 			
 	        @Override
-	        public Class getColumnClass(int columnIndex) 
+	        public Class<Integer> getColumnClass(int columnIndex) 
 	        {
 	            return Integer.class;
 	        }
@@ -170,10 +171,8 @@ public class InterfaceDevis extends JPanel{
 	   FenetreMilieu.add(tableDevis); // affichage du tableau de commande
 	    
 	   
-       // frame.setLocationRelativeTo(null);
-     //   frame. setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-		//setVisible(true);
-	
+   
+	  // ChampTextClient.addItem(DatabaseConnection.Combo("liste"));
     }
 	
 
