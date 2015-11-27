@@ -173,19 +173,21 @@ public class DatabaseConnection
         ArrayList Array = new ArrayList(); 
         try 
         { 
-        	ResultSet resultat = stat.executeQuery("SELECT * FROM CLIENTS"); 
-            resultat.beforeFirst(); 
-            int i = 0; 
+			stat = con.createStatement();
+        	ResultSet resultat = stat.executeQuery("SELECT nomClient FROM CLIENTS"); 
+            
+        	resultat.beforeFirst(); 
             while (resultat.next()) 
             { 
-                i++; 
-                Array.add(resultat.getString(i)); 
+                resultat.previous();
+                Array.add(resultat.next()); 
              
             } 
+            stat.close();
         } 
         catch (SQLException queryE) 
         { 
-            System.out.println("Erreur de requête : " + queryE); 
+            System.out.println("Erreur de requête : " + queryE);
         } 
         return Array; 
     }

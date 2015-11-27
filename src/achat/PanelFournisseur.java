@@ -20,7 +20,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-import achat.popup.PopupAjoutFournisseur;
+//import achat.popup.PopupAjoutFournisseur;
 import achat.popup.PopupModifFournisseur;
 import principal.FenetrePrincipale;
 import jdbc.DatabaseConnection;
@@ -95,7 +95,7 @@ public class PanelFournisseur extends JPanel{
 		btnAjouter.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				PopupAjoutFournisseur popupAjoutFournisseur = new PopupAjoutFournisseur();
+				//PopupAjoutFournisseur popupAjoutFournisseur = new PopupAjoutFournisseur();
 			}
 		});
 		
