@@ -60,7 +60,8 @@ public class FenetrePrincipale extends JFrame
    	//Vente
    	private static PanelVente panelVente;
    	private static PanelClient panelClient;
-   	private static InterfaceDevis InterfaceDevis;	
+   	private static InterfaceDevis InterfaceDevis;
+   	private static FenetreVente fenetreVente;
    	
    	//Production
    	private static PanelProduits panelProduits;
@@ -78,7 +79,7 @@ public class FenetrePrincipale extends JFrame
    		//Paramï¿½trage de la fenï¿½tre
    		setTitle("Projet PSGI");
    		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-   		setSize(960,540);	
+   		setSize(960,800);	
    		setLocationRelativeTo(null);
    		setResizable(false);
    	}
@@ -123,6 +124,8 @@ public class FenetrePrincipale extends JFrame
 	   		//Ventes
 	   		panelClient = new PanelClient(framePrincipale);
 	   		InterfaceDevis = new InterfaceDevis(framePrincipale);
+	   		fenetreVente = new FenetreVente(framePrincipale);
+
 	   		
 	   		//Production
 	   		panelProduits = new PanelProduits();
@@ -174,7 +177,7 @@ public class FenetrePrincipale extends JFrame
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
-	   				new FenetreVente(framePrincipale);
+	   				ajouterOnglet("Gestion des ventes",fenetreVente);
 	   			}
 	   		});	
 	   		menuVentesClients.addActionListener(new ActionListener()

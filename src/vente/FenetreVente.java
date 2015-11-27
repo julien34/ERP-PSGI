@@ -3,156 +3,328 @@ package vente;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PrinterException;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.text.Normalizer.Form;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.event.CaretEvent;
 
+import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 
-
-
-public class FenetreVente extends JDialog{
+public class FenetreVente extends JPanel{
 	
+	
+	private static FenetrePrincipale frame;
+	JPanel FenetrePrincipal = new JPanel(new GridLayout(3,1)); // 3 lignes 1 colones 
+	JPanel FenetreHaut = new JPanel(new GridLayout(1,2,50,50)); // 1 ligne 2 colones
+	JPanel Formulaire = new JPanel(new GridLayout(6, 1));// 6 lignes 1 colone
+	JPanel ModeDePayement = new JPanel(new GridLayout(4, 2));//
+	JPanel Commande = new JPanel(new GridLayout(3,1));
+	JPanel ModifierTableau = new JPanel(new FlowLayout(FlowLayout.CENTER,40,0));
+	JPanel Buttons = new JPanel(new GridLayout());	//ajout par la droite
+	JPanel LesTotaux = new JPanel(new GridLayout(5,1));	
+	JLabel InformationClient = new JLabel("Information Client");
+	JLabel ModePayement = new JLabel("Mode de Payement");
+	
+	JLabel Rien = new JLabel("");
+	JLabel RienButtons1 = new JLabel("");
+	JLabel RienButtons2 = new JLabel("");
+	JLabel RienButtons3 = new JLabel("");
+	
+	JLabel Nom = new JLabel("Nom : ");
+	//JTextField ChampTextNom = new JTextField("");
+	String[] NomClient = {"Zetofrais","Bricot","Vegas","Fonfec","Formigli","Rembert","Ruiz","Manneli"};	
+	JComboBox ComboBoxClient = new JComboBox(NomClient);
+	
+	JLabel Prenom = new JLabel("Prenom : ");
+	JTextField ChampTextPrenom = new JTextField("");
+	
+	JLabel Adresse = new JLabel("Adresse : ");
+	JTextField ChampTextAdresse = new JTextField("");
+	
+	JLabel Email = new JLabel("Email : ");
+	JTextField ChampTextEmail = new JTextField("");
+	
+	JLabel NumeroTelephone = new JLabel("NumeroTelephone : ");
+	JTextField ChampTextNumeroTelephone = new JTextField("");  	  
+	
+	//ButtonGroup bg = new ButtonGroup();
+	JRadioButton Carte = new JRadioButton("Carte");
+	JRadioButton Cheque = new JRadioButton("Cheque");
+	JRadioButton Espece = new JRadioButton("Espece");	
+	
+	
+	JButton Valider = new JButton("Valider");	  
+	JButton Annuler = new JButton("Annuler");
+	
+	
+	JLabel TotalHT = new JLabel("Total HT : ");
+	int valeurHT = 0 ;
+	JTextField ChampTotalHT = new JTextField(""+valeurHT);	  
+	JLabel TVA = new JLabel("TVA : ");
+	double valeurTVA;// = 0.196*valeurHT;
+	JTextField ChampTVA = new JTextField(""+valeurTVA);	  
+	JLabel TotalTTC = new JLabel("Total TCC : ");
+	double valeurTTC; //= valeurHT+valeurTVA;
+	JTextField ChampTotalTTC = new JTextField(""+valeurTTC);	  
+	JLabel RienTotaux1 = new JLabel("");
+	JLabel RienTotaux2 = new JLabel("");
+	JButton AjouterProduit = new JButton("Ajouter");
+	JButton ModifierProduit = new JButton("Modifier");
+	JButton SupprimerProduit = new JButton("Supprimer");
+	
+	JScrollPane scrollPane =  new JScrollPane();
+	JTable tableCommande;
 
 	
-	// Création des Objets 
-	  private JLabel InformationClient = new JLabel("Information Client");
-	  private JLabel ModePayement = new JLabel("Mode de Payement");
-	  private JLabel Rien = new JLabel("");
-	  private JLabel Nom = new JLabel("Nom : ");
-	  private JTextField ChampTextNom = new JTextField("");
-	  private JLabel Prenom = new JLabel("Prenom : ");
-	  private JTextField ChampTextPrenom = new JTextField("");
-	  private JLabel Adresse = new JLabel("Adresse : ");
-	  private JTextField ChampTextAdresse = new JTextField("");
-	  private JLabel Email = new JLabel("Email : ");
-	  private JTextField ChampTextEmail = new JTextField("");
-	  private JLabel NumeroTelephone = new JLabel("NumeroTelephone : ");
-	  private JTextField ChampTextNumeroTelephone = new JTextField("");
-	  private JCheckBox Carte = new JCheckBox("Carte");
-	  private JCheckBox Cheque = new JCheckBox("Cheque");
-	  private JCheckBox Espece = new JCheckBox("Espece");
-	  private	JButton Valider = new JButton("Valider");	  
-	  private	JButton Annuler = new JButton("Annuler");
+	private final String[] nomColonnes = { "Ref","Nom","Quantite","PrixUnitaire","PrixHorsTaxe"};
 
-	  //Création Tableau
-	  Object[][] data ={
+	private static DefaultTableModel modelTableCommande = new DefaultTableModel(0,5){
+		Class[] types = {Integer.class, String.class, String.class,Float.class,Float.class};
+		
+        @Override
+        public Class getColumnClass(int columnIndex) 
+        {
+            return Integer.class;
+        }
+        
+        @Override
+        public boolean isCellEditable(int row, int column)
+        {  
+            return false;  
+        }
+	};
+	
+	/*  Object[][] data ={
 			  {"Cho7","Chausette","4","20","80"},
 			  {"Dtf6","Dentifrice","1","6","6"},
 			  {"Sho6r","Chaussure","1","50","50"},
 			  {"VV2","VoitureV2","2","140000","280000"}
 	  };
-	  String title[] = { "Ref","Nom","Quantité","PrixUnitaire","PrixTotal"};
+	  String title[] = { "Ref","Nom","Quantite","PrixUnitaire","PrixHorsTaxe"};
 	  
 	  JTable tableau = new JTable(data,title);
+	*/
+	
+		private Dimension dimensionBouttons = new Dimension(140,26);
+		private Dimension dimensionTextField = new Dimension (180 , 26);
+		private Dimension dimensionTable = new Dimension(600, 150);
+
+	   
+	
+	
+	public FenetreVente(FenetrePrincipale frame) {
+	this.frame = frame;
+	initElements();
+	
+	}
+	
+	public void remplirtableCommande(){
+		modelTableCommande.setDataVector(DatabaseConnection.remplirListeClient(), nomColonnes);
+		tableCommande.getRowSorter().toggleSortOrder(0);
+	}
+	
+	
+	
+	
+	public void initElements(){
+		
+		tableCommande = new JTable(modelTableCommande);
+		tableCommande.setAutoCreateRowSorter(true); //permet de trier les colonnes
+		tableCommande.getRowSorter().toggleSortOrder(0);
+		tableCommande.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane = new JScrollPane(tableCommande);
+		tableCommande.setPreferredScrollableViewportSize(dimensionTable);
+		
+		
+		//add(Buttons,BorderLayout.SOUTH);
+		add("NORTH",FenetreHaut);
+		//	FenetrePrincipal.add(FenetreHaut); // FenetrePrincipal 1/1 prend fenetre haut
+			FenetreHaut.add(Formulaire); //FenetreHaut prend formulaire  1/1
+		
+			//    */* position dans le tableau
+			Formulaire.add(InformationClient); //  1/1
+			Formulaire.add(Rien);// 1/1
+			Formulaire.add(Nom);// 2/1
+			//Formulaire.add(ChampTextNom);// 2/1
+			Formulaire.add(ComboBoxClient);
+			//ChampTextNom.setPreferredSize(dimensionTextField);
+			Formulaire.add(Prenom); // 3/1
+			Formulaire.add(ChampTextPrenom); // 3/1
+			Formulaire.add(Adresse); // 4/1
+			Formulaire.add(ChampTextAdresse); // 4/1
+			Formulaire.add(Email);// 5/1
+			Formulaire.add(ChampTextEmail);// 5/1
+			Formulaire.add(NumeroTelephone);// 6/1
+			Formulaire.add(ChampTextNumeroTelephone);// 6/1
+			FenetreHaut.add(ModeDePayement); // fenetre haut prend modedepayement 1/2
+			ModeDePayement.add(ModePayement);// 1/1
+			ModeDePayement.add(Carte);
+			ModeDePayement.add(Cheque);
+			ModeDePayement.add(Espece);
+			Carte.setSelected(true);
+			
+			add("CENTER",Commande);
+			
+			Commande.add(scrollPane);
+			
+			
+			
+			Commande.add(LesTotaux);
+			LesTotaux.add(TotalHT);
+			LesTotaux.add(ChampTotalHT);
+			ChampTotalHT.setPreferredSize(dimensionTextField);
+			LesTotaux.add(TVA);
+			LesTotaux.add(ChampTVA);
+			LesTotaux.add(TotalTTC);
+			LesTotaux.add(ChampTotalTTC);
+			LesTotaux.add(AjouterProduit);
+			LesTotaux.add(ModifierProduit);			
+			LesTotaux.add(SupprimerProduit);
+			Commande.add(ModifierTableau);
+			ModifierTableau.add("CENTER",AjouterProduit);
+			AjouterProduit.setPreferredSize(dimensionBouttons);
+			ModifierTableau.add("CENTER",ModifierProduit);		
+			ModifierProduit.setPreferredSize(dimensionBouttons);
+			ModifierTableau.add("CENTER",SupprimerProduit);
+			SupprimerProduit.setPreferredSize(dimensionBouttons);
+			
+			add("SOUTH",Buttons);
+
+			Buttons.add(RienTotaux1);
+			Buttons.add(RienTotaux2);
+			Buttons.add(RienButtons1);
+			Buttons.add(Valider);
+			Buttons.add(Annuler);
+			
+			
+			
+			ComboBoxClient.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					
+					if(ComboBoxClient.getSelectedItem() == "Bricot"){
+						
+						ChampTextPrenom.setText("Juda");
+						
+						ChampTextAdresse.setText("5rueDuFrigo");
+						
+						ChampTextEmail.setText("juda.bricot@mail.osef");
+						
+						ChampTextNumeroTelephone.setText("0606060606");  	 
+									
+					}
+					
+					if(ComboBoxClient.getSelectedItem() == "Vegas"){
+						
+						ChampTextPrenom.setText("Sony");
+						
+						ChampTextAdresse.setText("SomeWhere");
+						
+						ChampTextEmail.setText("SonyVegasPro@mail.osef");
+						
+						ChampTextNumeroTelephone.setText("0678901234");  	 
+									
+					}
+					
+				}
+			});
+			
+
+			Carte.addActionListener(new ActionListener() {
+			    public void actionPerformed(ActionEvent e) {
+			    	Cheque.setSelected(false);
+			    	Espece.setSelected(false);
+			    }
+			});
+
+				Cheque.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+			    	Carte.setSelected(false);
+			    	Espece.setSelected(false);
+					}
+			    });
+
+				Espece.addActionListener(new ActionListener() {
+			    public void actionPerformed(ActionEvent e) {
+			    	Cheque.setSelected(false);
+			    	Carte.setSelected(false);		
+			    						
+			    }
+			  });
+
+				AjouterProduit.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						
+						 new AjouterProduitCommande(frame);
+					}
+				});
+				
+				CaretListener careupdatenew = new CaretListener() {
+					public void caretUpdate(javax.swing.event.CaretEvent e) {
+						
+						/*JTextField text = (JTextField)e.getSource();
+						System.out.println(text.getText());*/
+						String aString = ChampTotalHT.getText();
+						valeurHT = Integer.parseInt(aString);
+
+						valeurTVA = valeurHT * 0.196;
+						ChampTVA.setText("" + valeurTVA);
+						valeurTTC = valeurTVA+valeurHT;
+						ChampTotalTTC.setText(""+ valeurTTC);
+
+					}
+				};
+				
+				
+				
+
+				ChampTotalHT.addCaretListener(careupdatenew);
+				Annuler.addActionListener(frame -> System.exit(0)); // quand bouton annuler appuyï¿½ action
+			    Valider.addActionListener(frame -> Envoyer()); // quand bouton envoyï¿½ action
+			    
+	}
+	
+	
+		
+	
+
+	
+	
+	
 	  
-	  
-	  
-	  public FenetreVente(FenetrePrincipale frame){
-		  super(frame,"Fenetre vente",true);
-		  initFenetre();
-	  }
-	  
+
+
+
+
+
+
+
+
 
 
 void Envoyer(){
-	//Quand boutton envoyer ecrire code
-	
-	
-	System.exit(0);
-}
-
-
-	
-public void initFenetre()
-{
-	setTitle("Vente"); //nom de la fenetre
-	setSize(500,400); // taille de la fenetre
-	setLocation(300,400); // position de la fenetre
-
-	Annuler.addActionListener(frame -> dispose()); // quand bouton annuler appuyé action
-    Valider.addActionListener(frame -> Envoyer()); // quand bouton envoyé action
-   
-    Carte.setSelected(true);
-    /*
-    if(Carte.isSelected())
-    {
-    	Cheque.setSelected(false);
-    	Espece.setSelected(false);
-    }
-    if(Cheque.isSelected())
-    {
-    	Carte.setSelected(false);
-    	Espece.setSelected(false);
-    }
-    if(Espece.isSelected())
-    {
-    	Cheque.setSelected(false);
-    	Carte.setSelected(false);
-    }
-    */
-    
-	JPanel FenetrePrincipal = new JPanel(new GridLayout(3,1,0,10)); // 3 lignes 1 colones 
-	JPanel FenetreHaut = new JPanel(new GridLayout(1,2)); // 1 ligne 2 colones
-	JPanel Formulaire = new JPanel(new GridLayout(6, 1));// 6 lignes 1 colone
-	JPanel ModeDePayement = new JPanel(new GridLayout(5, 1));//5 lignes 1 colone
-	JPanel Commande = new JPanel(new GridLayout(1,1));
-	JPanel Buttons = new JPanel(new GridLayout(1,3));	//ajout par la droite
-	
-	getContentPane().add(FenetrePrincipal);	 // le getConten prend la fenetrePrincipal
-	FenetrePrincipal.add(FenetreHaut); // FenetrePrincipal 1/1 prend fenetre haut
-	FenetreHaut.add(Formulaire); //FenetreHaut prend formulaire  1/1
-	
-	//    */* position dans le tableau
-	Formulaire.add(InformationClient); //  1/1
-	Formulaire.add(Rien);// 1/1
-	Formulaire.add(Nom);// 2/1
-	Formulaire.add(ChampTextNom);// 2/1
-	Formulaire.add(Prenom); // 3/1
-	Formulaire.add(ChampTextPrenom); // 3/1
-	Formulaire.add(Adresse); // 4/1
-	Formulaire.add(ChampTextAdresse); // 4/1
-	Formulaire.add(Email);// 5/1
-	Formulaire.add(ChampTextEmail);// 5/1
-	Formulaire.add(NumeroTelephone);// 6/1
-	Formulaire.add(ChampTextNumeroTelephone);// 6/1
-	
-
-	FenetreHaut.add(ModeDePayement); // fenetre haut prend modedepayement 1/2
-	ModeDePayement.add(ModePayement);// 1/1
-	ModeDePayement.add(Carte);// 2/1
-	ModeDePayement.add(Cheque);// 3/1
-	ModeDePayement.add(Espece);// 4/1
-
-	
-	FenetrePrincipal.add(Commande);// fenetre principal prend Commande 2/1
-	Commande.add(new JScrollPane(tableau)); // affichage du tableau de commande
-
-	FenetrePrincipal.add(Buttons);// fenetre principal prend Buttons 3/1
-	
-
-	Buttons.setLayout(new FlowLayout(FlowLayout.RIGHT));
-	Buttons.add(Valider);
-	Buttons.add(Annuler);
-	
-	setLocationRelativeTo(null);
-	setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-	setVisible(true);
 
 }
 
 
-	/*public static void main(String[] args){
-		JFrame frame = new FenetreVente();
-		frame.setLocationRelativeTo(null);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-		
-		
-	}*/
+	
+
+
+
+
+
+
+
+
 }
