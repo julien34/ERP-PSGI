@@ -168,7 +168,7 @@ public class DatabaseConnection
 	 * recupere une arraylist pour la comboBox
 	 * @return ArrayList
 	 */
-	public static  ArrayList Combo(String query) 
+	public static  ArrayList Combo() 
     { 
         ArrayList Array = new ArrayList(); 
         try 

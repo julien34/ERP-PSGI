@@ -172,7 +172,7 @@ public class InterfaceDevis extends JPanel{
 	    
 	   
    
-	  // ChampTextClient.addItem(DatabaseConnection.Combo("liste"));
+	  //ChampTextClient.addItem(DatabaseConnection.Combo());
     }
 	
 
