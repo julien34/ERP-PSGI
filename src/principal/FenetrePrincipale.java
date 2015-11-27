@@ -54,8 +54,8 @@ public class FenetrePrincipale extends JFrame
     private JTabbedPane onglets = new JTabbedPane();
    	
    	//Achat
-   	private static PanelFournisseur panelFournisseur;
-   	private static PanelDevis panelDevis;
+   	private static PanelFournisseur panelFournisseur = null;
+   	private static PanelDevis panelDevis = null;
    	
    	//Vente
    	private static PanelVente panelVente;
@@ -118,7 +118,8 @@ public class FenetrePrincipale extends JFrame
    		
    		//Mise en mï¿½moire des interfaces
 	   		//Achats
-	   		
+   		
+   		
 	   		//Ventes
 	   		panelClient = new PanelClient(framePrincipale);
 	   		InterfaceDevis = new InterfaceDevis(framePrincipale);
@@ -150,9 +151,13 @@ public class FenetrePrincipale extends JFrame
 	   		//Achats
 	   		menuAchatFournisseur.addActionListener(new ActionListener()
 	   		{
-	   			public void actionPerformed(ActionEvent e)
-	   			{
-	   				ajouterOnglet("Fournisseurs",panelFournisseur = new PanelFournisseur(framePrincipale));
+	   			public void actionPerformed(ActionEvent e){
+	   				if(PanelFournisseur.getTableau().isEmpty()){
+	   					ajouterOnglet("Fournisseurs", panelFournisseur = new PanelFournisseur(framePrincipale));
+	   				}
+	   				else {
+	   					ajouterOnglet("Fournisseurs", panelFournisseur);
+	   				}
 	   			}
 	   		});	
 	   		
@@ -161,7 +166,6 @@ public class FenetrePrincipale extends JFrame
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					ajouterOnglet("Devis", panelDevis = new PanelDevis(framePrincipale));
-					
 				}
 			});
 	   		

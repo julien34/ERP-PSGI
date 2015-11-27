@@ -62,7 +62,7 @@ public class PanelProduits extends JPanel
 
 	private void initElements() 
 	{
-		//Remplir, configurer et créer la table
+		//Remplir, configurer et crï¿½er la table
 		table = new JTable(model);
 		table.setAutoCreateRowSorter(true);
 		table.getRowSorter().toggleSortOrder(0);
@@ -70,7 +70,7 @@ public class PanelProduits extends JPanel
 		scrollPane = new JScrollPane(table);
 		table.setPreferredScrollableViewportSize(new Dimension(540, 224));			
 		
-		//Ajouter les élements
+		//Ajouter les ï¿½lements
 		add(panelTable);
 		panelTable.add("North",scrollPane);
 		panelTable.add("Center",panelBouttons);
@@ -81,14 +81,14 @@ public class PanelProduits extends JPanel
 		panelBouttons.add(supprimer);
 		supprimer.setPreferredSize(new Dimension(140,26));
 		
-		//Désactiver les bouttons
+		//Dï¿½sactiver les bouttons
 		modifier.setEnabled(false);
 		supprimer.setEnabled(false);
 	}
 	
 	public void initHandlers()
 	{
-		//Handler de sélection de ligne
+		//Handler de sï¿½lection de ligne
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
 		{
 			public void valueChanged(ListSelectionEvent e) 
@@ -97,7 +97,7 @@ public class PanelProduits extends JPanel
 		        ListSelectionModel selection = (ListSelectionModel) e.getSource();
 		        produitChoisi = selection.getMinSelectionIndex();
 		        
-		        //Désactiver certains boutons si on ne sélectionne aucune ligne
+		        //Dï¿½sactiver certains boutons si on ne sï¿½lectionne aucune ligne
 		        modifier.setEnabled(!selection.isSelectionEmpty());
 		        supprimer.setEnabled(!selection.isSelectionEmpty());
 		    }
@@ -145,13 +145,13 @@ public class PanelProduits extends JPanel
 	}
 	
 	/**
-	 * Met à jour la ligne modifiée par l'option de modification de produit
+	 * Met ï¿½ jour la ligne modifiï¿½e par l'option de modification de produit
 	 */
 	public void raffraichirLigne(String value1, String value2, String value3, String value4, String value5)
 	{
-		float val3 = Float.parseFloat(value3); 
-		float val4 = Float.parseFloat(value4); 
-		float val5 = Float.parseFloat(value5); 		
+		float val3 = Float.parseFloat(value3);
+		float val4 = Float.parseFloat(value4);
+		float val5 = Float.parseFloat(value5);	
 		int ligneChoisieTemp = produitChoisi;
 		if (produitChoisi != -1)
 		{			
@@ -164,12 +164,12 @@ public class PanelProduits extends JPanel
 	}
 	
 	/**
-	 * Met à jour la liste des produits dans la frame principale
+	 * Met ï¿½ jour la liste des produits dans la frame principale
 	 */
 	public void raffraichirListe(String value1, String value2, String value3, String value4, String value5)
 	{
-		float val3 = Float.parseFloat(value3); 
-		float val4 = Float.parseFloat(value4); 
+		float val3 = Float.parseFloat(value3);
+		float val4 = Float.parseFloat(value4);
 		float val5 = Float.parseFloat(value5); 		
 		Object[] obj = {value1,value2,val3,val4,val5};
 		model.addRow(obj);

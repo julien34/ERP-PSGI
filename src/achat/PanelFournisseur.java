@@ -20,6 +20,8 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import achat.popup.PopupAjoutFournisseur;
+import achat.popup.PopupModifFournisseur;
 import principal.FenetrePrincipale;
 import jdbc.DatabaseConnection;
 
@@ -32,9 +34,12 @@ public class PanelFournisseur extends JPanel{
 	private Connection cn;
 	
 	private JScrollPane scrollPane;
-	private JTable tableau = new JTable(new DefaultTableModel());
+	private static JTable tableau = new JTable(new DefaultTableModel());
+	private static UneditableTableModel modele;
+	private static String[] titres = {"Entreprise","N° SIRET","Adresse","N° Tél"};
 	
-	private ArrayList<Fournisseur> liste = new ArrayList<Fournisseur>();
+	private static ArrayList<Fournisseur> liste = new ArrayList<Fournisseur>();
+	private static Object[][] tabFn;
 	
 	
 	/**
@@ -83,11 +88,18 @@ public class PanelFournisseur extends JPanel{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PopupModifFournisseur popupModifFournisseur = new PopupModifFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()));
+				PopupModifFournisseur popupModifFournisseur = new PopupModifFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()),tableau.getSelectedRow());
 			}
 		});
 		
-		//Handler sur al liste qui permet de "dégriser" un bouton
+		btnAjouter.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				PopupAjoutFournisseur popupAjoutFournisseur = new PopupAjoutFournisseur();
+			}
+		});
+		
+		//Handler sur la liste qui permet de "dégriser" un bouton
 		this.tableau.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -96,6 +108,9 @@ public class PanelFournisseur extends JPanel{
 				btnSupprimer.setEnabled(true);
 			}
 		});;
+		
+		
+		
 	}
 	
 	
@@ -132,10 +147,9 @@ public class PanelFournisseur extends JPanel{
 	/**
 	 * Méthode qui remplit la JTable à partir de l'arraylist récupérée
 	 */
-	private void remplirTableau(){
-		String[] titres = {"Entreprise","N° SIRET","Adresse","N° Tél"};
+	public void remplirTableau(){
 		int lgTableau = this.liste.size();
-		Object[][] tabFn = new Object[lgTableau][4];
+		tabFn = new Object[lgTableau][4];
 		
 		//On remplit le tableau d'objet avec les fn de l'arraylist
 		for(Fournisseur fn : this.liste){
@@ -145,7 +159,7 @@ public class PanelFournisseur extends JPanel{
 			tabFn[this.liste.indexOf(fn)][3] = fn.tel;
 		}
 		
-		UneditableTableModel modele = new UneditableTableModel(0,4);
+		modele = new UneditableTableModel(0,4);
 		modele.setDataVector(tabFn,titres);
 		
 		this.tableau = new JTable(modele);
@@ -163,7 +177,7 @@ public class PanelFournisseur extends JPanel{
 		this.tableau.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount()%2 == 0){
-					PopupModifFournisseur popupModifFournisseur = new PopupModifFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()));
+					PopupModifFournisseur popupModifFournisseur = new PopupModifFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()),tableau.getSelectedRow());
 				}
 			}
 		});	
@@ -172,4 +186,39 @@ public class PanelFournisseur extends JPanel{
 	public Statement getSt(){
 		return this.st;
 	}
+
+	
+	public static void setTableau(Fournisseur f, int indice){
+		liste.remove(indice);
+		liste.add(indice,f);
+		
+		tabFn[indice][0] = f.nom;
+		tabFn[indice][1] = f.siret;
+		tabFn[indice][2] = f.tel;
+		tabFn[indice][3] = f.adresse;
+		
+		modele.setDataVector(tabFn,titres);
+	}
+	
+	public static void majTableau(Fournisseur f){
+		liste.add(f);
+		
+		int nouvelleLongueur = tabFn.length+1;
+		
+		tabFn = new Object[nouvelleLongueur][4];
+		
+		for(Fournisseur fn : liste){
+			tabFn[liste.indexOf(fn)][0] = fn.nom;
+			tabFn[liste.indexOf(fn)][1] = fn.siret;
+			tabFn[liste.indexOf(fn)][2] = fn.adresse;
+			tabFn[liste.indexOf(fn)][3] = fn.tel;
+		}
+		
+		modele.setDataVector(tabFn,titres);
+	}
+
+	public static ArrayList<Fournisseur> getTableau(){
+		return liste;
+	}
+	
 }
