@@ -80,7 +80,6 @@ public class PopupAjoutFournisseur extends JDialog{
 		
 		this.setVisible(true);
 		this.setTitle("Ajouter un Fournisseur");
-		this.setAlwaysOnTop(true);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setSize(500, 300);
@@ -103,7 +102,7 @@ public class PopupAjoutFournisseur extends JDialog{
 					
 					pst.executeQuery();
 					
-					//On cherche quel est la référence du fn ajouté
+					//On cherche quelle est la référence du fn ajouté
 					DatabaseConnection db1 = new DatabaseConnection();
 					cn = db1.getCon();
 					PreparedStatement pst2 = cn.prepareStatement("SELECT * FROM Fournisseurs WHERE nomFournisseur = ? AND siret = ? AND telFournisseur = ? AND adresseFournisseur = ?");
@@ -128,6 +127,10 @@ public class PopupAjoutFournisseur extends JDialog{
 					
 					Window window = SwingUtilities.windowForComponent((Component)e.getSource());
 					window.dispose();
+					
+					//On affiche un message de validation
+					JOptionPane.showMessageDialog(null, "Fournisseur ajouté avec succès","Vous venez d'ajouter le fournisseur "+txtNom.getText()+".",JOptionPane.INFORMATION_MESSAGE);
+
 					
 				} catch(SQLException e1) {
 					e1.printStackTrace();

@@ -94,7 +94,6 @@ public class PopupModifFournisseur extends JDialog{
 		this.setVisible(true);
 		this.setTitle("Modifier un Fournisseur");
 		this.setLocationRelativeTo(null);
-		this.setAlwaysOnTop(true);
 		this.setResizable(false);
 		this.setSize(500, 300);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);

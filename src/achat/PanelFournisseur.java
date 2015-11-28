@@ -232,7 +232,26 @@ public class PanelFournisseur extends JPanel{
 		
 		modele.setDataVector(tabFn,titres);
 	}
+	
+	
+	public static void majTableauSuppr(Fournisseur f){
+		liste.remove(f);
+		
+		int nouvelleLongueur = tabFn.length-1;
+		
+		tabFn = new Object[nouvelleLongueur][4];
+		
+		for(Fournisseur fn : liste){
+			tabFn[liste.indexOf(fn)][0] = fn.nom;
+			tabFn[liste.indexOf(fn)][1] = fn.siret;
+			tabFn[liste.indexOf(fn)][2] = fn.adresse;
+			tabFn[liste.indexOf(fn)][3] = fn.tel;
+		}
+		
+		modele.setDataVector(tabFn,titres);
+	}
 
+	
 	public static ArrayList<Fournisseur> getTableau(){
 		return liste;
 	}
