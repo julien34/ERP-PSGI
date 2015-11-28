@@ -62,7 +62,7 @@ public class PanelProduits extends JPanel
 
 	private void initElements() 
 	{
-		//Remplir, configurer et cr�er la table
+		//Remplir, configurer et créer la table
 		table = new JTable(model);
 		table.setAutoCreateRowSorter(true);
 		table.getRowSorter().toggleSortOrder(0);
@@ -70,7 +70,7 @@ public class PanelProduits extends JPanel
 		scrollPane = new JScrollPane(table);
 		table.setPreferredScrollableViewportSize(new Dimension(540, 224));			
 		
-		//Ajouter les �lements
+		//Ajouter les élements
 		add(panelTable);
 		panelTable.add("North",scrollPane);
 		panelTable.add("Center",panelBouttons);
@@ -81,14 +81,14 @@ public class PanelProduits extends JPanel
 		panelBouttons.add(supprimer);
 		supprimer.setPreferredSize(new Dimension(140,26));
 		
-		//D�sactiver les bouttons
+		//Désactiver les bouttons
 		modifier.setEnabled(false);
 		supprimer.setEnabled(false);
 	}
 	
 	public void initHandlers()
 	{
-		//Handler de s�lection de ligne
+		//Handler de selection de ligne
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
 		{
 			public void valueChanged(ListSelectionEvent e) 
@@ -97,7 +97,7 @@ public class PanelProduits extends JPanel
 		        ListSelectionModel selection = (ListSelectionModel) e.getSource();
 		        produitChoisi = selection.getMinSelectionIndex();
 		        
-		        //D�sactiver certains boutons si on ne s�lectionne aucune ligne
+		        //Désactiver certains boutons si on ne selectionne aucune ligne
 		        modifier.setEnabled(!selection.isSelectionEmpty());
 		        supprimer.setEnabled(!selection.isSelectionEmpty());
 		    }
@@ -145,7 +145,7 @@ public class PanelProduits extends JPanel
 	}
 	
 	/**
-	 * Met � jour la ligne modifi�e par l'option de modification de produit
+	 * Met à jour la ligne modifiée par l'option de modification de produit
 	 */
 	public void raffraichirLigne(String value1, String value2, String value3, String value4, String value5)
 	{
@@ -164,7 +164,7 @@ public class PanelProduits extends JPanel
 	}
 	
 	/**
-	 * Met � jour la liste des produits dans la frame principale
+	 * Met à jour la liste des produits dans la frame principale
 	 */
 	public void raffraichirListe(String value1, String value2, String value3, String value4, String value5)
 	{

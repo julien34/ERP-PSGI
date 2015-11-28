@@ -19,7 +19,7 @@ public class ModifierProduits extends JDialog
 	private int codeProduit;
 	
 	/**
-	 * Rend un champ null égal a un string vide
+	 * Rend un champ null Ã©gal a un string vide
 	 * @param s
 	 * @return
 	 */
@@ -31,7 +31,7 @@ public class ModifierProduits extends JDialog
 	}
 	
 	/**
-	 * Le constructeur par défaut fait appel à la fonction init
+	 * Le constructeur par dÃ©faut fait appel Ã  la fonction init
 	 */
 	public ModifierProduits(String val1, String val2, String val3, String val4, String val5)
 	{
@@ -59,11 +59,11 @@ public class ModifierProduits extends JDialog
 	}	
 	
 	/**
-	 * Initialise la fenetre associée
+	 * Initialise la fenetre associÃ©e
 	 */
 	public void initFenetre()
 	{
-		//Paramétrage de la fenêtre
+		//ParamÃ©trage de la fenÃªtre
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(512,288);	
 		setLocationRelativeTo(null);
@@ -72,7 +72,7 @@ public class ModifierProduits extends JDialog
 	
 	public void initElements()
 	{
-		//Création des boutons		
+		//CrÃ©ation des boutons		
 		JLabel descriptionLabel = new JLabel("nom ");
 		JTextField description = new JTextField(value1,10);
 		
@@ -85,14 +85,14 @@ public class ModifierProduits extends JDialog
 		JLabel prixAchatLabel = new JLabel("prix d'achat ");
 		JTextField prixAchat = new JTextField(value4,10);
 		
-		JLabel udmLabel = new JLabel("unité de mesure ");
+		JLabel udmLabel = new JLabel("unitÃ© de mesure ");
 		JTextField udm = new JTextField(value5,10);
 		
 		JButton modifier = new JButton("Modifier");
 		JButton retour = new JButton("Retour");			
 		JLabel error = new JLabel("");	
 		
-		//Ajouter les élements	
+		//Ajouter les Ã©lements	
 		add(panelGrid);
 		panelGrid.add(panelFlow1);
 		panelGrid.add(panelFlow2);
@@ -130,13 +130,13 @@ public class ModifierProduits extends JDialog
 				String value4 = prixAchat.getText();
 				String value5 = udm.getText();
 				
-				//Si la requete à réussie
+				//Si la requete Ã  rÃ©ussie
 				if(DatabaseConnection.requete("UPDATE PRODUITS SET description = '"+value1+"', categorie = '"+value2+"', prixVente = "+Float.parseFloat(value3)+", prixAchat = "+Float.parseFloat(value4)+", udm = "+Float.parseFloat(value5)+" WHERE codeProduit = "+codeProduit))
 				{
 					FenetrePrincipale.getPanelProduits().raffraichirLigne(value1,value2,value3,value4,value5);
-					JOptionPane.showMessageDialog(null, "Produit modifié avec succès.", "Modification de produit", JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Produit modifiÃ© avec succÃ¨s.", "Modification de produit", JOptionPane.INFORMATION_MESSAGE);
 				}
-				else JOptionPane.showMessageDialog(null, "Erreur de modification du produit. Vérifiez vos variables.", "Modification de produit", JOptionPane.WARNING_MESSAGE);
+				else JOptionPane.showMessageDialog(null, "Erreur de modification du produit. VÃ©rifiez vos champs.", "Modification de produit", JOptionPane.WARNING_MESSAGE);
 			}
 		});
 		retour.addActionListener(new ActionListener()
@@ -147,7 +147,7 @@ public class ModifierProduits extends JDialog
 			}
 		});
 
-		//Afficher la fenêtre
+		//Afficher la fenÃ©tre
 		setVisible(true);
 	}
 }

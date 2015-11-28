@@ -20,7 +20,7 @@ public class FenetreConnexion extends JDialog
 	private ArrayList<JTextField> array = new ArrayList<JTextField>();
 	
 	/**
-	 * Le constructeur par défaut fait appel à la fonction init
+	 * Le constructeur par dÃ©faut fait appel Ã  la fonction init
 	 */
 	public FenetreConnexion(FenetrePrincipale frame)
 	{
@@ -31,11 +31,11 @@ public class FenetreConnexion extends JDialog
 	}	
 	
 	/**
-	 * Initialise la fenetre associée
+	 * Initialise la fenetre associÃ©e
 	 */
 	public void initFenetre()
 	{
-		//Paramétrage de la fenêtre
+		//Parametrage de la fenÃªtre
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(400,250);	
 		setLocationRelativeTo(null);
@@ -44,14 +44,14 @@ public class FenetreConnexion extends JDialog
 	
 	public void initElements()
 	{
-		//Création des boutons
+		//CrÃ©ation des boutons
 		JLabel labelIp = new JLabel("adresse ip ");
 		JTextField textIp = new JTextField("162.38.222.149",10);
 
 		JLabel labelPort = new JLabel("port ");
 		JTextField textPort = new JTextField("1521",10);
 
-		JLabel labelSid = new JLabel("identifiant de sécurité (SID) ");
+		JLabel labelSid = new JLabel("identifiant de sÃ©curitÃ© (SID) ");
 		JTextField textSid = new JTextField("iut",10);
 		
 		JLabel labelUser = new JLabel("utilisateur ");
@@ -78,7 +78,7 @@ public class FenetreConnexion extends JDialog
         	connexion.setEnabled(false);
 		}
 				
-		//Ajouter les élements			
+		//Ajouter les Ã©lements			
 		panelGrid.add(labelIp);
 		panelGrid.add(textIp);
 
@@ -103,7 +103,7 @@ public class FenetreConnexion extends JDialog
 		panelWrap.add(panelGrid);
 		panelWrap.add(panelError);
 		
-		//Handler vérification champs
+		//Handler vÃ©rification champs
 		KeyAdapter listener = new KeyAdapter() 
 		{
 	        public void keyReleased(KeyEvent e) 
@@ -131,7 +131,7 @@ public class FenetreConnexion extends JDialog
 		{
 			public void actionPerformed(ActionEvent e)
 			{			
-				//Si la requete à réussie
+				//Si la requete Ã  rÃ©ussie
 				if(DatabaseConnection.connect(array.get(0).getText(),array.get(1).getText(),array.get(2).getText(),array.get(3).getText(),array.get(4).getText()) == true)
 				{
 					frame.connexionOpened();
@@ -140,7 +140,7 @@ public class FenetreConnexion extends JDialog
 				else 
 				{
 					frame.connexionClosed();
-					error.setText("<html><font color=red>Connexion à la base de données impossible !</html>");
+					error.setText("<html><font color=red>Connexion Ã  la base de donnÃ©es impossible !</html>");
 				}
 			}
 		});
@@ -152,7 +152,7 @@ public class FenetreConnexion extends JDialog
 			}
 		});
 
-		//Afficher la fenêtre
+		//Afficher la fenÃªtre
 		setVisible(true);
 	}
 }
