@@ -1,6 +1,7 @@
 package achat.popup;
 
 import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -26,45 +27,60 @@ public class PopupAjoutFournisseur extends JDialog{
 	
 	public PopupAjoutFournisseur(){
 		
-		//On créer un panel
-		JPanel panelAjoutFournisseur = new JPanel();
+		//On créer un panel principal et les autres qui iront dedans
+		JPanel panelAjoutFournisseur = new JPanel(new GridLayout(5,1,5,5));
+		JPanel panelNom = new JPanel();
+		JPanel panelSiret = new JPanel();
+		JPanel panelTel = new JPanel();
+		JPanel panelAdresse = new JPanel();
+		JPanel panelBoutons = new JPanel();
 		
-		//On ajoute les label
+		
+		//On créer les label
 		JLabel lblNom = new JLabel("Nom : ");
 		JLabel lblSiret = new JLabel("Siret : ");
 		JLabel lblTel = new JLabel("Tél : ");
 		JLabel lblAdresse = new JLabel("Adresse : ");
 		
-		//On ajoute les JTextField
+		//On créer les JTextField
 		JTextField txtNom = new JTextField(10);
 		JTextField txtSiret = new JTextField(10);
 		JTextField txtTel = new JTextField(10);
 		JTextField txtAdresse = new JTextField(10);
 		
-		//on ajoute les boutons OK et annuler
+		//on créer les boutons OK et annuler
 		JButton btnValider = new JButton("Valider");
 		JButton btnAnnuler = new JButton("Annuler");
 		
+		
 		//On ajoute tout les components au panel :
-		panelAjoutFournisseur.add(lblNom);
-		panelAjoutFournisseur.add(txtNom);
+		panelNom.add(lblNom);
+		panelNom.add(txtNom);
 		
-		panelAjoutFournisseur.add(lblSiret);
-		panelAjoutFournisseur.add(txtSiret);
+		panelSiret.add(lblSiret);
+		panelSiret.add(txtSiret);
 		
-		panelAjoutFournisseur.add(lblTel);
-		panelAjoutFournisseur.add(txtTel);
+		panelTel.add(lblTel);
+		panelTel.add(txtTel);
 		
-		panelAjoutFournisseur.add(lblAdresse);
-		panelAjoutFournisseur.add(txtAdresse);
+		panelAdresse.add(lblAdresse);
+		panelAdresse.add(txtAdresse);
 		
-		panelAjoutFournisseur.add(btnValider);
-		panelAjoutFournisseur.add(btnAnnuler);
+		panelBoutons.add(btnValider);
+		panelBoutons.add(btnAnnuler);
+		
+		//On ajoute les panel au panel en grid
+		panelAjoutFournisseur.add(panelNom);
+		panelAjoutFournisseur.add(panelSiret);
+		panelAjoutFournisseur.add(panelTel);
+		panelAjoutFournisseur.add(panelAdresse);
+		panelAjoutFournisseur.add(panelBoutons);
 		
 		this.add(panelAjoutFournisseur);
 		
 		this.setVisible(true);
 		this.setTitle("Ajouter un Fournisseur");
+		this.setAlwaysOnTop(true);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setSize(500, 300);

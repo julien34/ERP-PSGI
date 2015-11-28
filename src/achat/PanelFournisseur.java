@@ -20,8 +20,9 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-//import achat.popup.PopupAjoutFournisseur;
+import achat.popup.PopupAjoutFournisseur;
 import achat.popup.PopupModifFournisseur;
+import achat.popup.PopupSupressionFournisseur;
 import principal.FenetrePrincipale;
 import jdbc.DatabaseConnection;
 
@@ -83,7 +84,10 @@ public class PanelFournisseur extends JPanel{
 		this.add("South",panelBoutonsSud);
 		
 		
-		//handler boutons :
+		
+		///////HANDLER BOUTONS///////
+		
+		//Modifier
 		btnModifier.addActionListener(new ActionListener() {
 			
 			@Override
@@ -92,10 +96,22 @@ public class PanelFournisseur extends JPanel{
 			}
 		});
 		
+		//Ajouter
 		btnAjouter.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				//PopupAjoutFournisseur popupAjoutFournisseur = new PopupAjoutFournisseur();
+				PopupAjoutFournisseur popupAjoutFournisseur = new PopupAjoutFournisseur();
+			}
+		});
+		
+		
+		//Suprimer
+		btnSupprimer.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PopupSupressionFournisseur popupSupressionFournisseur = new PopupSupressionFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()),tableau.getSelectedRow());
+				
 			}
 		});
 		

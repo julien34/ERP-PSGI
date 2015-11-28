@@ -1,6 +1,7 @@
 package achat.popup;
 
 import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,40 +33,57 @@ public class PopupModifFournisseur extends JDialog{
 		this.founisseur = f;
 		this.indice = i;
 		
-		//On creer un panel :
-		JPanel panelModifFournisseur = new JPanel();
+		//On créer un panel principal et les autres qui iront dedans
+		JPanel panelModifFournisseur = new JPanel(new GridLayout(5,1,5,5));
+		JPanel panelNom = new JPanel();
+		JPanel panelSiret = new JPanel();
+		JPanel panelTel = new JPanel();
+		JPanel panelAdresse = new JPanel();
+		JPanel panelBoutons = new JPanel();
 
-		//On créer des champs de texte :
-		JTextField txtNom = new JTextField();
-		JTextField txtSiret = new JTextField();
-		JTextField txtTel = new JTextField();
-		JTextField txtAdresse = new JTextField();
-		
-		//On créer des labels :
+
+		//On créer les label
 		JLabel lblNom = new JLabel("Nom : ");
 		JLabel lblSiret = new JLabel("Siret : ");
-		JLabel lblTel = new JLabel("Tel : ");
+		JLabel lblTel = new JLabel("Tél : ");
 		JLabel lblAdresse = new JLabel("Adresse : ");
-		
-		//on creer les boutons :
+
+		//On créer les JTextField
+		JTextField txtNom = new JTextField(10);
+		JTextField txtSiret = new JTextField(10);
+		JTextField txtTel = new JTextField(10);
+		JTextField txtAdresse = new JTextField(20);
+
+		//on créer les boutons OK et annuler
 		JButton btnValider = new JButton("Valider");
 		JButton btnAnnuler = new JButton("Annuler");
-		
-		panelModifFournisseur.add(lblNom);
-		panelModifFournisseur.add(txtNom);
-		
-		panelModifFournisseur.add(lblSiret);
-		panelModifFournisseur.add(txtSiret);
-		
-		panelModifFournisseur.add(lblTel);
-		panelModifFournisseur.add(txtTel);
-		
-		panelModifFournisseur.add(lblAdresse);
-		panelModifFournisseur.add(txtAdresse);
-		
-		panelModifFournisseur.add(btnValider);
-		panelModifFournisseur.add(btnAnnuler);
-		
+
+
+		//On ajoute tout les components au panel :
+		panelNom.add(lblNom);
+		panelNom.add(txtNom);
+
+		panelSiret.add(lblSiret);
+		panelSiret.add(txtSiret);
+
+		panelTel.add(lblTel);
+		panelTel.add(txtTel);
+
+		panelAdresse.add(lblAdresse);
+		panelAdresse.add(txtAdresse);
+
+		panelBoutons.add(btnValider);
+		panelBoutons.add(btnAnnuler);
+
+		//On ajoute les panel au panel en grid
+		panelModifFournisseur.add(panelNom);
+		panelModifFournisseur.add(panelSiret);
+		panelModifFournisseur.add(panelTel);
+		panelModifFournisseur.add(panelAdresse);
+		panelModifFournisseur.add(panelBoutons);
+
+		this.add(panelModifFournisseur);
+
 		txtNom.setText(f.getNom());
 		txtSiret.setText(f.getSiret());
 		txtTel.setText(f.getTel());
@@ -76,6 +94,7 @@ public class PopupModifFournisseur extends JDialog{
 		this.setVisible(true);
 		this.setTitle("Modifier un Fournisseur");
 		this.setLocationRelativeTo(null);
+		this.setAlwaysOnTop(true);
 		this.setResizable(false);
 		this.setSize(500, 300);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);

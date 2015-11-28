@@ -18,10 +18,10 @@ public class DatabaseConnection
 	}
 	
 	/**
-	 * Ouvre la connexion avec le serveur SQL sp�cifi� par les 5 arguments suivants.
+	 * Ouvre la connexion avec le serveur SQL spécifie par les 5 arguments suivants.
 	 * @param ip adresse IP du serveur SQL
 	 * @param port numero de port du serveur SQL
-	 * @param sid identificateur de s�curit�
+	 * @param sid identificateur de sécurité
 	 * @param user utilisateur
 	 * @param password mot de passe
 	 */
@@ -40,8 +40,8 @@ public class DatabaseConnection
 	}
 	
 	/**
-	 * Ex�cute la requ�te SQL pass�e en param�tre.
-	 * @param sql La requ�te SQL � ex�cuter
+	 * Exécute la requête SQL passée en paramètre.
+	 * @param sql La requête SQL à exécuter
 	 */
 	static public boolean requete(String sql)
 	{
@@ -140,7 +140,7 @@ public class DatabaseConnection
 	}
 	
 	/**
-	 * Methode pour obtenir la cl� primaire de la table produits
+	 * Methode pour obtenir la cl� primaire de la table produits
 	 */
 	static public int getCodeProduit(String value1,String value2,String value3,String value4,String value5)
 	{
@@ -187,7 +187,7 @@ public class DatabaseConnection
         } 
         catch (SQLException queryE) 
         { 
-            System.out.println("Erreur de requ�te : " + queryE);
+            System.out.println("Erreur de requ�te : " + queryE);
         } 
         return Array; 
     }
