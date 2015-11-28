@@ -9,7 +9,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -25,7 +24,35 @@ import jdbc.DatabaseConnection;
 
 public class PopupAjoutFournisseur extends JDialog{
 	
+	private JButton btnValider, btnAnnuler;
+	private JTextField txtNom, txtSiret, txtTel, txtAdresse;
+	
 	public PopupAjoutFournisseur(){
+		
+		this.initElements();//On initie les éléments sur les JPanels
+		this.initFenetre();//On créer la fenetre
+		this.initEcouteurs();//On ajoute les écouteurs
+	}
+	
+	
+	/**
+	 * Méthode qui créer une nouvelle fenetre avec des caractéristiques.
+	 */
+	private void initFenetre() {
+		
+		this.setTitle("Ajouter un Fournisseur");
+		this.setResizable(false);
+		this.setSize(500, 300);
+		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		this.setVisible(true);
+	}
+
+	
+	/**
+	 * Méthode qui initialise les composants sur les JPanels
+	 */
+	private void initElements() {
 		
 		//On créer un panel principal et les autres qui iront dedans
 		JPanel panelAjoutFournisseur = new JPanel(new GridLayout(5,1,5,5));
@@ -43,31 +70,31 @@ public class PopupAjoutFournisseur extends JDialog{
 		JLabel lblAdresse = new JLabel("Adresse : ");
 		
 		//On créer les JTextField
-		JTextField txtNom = new JTextField(10);
-		JTextField txtSiret = new JTextField(10);
-		JTextField txtTel = new JTextField(10);
-		JTextField txtAdresse = new JTextField(10);
+		this.txtNom = new JTextField(10);
+		this.txtSiret = new JTextField(10);
+		this.txtTel = new JTextField(10);
+		this.txtAdresse = new JTextField(10);
 		
 		//on créer les boutons OK et annuler
-		JButton btnValider = new JButton("Valider");
-		JButton btnAnnuler = new JButton("Annuler");
+		this.btnValider = new JButton("Valider");
+		this.btnAnnuler = new JButton("Annuler");
 		
 		
 		//On ajoute tout les components au panel :
 		panelNom.add(lblNom);
-		panelNom.add(txtNom);
+		panelNom.add(this.txtNom);
 		
 		panelSiret.add(lblSiret);
-		panelSiret.add(txtSiret);
+		panelSiret.add(this.txtSiret);
 		
 		panelTel.add(lblTel);
-		panelTel.add(txtTel);
+		panelTel.add(this.txtTel);
 		
 		panelAdresse.add(lblAdresse);
-		panelAdresse.add(txtAdresse);
+		panelAdresse.add(this.txtAdresse);
 		
-		panelBoutons.add(btnValider);
-		panelBoutons.add(btnAnnuler);
+		panelBoutons.add(this.btnValider);
+		panelBoutons.add(this.btnAnnuler);
 		
 		//On ajoute les panel au panel en grid
 		panelAjoutFournisseur.add(panelNom);
@@ -77,75 +104,75 @@ public class PopupAjoutFournisseur extends JDialog{
 		panelAjoutFournisseur.add(panelBoutons);
 		
 		this.add(panelAjoutFournisseur);
-		
-		this.setVisible(true);
-		this.setTitle("Ajouter un Fournisseur");
-		this.setLocationRelativeTo(null);
-		this.setResizable(false);
-		this.setSize(500, 300);
-		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		
-		//handler des boutons valider et annuler
-		btnValider.addActionListener(new ActionListener() {
-			
+	}
+	
+	
+	/**
+	 * Méthode qui initialise les écouteurs des boutons.
+	 */
+	private void initEcouteurs() {
+		//Ecouteur du bouton "valider"
+		this.btnValider.addActionListener(new ActionListener() {
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				DatabaseConnection db = new DatabaseConnection();
-				Connection cn = db.getCon();
+
+				Connection cn = DatabaseConnection.getCon();
+
 				try {
 					PreparedStatement pst = cn.prepareStatement("INSERT INTO Fournisseurs(refFournisseur, nomFournisseur, siret, telFournisseur, adresseFournisseur) Values(seqRefFournisseur.NEXTVAL,?,?,?,?)");
-					
-					pst.setString(1, txtNom.getText());
-					pst.setString(2, txtSiret.getText());
-					pst.setString(3, txtTel.getText());
-					pst.setString(4, txtAdresse.getText());
-					
+
+					pst.setString(1, PopupAjoutFournisseur.this.txtNom.getText());
+					pst.setString(2, PopupAjoutFournisseur.this.txtSiret.getText());
+					pst.setString(3, PopupAjoutFournisseur.this.txtTel.getText());
+					pst.setString(4, PopupAjoutFournisseur.this.txtAdresse.getText());
+
 					pst.executeQuery();
-					
+
 					//On cherche quelle est la référence du fn ajouté
-					DatabaseConnection db1 = new DatabaseConnection();
-					cn = db1.getCon();
 					PreparedStatement pst2 = cn.prepareStatement("SELECT * FROM Fournisseurs WHERE nomFournisseur = ? AND siret = ? AND telFournisseur = ? AND adresseFournisseur = ?");
-					
-					pst2.setString(1, txtNom.getText());
-					pst2.setString(2, txtSiret.getText());
-					pst2.setString(3, txtTel.getText());
-					pst2.setString(4, txtAdresse.getText());
-					
+
+					pst2.setString(1, PopupAjoutFournisseur.this.txtNom.getText());
+					pst2.setString(2, PopupAjoutFournisseur.this.txtSiret.getText());
+					pst2.setString(3, PopupAjoutFournisseur.this.txtTel.getText());
+					pst2.setString(4, PopupAjoutFournisseur.this.txtAdresse.getText());
+
 					ResultSet rs = pst2.executeQuery();
-					
+
 					//On trouve la refFournisseur qui a été attribué
 					String ref = null;
 					while(rs.next()){
 						ref = rs.getString("refFournisseur");
 					}
-					
+
 					//on créer un nouveau fournisseur pour l'ajouter à la liste
 					Fournisseur f = new Fournisseur(ref,txtNom.getText(),txtSiret.getText(),txtTel.getText(),txtAdresse.getText());
-					
+
 					PanelFournisseur.majTableau(f);
-					
+
 					Window window = SwingUtilities.windowForComponent((Component)e.getSource());
 					window.dispose();
-					
+
 					//On affiche un message de validation
 					JOptionPane.showMessageDialog(null, "Fournisseur ajouté avec succès","Vous venez d'ajouter le fournisseur "+txtNom.getText()+".",JOptionPane.INFORMATION_MESSAGE);
 
-					
+
 				} catch(SQLException e1) {
 					e1.printStackTrace();
 					JOptionPane.showMessageDialog(null, "Erreur dans la saisie des informations", "Ajout de fournisseur", JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});
-		
+
+
+		//Ecouteur du bouton "Annuler"
 		btnAnnuler.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Window window = SwingUtilities.windowForComponent((Component)e.getSource());
 				window.dispose();
-				
+
 			}
 		});
 	}

@@ -14,7 +14,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import jdbc.DatabaseConnection;
 import achat.Fournisseur;
@@ -23,12 +22,10 @@ import achat.PanelFournisseur;
 public class PopupSupressionFournisseur extends JDialog{
 
 	private Fournisseur fournisseur;
-	private int indice;
 	private JButton btnOui, btnNon;
 	
-	public PopupSupressionFournisseur(Fournisseur f, int position){
+	public PopupSupressionFournisseur(Fournisseur f){
 		this.fournisseur = f;
-		this.indice = position;
 		
 		this.initElement();//On initie les éléments sur les JPanels
 		this.initFenetre();//On créer la fenetre
