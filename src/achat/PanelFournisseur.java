@@ -5,6 +5,9 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -38,8 +41,8 @@ public class PanelFournisseur extends JPanel{
 	private JScrollPane scrollPane;
 	
 	//On créer les boutons, labels, boutons radio et le champs de recherche
-	private static JButton btnAjouter, btnModifier, btnSupprimer, btnOkRecherche;
-	private JTextField txtRecherche;
+	private static JButton btnAjouter, btnModifier, btnSupprimer;
+	private static JTextField txtRecherche;
 	private JLabel lblRecherche;
 	private ButtonGroup btnGrpRecherche;
 	private static JRadioButton radioSiret, radioNom;
@@ -93,9 +96,8 @@ public class PanelFournisseur extends JPanel{
 		
 		this.lblRecherche = new JLabel("Rechercher : ");
 		this.txtRecherche = new JTextField(20);
-		this.radioNom = new JRadioButton("Nom");
-		this.radioSiret = new JRadioButton("Siret");
-		btnOkRecherche = new JButton("Ok");
+		radioNom = new JRadioButton("Nom");
+		radioSiret = new JRadioButton("Siret");
 		btnGrpRecherche = new ButtonGroup();
 		
 		
@@ -107,16 +109,15 @@ public class PanelFournisseur extends JPanel{
 		radioNom.setSelected(true);
 		
 		//On ajoute les bouton radio au groupe de bouton de la recherche
-		this.btnGrpRecherche.add(this.radioNom);
-		this.btnGrpRecherche.add(this.radioSiret);
+		this.btnGrpRecherche.add(radioNom);
+		this.btnGrpRecherche.add(radioSiret);
 		
 		
 		//On ajoute les composants aux différents panels
 		this.panelRechercheNord.add(this.lblRecherche);
 		this.panelRechercheNord.add(this.txtRecherche);
-		this.panelRechercheNord.add(this.radioNom);
-		this.panelRechercheNord.add(this.radioSiret);
-		this.panelRechercheNord.add(btnOkRecherche);
+		this.panelRechercheNord.add(radioNom);
+		this.panelRechercheNord.add(radioSiret);
 		this.panelGridCentre.add(this.scrollPane);
 		this.panelBoutonsSud.add(btnAjouter);
 		this.panelBoutonsSud.add(btnModifier);
@@ -136,7 +137,7 @@ public class PanelFournisseur extends JPanel{
 	 */
 	private void initEcouteurs(){
 		
-		//Modifier
+		//Ecouteur du bouton "Modifier"
 		btnModifier.addActionListener(new ActionListener() {
 
 			@Override
@@ -145,7 +146,7 @@ public class PanelFournisseur extends JPanel{
 			}
 		});
 
-		//Ajouter
+		//Ecouteur du bouton "Ajouter"
 		btnAjouter.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -154,7 +155,7 @@ public class PanelFournisseur extends JPanel{
 		});
 
 
-		//Suprimer
+		//Ecouteur du bouton "Supprimer"
 		btnSupprimer.addActionListener(new ActionListener() {
 
 			@Override
@@ -179,57 +180,34 @@ public class PanelFournisseur extends JPanel{
 			}
 		});
 		
-		//Bouton "OK" de recherche
-		btnOkRecherche.addActionListener(new ActionListener() {
+		
+		//Ecouteur du JRadioButton Nom
+		radioNom.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				try {
-					Connection cn = DatabaseConnection.getCon();
-					PreparedStatement pst;
-					
-					if(PanelFournisseur.radioNom.isSelected()){
-						pst = cn.prepareStatement("SELECT * FROM Fournisseurs WHERE UPPER(nomFournisseur) LIKE UPPER(?)");
-					}
-					else {
-						pst = cn.prepareStatement("SELECT * FROM Fournisseurs WHERE UPPER(siret) LIKE UPPER(?)");
-					}
-					
-					pst.setString(1, "%"+PanelFournisseur.this.txtRecherche.getText()+"%");
-					
-					ResultSet rs = pst.executeQuery();
-					
-					PanelFournisseur.liste.removeAll(getListe());
-					
-					while(rs.next()){
-						String ref = rs.getString("refFournisseur");
-						String nom = rs.getString("nomFournisseur");
-						String siret = rs.getString("siret");
-						String tel = rs.getString("telFournisseur");
-						String adresse = rs.getString("adresseFournisseur");
-						
-						PanelFournisseur.liste.add(new Fournisseur(ref,nom,siret,tel,adresse));
-					}
-					
-					tabFn = new Object[liste.size()][4];
-					
-					for(Fournisseur fn : liste){
-						tabFn[liste.indexOf(fn)][0] = fn.nom;
-						tabFn[liste.indexOf(fn)][1] = fn.siret;
-						tabFn[liste.indexOf(fn)][2] = fn.adresse;
-						tabFn[liste.indexOf(fn)][3] = fn.tel;
-					}
-					
-					modele.setDataVector(tabFn,titres);
-					
-				} catch (SQLException e1) {
-					e1.printStackTrace();
-				}
-				
+				PanelFournisseur.majTableauRecherche();
 			}
 		});
 		
+		
+		//Ecouteur du JRadioButton siret
+		radioSiret.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PanelFournisseur.majTableauRecherche();
+			}
+		});
+		
+		
+		//Ecouteur du champs de recherche
+		txtRecherche.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				PanelFournisseur.majTableauRecherche();
+			}
+		});
 	}
 
 	
@@ -359,8 +337,60 @@ public class PanelFournisseur extends JPanel{
 		btnModifier.setEnabled(false);
 		btnSupprimer.setEnabled(false);
 	}
-
 	
+	
+	
+	/**
+	 * Méthode qui met à jour la JTable à chaque touche tapée avec les donnée du champs de recherche.
+	 */
+	public static void majTableauRecherche(){
+
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst;
+
+			//On vérifie d'ou vient la source de la recherche
+			if(PanelFournisseur.radioNom.isSelected()){
+				pst = cn.prepareStatement("SELECT * FROM Fournisseurs WHERE UPPER(nomFournisseur) LIKE UPPER(?)");
+			}
+			else {
+				pst = cn.prepareStatement("SELECT * FROM Fournisseurs WHERE UPPER(siret) LIKE UPPER(?)");
+			}
+
+			pst.setString(1, "%"+txtRecherche.getText()+"%");//% comme caractère blanc 
+
+			ResultSet rs = pst.executeQuery();
+
+			PanelFournisseur.liste.removeAll(liste);//On supprimer la liste
+
+			//On re-rempli la liste avec les données récoltées de la requête
+			while(rs.next()){
+				String ref = rs.getString("refFournisseur");
+				String nom = rs.getString("nomFournisseur");
+				String siret = rs.getString("siret");
+				String tel = rs.getString("telFournisseur");
+				String adresse = rs.getString("adresseFournisseur");
+
+				PanelFournisseur.liste.add(new Fournisseur(ref,nom,siret,tel,adresse));
+			}
+
+			tabFn = new Object[liste.size()][4];
+
+			for(Fournisseur fn : liste){
+				tabFn[liste.indexOf(fn)][0] = fn.nom;
+				tabFn[liste.indexOf(fn)][1] = fn.siret;
+				tabFn[liste.indexOf(fn)][2] = fn.adresse;
+				tabFn[liste.indexOf(fn)][3] = fn.tel;
+			}
+
+			modele.setDataVector(tabFn,titres);
+
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+	}
+
+
 	/**
 	 * Méthode qui retourne l'ArrayList courante de fournisseurs
 	 * @return liste, l'ArrayList de Fournisseur.
