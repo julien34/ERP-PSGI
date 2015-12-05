@@ -11,7 +11,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import achat.PanelDevis;
+import achat.PanelCommande;
 import achat.PanelFournisseur;
 import components.ButtonTabComponent;
 import jdbc.DatabaseConnection;
@@ -38,7 +38,7 @@ public class FenetrePrincipale extends JFrame
         //Achats
         JMenu menuAchats = new JMenu("Achats");
         JMenuItem menuAchatFournisseur = new JMenuItem("Fournisseurs");
-        JMenuItem menuAchatDevis = new JMenuItem("Devis");
+        JMenuItem menuAchatDevis = new JMenuItem("Commandes");
         
         //Ventes
         JMenu menuVentes = new JMenu("Ventes");
@@ -55,7 +55,7 @@ public class FenetrePrincipale extends JFrame
    	
    	//Achat
    	private static PanelFournisseur panelFournisseur = null;
-   	private static PanelDevis panelDevis = null;
+   	private static PanelCommande panelCommande = null;
    	
    	//Vente
    	private static PanelVente panelVente;
@@ -168,7 +168,7 @@ public class FenetrePrincipale extends JFrame
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					ajouterOnglet("Devis", panelDevis = new PanelDevis(framePrincipale));
+					ajouterOnglet("Commande", panelCommande = new PanelCommande(framePrincipale));
 				}
 			});
 	   		
