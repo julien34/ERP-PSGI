@@ -53,7 +53,7 @@ public class PanelFournisseur extends JPanel{
 	
 	//On créer une ArrayList de Fournisseur, une matrice de Fournisseur ainsi qu'un tableau de titres
 	private static ArrayList<Fournisseur> liste = new ArrayList<Fournisseur>();
-	private static String[] titres = {"Entreprise","N° SIRET","Adresse","N° Tél"};
+	private static String[] titres = {"Entreprise","N° SIRET","Adresse","N° Tél", "Catégorie"};
 	private static Object[][] tabFn;
 	
 	
@@ -95,7 +95,7 @@ public class PanelFournisseur extends JPanel{
 		btnSupprimer = new JButton("Supprimer");
 		
 		this.lblRecherche = new JLabel("Rechercher : ");
-		this.txtRecherche = new JTextField(20);
+		txtRecherche = new JTextField(20);
 		radioNom = new JRadioButton("Nom");
 		radioSiret = new JRadioButton("Siret");
 		btnGrpRecherche = new ButtonGroup();
@@ -115,7 +115,7 @@ public class PanelFournisseur extends JPanel{
 		
 		//On ajoute les composants aux différents panels
 		this.panelRechercheNord.add(this.lblRecherche);
-		this.panelRechercheNord.add(this.txtRecherche);
+		this.panelRechercheNord.add(txtRecherche);
 		this.panelRechercheNord.add(radioNom);
 		this.panelRechercheNord.add(radioSiret);
 		this.panelGridCentre.add(this.scrollPane);
@@ -142,7 +142,7 @@ public class PanelFournisseur extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PopupModifFournisseur popupModifFournisseur = new PopupModifFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()),tableau.getSelectedRow());
+				new PopupModifFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()),tableau.getSelectedRow());
 			}
 		});
 
@@ -150,7 +150,7 @@ public class PanelFournisseur extends JPanel{
 		btnAjouter.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PopupAjoutFournisseur popupAjoutFournisseur = new PopupAjoutFournisseur();
+				new PopupAjoutFournisseur();
 			}
 		});
 
@@ -160,8 +160,7 @@ public class PanelFournisseur extends JPanel{
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				PopupSupressionFournisseur popupSupressionFournisseur = new PopupSupressionFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()));
-
+				new PopupSupressionFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()));
 			}
 		});
 		
@@ -175,7 +174,7 @@ public class PanelFournisseur extends JPanel{
 
 				//Si dble clic ouverture de la popup modif
 				if (e.getClickCount()%2 == 0){
-					PopupModifFournisseur popupModifFournisseur = new PopupModifFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()),tableau.getSelectedRow());
+					new PopupModifFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()),tableau.getSelectedRow());
 				}
 			}
 		});
@@ -220,7 +219,7 @@ public class PanelFournisseur extends JPanel{
 		try{
 			Connection cn = DatabaseConnection.getCon();
 			Statement st = cn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_READ_ONLY);
-			ResultSet rs = st.executeQuery("SELECT * FROM Fournisseurs ORDER BY nomFournisseur");
+			ResultSet rs = st.executeQuery("SELECT * FROM Fournisseurs f LEFT JOIN CategoriesFournisseur c ON f.categorieFournisseur = c.refCategorie ORDER BY nomFournisseur");
 			
 			while(rs.next()){
 				String ref = rs.getString("refFournisseur");
@@ -228,12 +227,12 @@ public class PanelFournisseur extends JPanel{
 				String siret = rs.getString("siret");
 				String tel = rs.getString("telFournisseur");
 				String adresse = rs.getString("adresseFournisseur");
-	
-				liste.add(new Fournisseur(ref, nomFn, siret, tel, adresse));
+				String categorie = rs.getString("nomCategorie");
+
+				liste.add(new Fournisseur(ref, nomFn, siret, tel, adresse, categorie));
 			}} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 		return liste;
 	}
 	
@@ -252,24 +251,25 @@ public class PanelFournisseur extends JPanel{
 	 */
 	private void remplirTableau(){
 		int lgTableau = liste.size();
-		tabFn = new Object[lgTableau][4];
+		tabFn = new Object[lgTableau][5];
 		
 		//On remplit le tableau d'objet avec les fn de l'arraylist
 		for(Fournisseur fn : liste){
-			tabFn[liste.indexOf(fn)][0] = fn.nom;
+			tabFn[liste.indexOf(fn)][0] = fn.getNom();
 			tabFn[liste.indexOf(fn)][1] = fn.siret;
 			tabFn[liste.indexOf(fn)][2] = fn.adresse;
 			tabFn[liste.indexOf(fn)][3] = fn.tel;
+			tabFn[liste.indexOf(fn)][4] = fn.getCategorie();
 		}
 		
-		modele = new UneditableTableModel(0,4);
+		modele = new UneditableTableModel(0,5);
 		modele.setDataVector(tabFn,titres);
 		
 		tableau = new JTable(modele);
 		
 		tableau.setAutoCreateRowSorter(false);
 		tableau.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		tableau.setPreferredScrollableViewportSize(new Dimension(700, 224));
+		tableau.setPreferredScrollableViewportSize(new Dimension(800, 224));
 		
 		scrollPane = new JScrollPane(tableau);
 	}
@@ -288,6 +288,7 @@ public class PanelFournisseur extends JPanel{
 		tabFn[indice][1] = f.siret;
 		tabFn[indice][2] = f.tel;
 		tabFn[indice][3] = f.adresse;
+		tabFn[indice][4] = f.categorie;
 		
 		modele.setDataVector(tabFn,titres);
 	}
@@ -302,13 +303,14 @@ public class PanelFournisseur extends JPanel{
 		
 		int nouvelleLongueur = tabFn.length+1;
 		
-		tabFn = new Object[nouvelleLongueur][4];
+		tabFn = new Object[nouvelleLongueur][5];
 		
 		for(Fournisseur fn : liste){
 			tabFn[liste.indexOf(fn)][0] = fn.nom;
 			tabFn[liste.indexOf(fn)][1] = fn.siret;
 			tabFn[liste.indexOf(fn)][2] = fn.adresse;
 			tabFn[liste.indexOf(fn)][3] = fn.tel;
+			tabFn[liste.indexOf(fn)][4] = fn.categorie;
 		}
 		
 		modele.setDataVector(tabFn,titres);
@@ -324,13 +326,14 @@ public class PanelFournisseur extends JPanel{
 		
 		int nouvelleLongueur = tabFn.length-1;
 		
-		tabFn = new Object[nouvelleLongueur][4];
+		tabFn = new Object[nouvelleLongueur][5];
 		
 		for(Fournisseur fn : liste){
 			tabFn[liste.indexOf(fn)][0] = fn.nom;
 			tabFn[liste.indexOf(fn)][1] = fn.siret;
 			tabFn[liste.indexOf(fn)][2] = fn.adresse;
 			tabFn[liste.indexOf(fn)][3] = fn.tel;
+			tabFn[liste.indexOf(fn)][4] = fn.categorie;
 		}
 		
 		modele.setDataVector(tabFn,titres);
@@ -370,17 +373,19 @@ public class PanelFournisseur extends JPanel{
 				String siret = rs.getString("siret");
 				String tel = rs.getString("telFournisseur");
 				String adresse = rs.getString("adresseFournisseur");
+				String categorie = rs.getString("categorieFournisseur");
 
-				PanelFournisseur.liste.add(new Fournisseur(ref,nom,siret,tel,adresse));
+				PanelFournisseur.liste.add(new Fournisseur(ref,nom,siret,tel,adresse, categorie));
 			}
 
-			tabFn = new Object[liste.size()][4];
+			tabFn = new Object[liste.size()][5];
 
 			for(Fournisseur fn : liste){
 				tabFn[liste.indexOf(fn)][0] = fn.nom;
 				tabFn[liste.indexOf(fn)][1] = fn.siret;
 				tabFn[liste.indexOf(fn)][2] = fn.adresse;
 				tabFn[liste.indexOf(fn)][3] = fn.tel;
+				tabFn[liste.indexOf(fn)][4] = fn.categorie;
 			}
 
 			modele.setDataVector(tabFn,titres);

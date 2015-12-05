@@ -1,8 +1,16 @@
 package achat;
 
 public class Fournisseur {
-	String ref, nom, siret, tel, adresse;
+	String ref, nom, siret, tel, adresse, categorie;
 	
+	public String getCategorie() {
+		return categorie;
+	}
+
+	public void setCategorie(String categorie) {
+		this.categorie = categorie;
+	}
+
 	public void setRef(String ref) {
 		this.ref = ref;
 	}
@@ -43,12 +51,13 @@ public class Fournisseur {
 		return adresse;
 	}
 
-	public Fournisseur(String ref, String nom, String siret, String tel, String adresse){
+	public Fournisseur(String ref, String nom, String siret, String tel, String adresse, String categorie){
 		this.ref = ref;
 		this.nom = nom;
 		this.siret = siret;
 		this.tel = tel;
 		this.adresse = adresse;
+		this.categorie = categorie;
 	}
 	
 	

@@ -1,8 +1,6 @@
 package achat.popup;
 
-import java.awt.Component;
 import java.awt.GridLayout;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
