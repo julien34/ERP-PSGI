@@ -38,7 +38,7 @@ public class FenetrePrincipale extends JFrame
         //Achats
         JMenu menuAchats = new JMenu("Achats");
         JMenuItem menuAchatFournisseur = new JMenuItem("Fournisseurs");
-        JMenuItem menuAchatDevis = new JMenuItem("Commandes");
+        JMenuItem menuAchatCommande = new JMenuItem("Commandes");
         
         //Ventes
         JMenu menuVentes = new JMenu("Ventes");
@@ -96,7 +96,7 @@ public class FenetrePrincipale extends JFrame
 	        //Achats
 				menu.add(menuAchats);
 				menuAchats.add(menuAchatFournisseur);
-				menuAchats.add(menuAchatDevis);
+				menuAchats.add(menuAchatCommande);
 	        
 	        //Ventes
 				menu.add(menuVentes);
@@ -164,11 +164,11 @@ public class FenetrePrincipale extends JFrame
 	   			}
 	   		});	
 	   		
-	   		menuAchatDevis.addActionListener(new ActionListener() {
+	   		menuAchatCommande.addActionListener(new ActionListener() {
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					ajouterOnglet("Commande", panelCommande = new PanelCommande(framePrincipale));
+					ajouterOnglet("Commandes", panelCommande = new PanelCommande(framePrincipale));
 				}
 			});
 	   		
