@@ -1,19 +1,30 @@
 package achat;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.ScrollPane;
+import java.awt.GridLayout;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.sql.Date;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+
+import com.toedter.calendar.JCalendar;
+import com.toedter.calendar.JCalendarBeanInfo;
+import com.toedter.calendar.JDateChooser;
+import com.toedter.calendar.JDayChooser;
+import com.toedter.plaf.JCalendarTheme;
 
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
@@ -38,7 +49,7 @@ public class PanelCommande extends JPanel{
 		this.remplirTableau();
 				
 		//On initialise l'ensemble des composants sur le JPanel
-		//this.initElements();
+		this.initElements();
 				
 		//On initialise l'ensemble des écouteurs
 		//this.initEcouteurs();
@@ -98,7 +109,64 @@ public class PanelCommande extends JPanel{
 		tableau.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tableau.setPreferredScrollableViewportSize(new Dimension(800, 224));
 		
-		scrollPane = new JScrollPane(tableau);
-		this.add(scrollPane);
+		this.scrollPane = new JScrollPane(tableau);
+	}
+	
+	
+	/**
+	 * Méthode qui initialise les éléments de toute la page.
+	 */
+	private void initElements(){
+		
+		//on défini le layout du JPanel principal
+		this.setLayout(new BorderLayout());
+		
+		//On créer les panels
+		JPanel panelRechercheNord = new JPanel();
+		
+		JPanel panelGrilleCentre = new JPanel(new GridLayout(2,1));
+		JPanel panelGrille = new JPanel();
+		JPanel panelBouton = new JPanel();
+		
+		
+		//On créer les composants
+		JLabel lblRechercheCommande = new JLabel("N° Commande : ");
+		JTextField txtRechercheCommande = new JTextField(10);
+		JLabel lblRechercheFournisseur = new JLabel("Fournisseur : ");
+		JTextField txtRechercheFournisseur = new JTextField(10);
+		JLabel lblRechercheDate = new JLabel("Date : ");
+		JDateChooser jdcDate = new JDateChooser();
+		JLabel lblRechercheMontant = new JLabel("Montant : ");
+		JTextField txtRechercheMontant = new JTextField(5);
+		
+		JButton btnNouveau = new JButton("Nouveau");
+		JButton btnModifier = new JButton("Modifier");
+		JButton btnAnnuler = new JButton("Annuler");
+		
+		
+		//On ajoute les composants aux panels
+		panelRechercheNord.add(lblRechercheCommande);
+		panelRechercheNord.add(txtRechercheCommande);
+		panelRechercheNord.add(lblRechercheFournisseur);
+		panelRechercheNord.add(txtRechercheFournisseur);
+		panelRechercheNord.add(lblRechercheDate);
+		panelRechercheNord.add(jdcDate);
+		panelRechercheNord.add(lblRechercheMontant);
+		panelRechercheNord.add(txtRechercheMontant);
+		
+		panelGrille.add(scrollPane);
+		panelBouton.add(btnNouveau);
+		panelBouton.add(btnModifier);
+		panelBouton.add(btnAnnuler);
+		
+		panelGrilleCentre.add(panelGrille);
+		panelGrilleCentre.add(panelBouton);
+		
+		this.add(panelRechercheNord, BorderLayout.NORTH);
+		this.add(panelGrilleCentre, BorderLayout.CENTER);
+
+		//On ajoute les panels au panel principal
+		
+		
 	}
 }

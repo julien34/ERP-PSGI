@@ -168,7 +168,7 @@ public class FenetrePrincipale extends JFrame
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					ajouterOnglet("Commandes", panelCommande = new PanelCommande(framePrincipale));
+					ajouterOnglet("Commandes d'achat", panelCommande = new PanelCommande(framePrincipale));
 				}
 			});
 	   		

@@ -185,6 +185,8 @@ public class PanelFournisseur extends JPanel{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				btnModifier.setEnabled(false);
+				btnSupprimer.setEnabled(false);
 				PanelFournisseur.majTableauRecherche();
 			}
 		});
@@ -195,6 +197,8 @@ public class PanelFournisseur extends JPanel{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				btnModifier.setEnabled(false);
+				btnSupprimer.setEnabled(false);
 				PanelFournisseur.majTableauRecherche();
 			}
 		});
@@ -204,6 +208,8 @@ public class PanelFournisseur extends JPanel{
 		txtRecherche.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
+				btnModifier.setEnabled(false);
+				btnSupprimer.setEnabled(false);
 				PanelFournisseur.majTableauRecherche();
 			}
 		});
