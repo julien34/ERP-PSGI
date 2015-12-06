@@ -3,6 +3,10 @@ package achat;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +23,8 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+
+import achat.popup.PopupCommande;
 
 import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JCalendarBeanInfo;
@@ -39,6 +45,9 @@ public class PanelCommande extends JPanel{
 	private static JTable tableau = new JTable(new DefaultTableModel());
 	private static UneditableTableModel modele;
 	private JScrollPane scrollPane;
+	
+	//On créer les composants que 'on va se servir dans plusieurs méthodes :
+	private JButton btnNouveau, btnModifier, btnAnnuler;
 
 	public PanelCommande(FenetrePrincipale f){
 		
@@ -52,7 +61,7 @@ public class PanelCommande extends JPanel{
 		this.initElements();
 				
 		//On initialise l'ensemble des écouteurs
-		//this.initEcouteurs();
+		this.initEcouteurs();
 	}
 	
 	
@@ -139,9 +148,13 @@ public class PanelCommande extends JPanel{
 		JLabel lblRechercheMontant = new JLabel("Montant : ");
 		JTextField txtRechercheMontant = new JTextField(5);
 		
-		JButton btnNouveau = new JButton("Nouveau");
-		JButton btnModifier = new JButton("Modifier");
-		JButton btnAnnuler = new JButton("Annuler");
+		this.btnNouveau = new JButton("Nouveau");
+		this.btnModifier = new JButton("Modifier");
+		this.btnAnnuler = new JButton("Annuler");
+		
+		//On grise l'accès aux boutons modifier et annuler tant qu'une ligne n'est pas sélectionnée
+		this.btnModifier.setEnabled(false);
+		this.btnAnnuler.setEnabled(false);
 		
 		
 		//On ajoute les composants aux panels
@@ -154,19 +167,58 @@ public class PanelCommande extends JPanel{
 		panelRechercheNord.add(lblRechercheMontant);
 		panelRechercheNord.add(txtRechercheMontant);
 		
-		panelGrille.add(scrollPane);
-		panelBouton.add(btnNouveau);
-		panelBouton.add(btnModifier);
-		panelBouton.add(btnAnnuler);
+		panelGrille.add(this.scrollPane);
+		panelBouton.add(this.btnNouveau);
+		panelBouton.add(this.btnModifier);
+		panelBouton.add(this.btnAnnuler);
 		
 		panelGrilleCentre.add(panelGrille);
 		panelGrilleCentre.add(panelBouton);
 		
+		//On ajoute les panels au panel principal
 		this.add(panelRechercheNord, BorderLayout.NORTH);
 		this.add(panelGrilleCentre, BorderLayout.CENTER);
-
-		//On ajoute les panels au panel principal
+		
+	}
+	
+	
+	/**
+	 * Méthode qui initialise les écouteurs.
+	 */
+	private void initEcouteurs(){
+		
+		//Clic et double clic sur une ligne
+		tableau.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				btnModifier.setEnabled(true);
+				btnAnnuler.setEnabled(true);
+				
+				if (e.getClickCount()%2 == 0){
+					new PopupCommande(listeCommandes.get(tableau.getSelectedRow()));
+				}
+			}
+		});
 		
 		
+		//Bouton "Nouveau"
+		this.btnNouveau.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new PopupCommande();
+			}
+		});
+		
+		
+		//Bouton "Modifier"
+		this.btnModifier.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new PopupCommande(listeCommandes.get(tableau.getSelectedRow()));
+			}
+		});
 	}
 }

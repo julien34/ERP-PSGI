@@ -174,7 +174,7 @@ public class PanelFournisseur extends JPanel{
 
 				//Si dble clic ouverture de la popup modif
 				if (e.getClickCount()%2 == 0){
-					new PopupModifFournisseur(PanelFournisseur.this.getListe().get(tableau.getSelectedRow()),tableau.getSelectedRow());
+					new PopupModifFournisseur(getListe().get(tableau.getSelectedRow()),tableau.getSelectedRow());
 				}
 			}
 		});
