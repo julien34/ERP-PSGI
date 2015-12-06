@@ -79,7 +79,7 @@ public class FenetrePrincipale extends JFrame
    		//Paramétrage de la fenétre
    		setTitle("Projet PSGI");
    		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-   		setSize(950,800);	
+   		setSize(960,750);
    		setLocationRelativeTo(null);
    		setResizable(true);
    	}

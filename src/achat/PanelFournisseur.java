@@ -354,10 +354,10 @@ public class PanelFournisseur extends JPanel{
 
 			//On vérifie d'ou vient la source de la recherche
 			if(PanelFournisseur.radioNom.isSelected()){
-				pst = cn.prepareStatement("SELECT * FROM Fournisseurs WHERE UPPER(nomFournisseur) LIKE UPPER(?)");
+				pst = cn.prepareStatement("SELECT * FROM Fournisseurs f LEFT JOIN CategoriesFournisseur c ON f.categorieFournisseur = c.refCategorie WHERE UPPER(nomFournisseur) LIKE UPPER(?) ORDER BY nomFournisseur");
 			}
 			else {
-				pst = cn.prepareStatement("SELECT * FROM Fournisseurs WHERE UPPER(siret) LIKE UPPER(?)");
+				pst = cn.prepareStatement("SELECT * FROM Fournisseurs f LEFT JOIN CategoriesFournisseur c ON f.categorieFournisseur = c.refCategorie WHERE UPPER(siret) LIKE UPPER(?) ORDER BY nomFournisseur");
 			}
 
 			pst.setString(1, "%"+txtRecherche.getText()+"%");//% comme caractère blanc 
@@ -373,7 +373,7 @@ public class PanelFournisseur extends JPanel{
 				String siret = rs.getString("siret");
 				String tel = rs.getString("telFournisseur");
 				String adresse = rs.getString("adresseFournisseur");
-				String categorie = rs.getString("categorieFournisseur");
+				String categorie = rs.getString("nomCategorie");
 
 				PanelFournisseur.liste.add(new Fournisseur(ref,nom,siret,tel,adresse, categorie));
 			}
