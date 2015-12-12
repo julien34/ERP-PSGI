@@ -1,9 +1,10 @@
 package principal;
 
-
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.*;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -42,7 +43,16 @@ public class FenetrePrincipale extends JFrame
         
         //Ventes
         JMenu menuVentes = new JMenu("Ventes");
-        JMenuItem menuVentesFenetreVente = new JMenuItem("Fenetre de vente");
+       // JMenuItem menuVentesFenetreVente = new JMenuItem("Fenetre de vente");
+        JMenu menuFenetreVente = new JMenu("Fenetre de vente");
+        
+        
+        public static JMenuItem menuVenteEntreprise = new JMenuItem("Entreprise");
+        public static JMenuItem menuVenteParticulier = new JMenuItem("Particulier");
+        
+        //sous menu entreprise , client
+        
+        
         JMenuItem menuVentesClients = new JMenuItem("Interface de clients");
         JMenuItem menuVentesDevis = new JMenuItem("Interface de devis");
         	        
@@ -97,13 +107,17 @@ public class FenetrePrincipale extends JFrame
 				menu.add(menuAchats);
 				menuAchats.add(menuAchatFournisseur);
 				menuAchats.add(menuAchatCommande);
+				
+
 	        
 	        //Ventes
 				menu.add(menuVentes);
-				menuVentes.add(menuVentesFenetreVente);
+				menuVentes.add(menuFenetreVente);
 				menuVentes.add(menuVentesClients);
 				menuVentes.add(menuVentesDevis);
-	        	        
+				
+	        	menuFenetreVente.add(menuVenteEntreprise);
+				menuFenetreVente.add(menuVenteParticulier);
 	        //Production
 				menu.add(menuProduction);
 				menuProduction.add(menuProductionProduits);   
@@ -173,13 +187,32 @@ public class FenetrePrincipale extends JFrame
 			});
 	   		
 	   		//Ventes
-	   		menuVentesFenetreVente.addActionListener(new ActionListener()
+	   	/*	menuFenetreVente.addActionListener(new ActionListener()
+	   		{
+	   			public void actionPerformed(ActionEvent e)
+	   			{
+	   				ajouterOnglet("Gestion des ventes",fenetreVente);
+	   			}
+	   		});	*/
+	   		
+	   		menuVenteEntreprise.addActionListener(new ActionListener()
+	   		{
+	   			public void actionPerformed(ActionEvent e)
+	   			{
+	   				
+	   				ajouterOnglet("Gestion des ventes",fenetreVente);
+	   			}
+	   		});	
+	   		
+	   		menuVenteParticulier.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
 	   				ajouterOnglet("Gestion des ventes",fenetreVente);
 	   			}
 	   		});	
+	   		
+	   		
 	   		menuVentesClients.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e)
@@ -194,6 +227,8 @@ public class FenetrePrincipale extends JFrame
 	   				ajouterOnglet("Gestion des Devis", InterfaceDevis);
 	   			}
 	   		});	
+	   		
+	   		
 	   		
 	   		
 	   		

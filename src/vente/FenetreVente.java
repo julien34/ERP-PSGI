@@ -3,12 +3,20 @@ package vente;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
+import java.beans.Statement;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.Normalizer.Form;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -17,7 +25,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
+
+import achat.CommandesFournisseur;
+import achat.Fournisseur;
+
 import javax.swing.event.CaretEvent;
+import java.lang.*;
 
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
@@ -34,7 +47,7 @@ public class FenetreVente extends JPanel{
 	JPanel ModifierTableau = new JPanel(new FlowLayout(FlowLayout.CENTER,40,0));
 	JPanel Buttons = new JPanel(new GridLayout());	//ajout par la droite
 	JPanel LesTotaux = new JPanel(new GridLayout(5,1));	
-	JLabel InformationClient = new JLabel("Information Client");
+	JLabel InformationClient = new JLabel("");
 	JLabel ModePayement = new JLabel("Mode de Payement");
 	
 	JLabel Rien = new JLabel("");
@@ -44,10 +57,16 @@ public class FenetreVente extends JPanel{
 	
 	JLabel Nom = new JLabel("Nom : ");
 	//JTextField ChampTextNom = new JTextField("");
-	String[] NomClient = {"Zetofrais","Bricot","Vegas","Fonfec","Formigli","Rembert","Ruiz","Manneli"};	
-	JComboBox ComboBoxClient = new JComboBox(NomClient);
+	//String[] NomClient = {"Zetofrais","Bricot","Vegas","Fonfec","Formigli","Rembert","Ruiz","Manneli"};	
 	
-	JLabel Prenom = new JLabel("Prenom : ");
+	private static ArrayList<Client> liste = new ArrayList<Client>();
+	private static String[] titres = {"ID Client","NomClient","PrenomClient","AdresseClient","MailClient","N° Tél", "Catégorie"};
+	private static Object[][] tabFn;
+
+	
+	JComboBox ComboBoxClient = new JComboBox();
+	
+	JLabel Prenom = new JLabel("");
 	JTextField ChampTextPrenom = new JTextField("");
 	
 	JLabel Adresse = new JLabel("Adresse : ");
@@ -69,6 +88,7 @@ public class FenetreVente extends JPanel{
 	JButton Annuler = new JButton("Annuler");
 	
 	
+		
 	JLabel TotalHT = new JLabel("Total HT : ");
 	int valeurHT = 0 ;
 	JTextField ChampTotalHT = new JTextField(""+valeurHT);	  
@@ -86,7 +106,15 @@ public class FenetreVente extends JPanel{
 	
 	JScrollPane scrollPane =  new JScrollPane();
 	JTable tableCommande;
+	
+	
+	int Etat = 0; //1 pour entreprise   2 pour particulier
 
+
+	
+		
+	
+	
 	
 	private final String[] nomColonnes = { "Ref","Nom","Quantite","PrixUnitaire","PrixHorsTaxe"};
 
@@ -137,9 +165,77 @@ public class FenetreVente extends JPanel{
 	
 	
 	
+	 public void remplirInfosClient(){
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("SELECT nomclient FROM VENTE_CLIENTS WHERE codecategorieclient = '1'");
+			ResultSet rs =  pst.executeQuery();
+			while(rs.next()){	
+				
+				String idclient = rs.getString("idclient");
+				String nomclient = rs.getString("nomclient");
+				String prenomclient = rs.getString("prenomclient");
+				String telclient = rs.getString("telclient");
+				String adresseclient = rs.getString("adresseclient");
+				String categorie = rs.getString("codecateg");
+				String mail = rs.getString("emailclient");
+				
+				liste.add(new Client(idclient, nomclient, prenomclient, adresseclient ,mail, telclient, categorie));
+
+				
+		     	ComboBoxClient.addItem(rs.getString(nomclient));
+			
+
+				}
+				rs.close();
+		} catch (SQLException e) {
+		e.printStackTrace();
+		}	
+		 catch(NullPointerException b){
+			 b.printStackTrace();
+		 }
+		}
+	
+			
+	public void initElementParticulier(){
+	
+		
+		InformationClient.setText("Information du particulier");
+		Prenom.setText("Prenom : ");
+	}
+	
+	public void initElementEntreprise(){
+	    InformationClient.setText("Information de l'entreprise");
+		Prenom.setText("Responsable : ");;
+	}
 	
 	public void initElements(){
 		
+   		FenetrePrincipale.menuVenteEntreprise.addActionListener(new ActionListener()
+   		{
+   			public void actionPerformed(ActionEvent e)
+   			{
+   				initElementEntreprise();
+   				
+   				Etat = 1;
+
+   			}
+   		});
+   		
+
+
+   			
+   			
+   		
+   		FenetrePrincipale.menuVenteParticulier.addActionListener(new ActionListener()
+   		{
+   			public void actionPerformed(ActionEvent e)
+   			{
+   				initElementParticulier();
+   				Etat = 2;
+   			}
+   		});	
+			
 		tableCommande = new JTable(modelTableCommande);
 		tableCommande.setAutoCreateRowSorter(true); //permet de trier les colonnes
 		tableCommande.getRowSorter().toggleSortOrder(0);
@@ -158,6 +254,8 @@ public class FenetreVente extends JPanel{
 			Formulaire.add(Rien);// 1/1
 			Formulaire.add(Nom);// 2/1
 			//Formulaire.add(ChampTextNom);// 2/1
+			
+			this.remplirInfosClient();
 			Formulaire.add(ComboBoxClient);
 			//ChampTextNom.setPreferredSize(dimensionTextField);
 			Formulaire.add(Prenom); // 3/1
@@ -209,38 +307,55 @@ public class FenetreVente extends JPanel{
 			Buttons.add(Annuler);
 			
 			
+
+			
 			
 			ComboBoxClient.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent e) {
 					
-					if(ComboBoxClient.getSelectedItem() == "Bricot"){
-						
+								
 						ChampTextPrenom.setText("Juda");
-						
 						ChampTextAdresse.setText("5rueDuFrigo");
-						
 						ChampTextEmail.setText("juda.bricot@mail.osef");
-						
 						ChampTextNumeroTelephone.setText("0606060606");  	 
+						
+
+/*
+		   			try {
+		   				Connection cn = DatabaseConnection.getCon();
+		   				PreparedStatement pst = cn.prepareStatement("SELECT c.refCommande, c.dateCommande, f.refFournisseur, f.nomFournisseur, SUM(p.prixProduit*lc.quantite) AS montantTotal FROM CommandesFournisseur c JOIN Fournisseurs f ON f.refFournisseur = c.refFournisseur JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande JOIN ProduitsFournisseur p ON p.refProduit = lc.refProduit GROUP BY c.refCommande, c.dateCommande, f.refFournisseur, f.nomFournisseur ORDER BY c.dateCommande DESC");
+		   				ResultSet rs = pst.executeQuery();
+		   				
+		   				
+		   				while(rs.next()){
+
+		   					String refCommande = rs.getString("refCommande");
+		   					Date date = rs.getDate("dateCommande");
+		   					String refFournisseur = rs.getString("refFournisseur");
+		   					String nomFournisseur = rs.getString("nomFournisseur");
+		   					String montantTotal = rs.getString("montantTotal")+"â‚¬";
+
+		   					this.listeCommandes.add(new CommandesFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal));
+		   				}
+		   			} catch (SQLException e) {
+		   				e.printStackTrace();
+		   			}*/
+				
+
+
+								//	frame.getPanelClient().refreshListeTableClient(id, nom, prenom, adresse, email, tel, categorie);
+						
+						
+						
 									
-					}
-					
-					if(ComboBoxClient.getSelectedItem() == "Vegas"){
-						
-						ChampTextPrenom.setText("Sony");
-						
-						ChampTextAdresse.setText("SomeWhere");
-						
-						ChampTextEmail.setText("SonyVegasPro@mail.osef");
-						
-						ChampTextNumeroTelephone.setText("0678901234");  	 
-									
-					}
+		
 					
 				}
 			});
 			
 
+			
+			
 			Carte.addActionListener(new ActionListener() {
 			    public void actionPerformed(ActionEvent e) {
 			    	Cheque.setSelected(false);
@@ -292,39 +407,24 @@ public class FenetreVente extends JPanel{
 				ChampTotalHT.addCaretListener(careupdatenew);
 				Annuler.addActionListener(frame -> System.exit(0)); // quand bouton annuler appuy� action
 			    Valider.addActionListener(frame -> Envoyer()); // quand bouton envoy� action
-			    
-	}
-	
-	
-		
-	
+			  /*
+				public void initHandlers(){
+					txt_id.addKeyListener(new KeyAdapter(){
+						public void keyReleased(KeyEvent e){
+							super.keyReleased(e);
+							if(txt_id.getText().length() > 0){
+								bt_valider.setEnabled(true);
+							}
+							else bt_valider.setEnabled(false);
+						}
+					});
+*/
+			    }
 
 	
-	
-	
-	  
-
-
-
-
-
-
-
-
-
 
 void Envoyer(){
 
 }
-
-
-	
-
-
-
-
-
-
-
 
 }
