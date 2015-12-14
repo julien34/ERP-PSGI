@@ -3,7 +3,6 @@ package principal;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.*;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -11,7 +10,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-
 import achat.PanelCommande;
 import achat.PanelFournisseur;
 import components.ButtonTabComponent;
@@ -81,7 +79,8 @@ public class FenetrePrincipale extends JFrame
    		initFenetre();
    		initElements();
    		initHandlers();
-   		setVisible(true);   		
+   		setVisible(true);
+   		new FenetreConnexion(framePrincipale);
    	}
    	
    	public void initFenetre()
@@ -288,6 +287,7 @@ public class FenetrePrincipale extends JFrame
    	
    	public static void main(String[] args)
    	{	   		
+   		System.setProperty( "file.encoding", "UTF-8" );
    		//Création de la fenétre
    		framePrincipale = new FenetrePrincipale();
    		

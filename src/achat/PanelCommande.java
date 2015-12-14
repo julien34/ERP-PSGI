@@ -66,7 +66,7 @@ public class PanelCommande extends JPanel{
 	
 	
 	/**
-	 * MÃ©thode qui rÃ©cupÃ¨re l'ensemble des commandes de la base de donnÃ©es et les ajoute dans une ArrayList.
+	 * Méthode qui récupère l'ensemble des commandes de la base de données et les ajoute dans une ArrayList.
 	 */
 	private void getCommande(){
 		
@@ -82,7 +82,7 @@ public class PanelCommande extends JPanel{
 				Date date = rs.getDate("dateCommande");
 				String refFournisseur = rs.getString("refFournisseur");
 				String nomFournisseur = rs.getString("nomFournisseur");
-				String montantTotal = rs.getString("montantTotal")+"â‚¬";
+				String montantTotal = rs.getString("montantTotal")+" €";
 
 				this.listeCommandes.add(new CommandesFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal));
 			}
@@ -139,7 +139,7 @@ public class PanelCommande extends JPanel{
 		
 		
 		//On crÃ©er les composants
-		JLabel lblRechercheCommande = new JLabel("NÂ° Commande : ");
+		JLabel lblRechercheCommande = new JLabel("N° Commande : ");
 		JTextField txtRechercheCommande = new JTextField(10);
 		JLabel lblRechercheFournisseur = new JLabel("Fournisseur : ");
 		JTextField txtRechercheFournisseur = new JTextField(10);
