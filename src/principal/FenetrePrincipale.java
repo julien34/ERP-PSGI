@@ -80,7 +80,7 @@ public class FenetrePrincipale extends JFrame
    		initElements();
    		initHandlers();
    		setVisible(true);
-   		new FenetreConnexion(framePrincipale);
+   		FenetreConnexion test = new FenetreConnexion(this);
    	}
    	
    	public void initFenetre()
