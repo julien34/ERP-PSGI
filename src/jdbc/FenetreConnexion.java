@@ -131,9 +131,10 @@ public class FenetreConnexion extends JDialog
 		{
 			public void actionPerformed(ActionEvent e)
 			{			
-				//Si la requete à réussie
+				//Si la requete a réussie
 				if(DatabaseConnection.connect(array.get(0).getText(),array.get(1).getText(),array.get(2).getText(),array.get(3).getText(),array.get(4).getText()) == true)
 				{
+					//FenetrePrincipale.getFramePrincipale().setMenuBddConnexion(null);
 					frame.connexionOpened();
 					dispose();
 				}

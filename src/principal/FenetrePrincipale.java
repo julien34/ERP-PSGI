@@ -270,6 +270,7 @@ public class FenetrePrincipale extends JFrame
 
 	public void connexionOpened()
 	{
+		menuBddConnexion.setEnabled(false);
    		menuAchats.setEnabled(true);
    		menuVentes.setEnabled(true);
    		menuProduction.setEnabled(true);
@@ -278,13 +279,30 @@ public class FenetrePrincipale extends JFrame
 
 	public void connexionClosed()
 	{
+		menuBddConnexion.setEnabled(true);
    		menuAchats.setEnabled(false);
    		menuVentes.setEnabled(false);
    		menuProduction.setEnabled(false);
    		menuBddDeconnexion.setEnabled(false);
    		onglets.removeAll();
 	}
-   	
+
+	public JMenuItem getMenuBddConnexion() {
+		return menuBddConnexion;
+	}
+
+	public void setMenuBddConnexion(JMenuItem menuBddConnexion) {
+		this.menuBddConnexion = menuBddConnexion;
+	}
+
+	public static FenetrePrincipale getFramePrincipale() {
+		return framePrincipale;
+	}
+
+	public static void setFramePrincipale(FenetrePrincipale framePrincipale) {
+		FenetrePrincipale.framePrincipale = framePrincipale;
+	}
+	
    	public static void main(String[] args)
    	{	   		
    		System.setProperty( "file.encoding", "UTF-8" );
@@ -292,5 +310,9 @@ public class FenetrePrincipale extends JFrame
    		framePrincipale = new FenetrePrincipale();
    		
    	}
+	
+	
+   	
+   	
 }  
 
