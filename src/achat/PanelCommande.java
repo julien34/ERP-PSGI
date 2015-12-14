@@ -39,7 +39,7 @@ public class PanelCommande extends JPanel{
 	
 	private ArrayList<CommandesFournisseur> listeCommandes = new ArrayList<CommandesFournisseur>();
 	private Object[][] tabCo;
-	private Object[] titres = {"N° Commande","Fournisseur","Date", "Montant"};
+	private Object[] titres = {"N� Commande","Fournisseur","Date", "Montant"};
 	
 	//On créer la JTable et son modèle
 	private static JTable tableau = new JTable(new DefaultTableModel());
@@ -148,7 +148,7 @@ public class PanelCommande extends JPanel{
 		JLabel lblRechercheMontant = new JLabel("Montant : ");
 		JTextField txtRechercheMontant = new JTextField(5);
 		
-		this.btnNouveau = new JButton("Nouveau");
+		this.btnNouveau = new JButton("Ajouter");
 		this.btnModifier = new JButton("Modifier");
 		this.btnAnnuler = new JButton("Annuler");
 		
