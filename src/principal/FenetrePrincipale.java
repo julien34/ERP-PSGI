@@ -1,9 +1,7 @@
 package principal;
 
-import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.*;
+import java.awt.event.ActionListener; 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -107,8 +105,6 @@ public class FenetrePrincipale extends JFrame
 				menuAchats.add(menuAchatFournisseur);
 				menuAchats.add(menuAchatCommande);
 				
-
-	        
 	        //Ventes
 				menu.add(menuVentes);
 				menuVentes.add(menuFenetreVente);
@@ -132,13 +128,12 @@ public class FenetrePrincipale extends JFrame
    		
    		//Mise en mémoire des interfaces
 	   		//Achats
-   		
+   			
    		
 	   		//Ventes
 	   		panelClient = new PanelClient(framePrincipale);
 	   		InterfaceDevis = new InterfaceDevis(framePrincipale);
 	   		fenetreVente = new FenetreVente(framePrincipale);
-
 	   		
 	   		//Production
 	   		panelProduits = new PanelProduits();
@@ -307,12 +302,7 @@ public class FenetrePrincipale extends JFrame
    	{	   		
    		System.setProperty( "file.encoding", "UTF-8" );
    		//Création de la fenétre
-   		framePrincipale = new FenetrePrincipale();
-   		
-   	}
-	
-	
-   	
-   	
+   		framePrincipale = new FenetrePrincipale();   		
+   	}   	
 }  
 

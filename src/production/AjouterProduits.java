@@ -9,7 +9,7 @@ import javax.swing.*;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 
-public class AjouterProduits extends JDialog
+public class AjouterProduits extends JPanel
 {	
 	private JPanel panelGrid = new JPanel(new GridLayout(5,1));
 	private JPanel panelFlow1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -17,29 +17,24 @@ public class AjouterProduits extends JDialog
 	private JPanel panelFlow3 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	private JPanel panelFlow4 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	private JPanel panelFlow5 = new JPanel(new FlowLayout(FlowLayout.CENTER));
+	JButton retour = new JButton("Retour");
 	
 	/**
 	 * Le constructeur par défaut fait appel à la fonction init
 	 */
 	public AjouterProduits()
 	{
-		setTitle("Ajouter un produit");
-		setModal(true);
-		initFenetre();
 		initElements();
 	}	
+	
+	public JButton getRetour()
+	{
+		return retour;
+	}
 	
 	/**
 	 * Initialise la fenetre associée
 	 */
-	public void initFenetre()
-	{
-		//Paramétrage de la fenêtre
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(512,288);	
-		setLocationRelativeTo(null);
-		setResizable(false);
-	}
 	
 	public void initElements()
 	{
@@ -61,7 +56,6 @@ public class AjouterProduits extends JDialog
 
 		JLabel required = new JLabel("<html><font color='red'>* </font>champs obligatoire</html> ");
 		JButton ajouter = new JButton("Ajouter");
-		JButton retour = new JButton("Retour");
 		
 		JLabel error = new JLabel("");
 		
@@ -86,8 +80,7 @@ public class AjouterProduits extends JDialog
 		panelFlow2.add(prixAchat);
 
 		panelFlow3.add(udmLabel);
-		panelFlow3.add(udm);
-		
+		panelFlow3.add(udm);		
 		
 		panelFlow4.add(required);
 		panelFlow4.add(ajouter);
@@ -114,15 +107,5 @@ public class AjouterProduits extends JDialog
 				else JOptionPane.showMessageDialog(null, "Erreur d'ajout du produit. Vérifiez les champs.", "Ajout de produit", JOptionPane.WARNING_MESSAGE);
 			}
 		});
-		retour.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				dispose();
-			}
-		});
-
-		//Afficher la fenêtre
-		setVisible(true);
 	}
 }

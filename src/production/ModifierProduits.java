@@ -7,7 +7,7 @@ import javax.swing.*;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 
-public class ModifierProduits extends JDialog
+public class ModifierProduits extends JPanel
 {	
 	private JPanel panelGrid = new JPanel(new GridLayout(5,1));
 	private JPanel panelFlow1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -17,6 +17,7 @@ public class ModifierProduits extends JDialog
 	private JPanel panelFlow5 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	private String value1,value2,value3,value4,value5;
 	private int codeProduit;
+	JButton retour = new JButton("Retour");	
 	
 	/**
 	 * Rend un champ null égal a un string vide
@@ -30,13 +31,8 @@ public class ModifierProduits extends JDialog
 		else return s;
 	}
 	
-	/**
-	 * Le constructeur par défaut fait appel à la fonction init
-	 */
-	public ModifierProduits(String val1, String val2, String val3, String val4, String val5)
+	public void setVal(String val1, String val2, String val3, String val4, String val5)
 	{
-		setTitle("Modifier un produit");
-		setModal(true);
 		value1 = val1;
 		value1 = notNull(value1);
 		
@@ -53,21 +49,19 @@ public class ModifierProduits extends JDialog
 		value5 = notNull(value5);
 		
 		codeProduit = DatabaseConnection.getCodeProduit(value1,value2,value3,value4,value5);
-		
-		initFenetre();
+	}
+	
+	/**
+	 * Le constructeur par défaut fait appel à la fonction init
+	 */
+	public ModifierProduits()
+	{		
 		initElements();
 	}	
 	
-	/**
-	 * Initialise la fenetre associée
-	 */
-	public void initFenetre()
+	public JButton getRetour()
 	{
-		//Paramétrage de la fenêtre
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(512,288);	
-		setLocationRelativeTo(null);
-		setResizable(false);
+		return retour;
 	}
 	
 	public void initElements()
@@ -88,8 +82,7 @@ public class ModifierProduits extends JDialog
 		JLabel udmLabel = new JLabel("unité de mesure ");
 		JTextField udm = new JTextField(value5,10);
 		
-		JButton modifier = new JButton("Modifier");
-		JButton retour = new JButton("Retour");			
+		JButton modifier = new JButton("Modifier");	
 		JLabel error = new JLabel("");	
 		
 		//Ajouter les élements	
@@ -139,15 +132,5 @@ public class ModifierProduits extends JDialog
 				else JOptionPane.showMessageDialog(null, "Erreur de modification du produit. Vérifiez vos champs.", "Modification de produit", JOptionPane.WARNING_MESSAGE);
 			}
 		});
-		retour.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				dispose();
-			}
-		});
-
-		//Afficher la fenétre
-		setVisible(true);
 	}
 }

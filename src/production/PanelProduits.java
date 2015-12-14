@@ -5,7 +5,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -18,7 +17,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import jdbc.DatabaseConnection;
-import principal.FenetrePrincipale;
 
 public class PanelProduits extends JPanel 
 {
@@ -47,6 +45,8 @@ public class PanelProduits extends JPanel
         }
     };
 	private int produitChoisi = -1;
+	private AjouterProduits ajouter_p = new AjouterProduits();
+	private ModifierProduits modifier_p = new ModifierProduits();
 	
 	public void fillTable()
 	{
@@ -105,7 +105,11 @@ public class PanelProduits extends JPanel
 		ajouter.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
-			{ new AjouterProduits(); }
+			{ 
+				panelTable.remove(modifier_p);
+				panelTable.add("South",ajouter_p);
+				revalidate();
+			}
 		});
 		modifier.addActionListener(new ActionListener()
 		{
@@ -116,7 +120,10 @@ public class PanelProduits extends JPanel
 				String value3 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 2));
 				String value4 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 3));
 				String value5 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 4));
-				new ModifierProduits(value1,value2,value3,value4,value5); 
+				panelTable.remove(ajouter_p);
+				modifier_p.setVal(value1,value2,value3,value4,value5);
+				panelTable.add("South",modifier_p);
+				revalidate();
 			}
 		});
 		supprimer.addActionListener(new ActionListener()
@@ -127,12 +134,12 @@ public class PanelProduits extends JPanel
 				if(option == JOptionPane.YES_OPTION)
 				{
 					if (produitChoisi != -1)
-					{	
+					{
 						String value1 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 0));
 						String value2 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 1));
 						String value3 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 2));
 						String value4 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 3));
-						String value5 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 4));	
+						String value5 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 4));
 						
 						int codeProduit = DatabaseConnection.getCodeProduit(value1,value2,value3,value4,value5);
 						
@@ -142,6 +149,16 @@ public class PanelProduits extends JPanel
 				}
 			}
 		});	
+		ajouter_p.getRetour().addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{ panelTable.remove(ajouter_p); }
+		});
+		modifier_p.getRetour().addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{ panelTable.remove(modifier_p); }
+		});
 	}
 	
 	/**
@@ -151,7 +168,7 @@ public class PanelProduits extends JPanel
 	{
 		float val3 = Float.parseFloat(value3);
 		float val4 = Float.parseFloat(value4);
-		float val5 = Float.parseFloat(value5);	
+		float val5 = Float.parseFloat(value5);
 		int ligneChoisieTemp = produitChoisi;
 		if (produitChoisi != -1)
 		{			
@@ -170,7 +187,7 @@ public class PanelProduits extends JPanel
 	{
 		float val3 = Float.parseFloat(value3);
 		float val4 = Float.parseFloat(value4);
-		float val5 = Float.parseFloat(value5); 		
+		float val5 = Float.parseFloat(value5);
 		Object[] obj = {value1,value2,val3,val4,val5};
 		model.addRow(obj);
 	}
