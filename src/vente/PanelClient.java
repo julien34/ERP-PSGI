@@ -38,11 +38,14 @@ public class PanelClient extends JPanel{
 	
 	private JPanel contenu = new JPanel(new BorderLayout(10,10));
 	private JPanel panelBouttons = new JPanel(new FlowLayout(FlowLayout.CENTER,40,0));
+	private JPanel panelRecherche;
 
 	private JButton bt_ajouter = new JButton("Ajouter");
 	private JButton bt_modifier = new JButton("Modifier");
 	private JButton bt_supprimer = new JButton("Supprimer");
 	
+	private static JTextField txtRecherche;
+	private JLabel lblRecherche;
 	
 	private int clientChoisi = -1;
 	//private AjouterClient ajouter_p = new AjouterClient();
@@ -92,9 +95,17 @@ public class PanelClient extends JPanel{
 		scrollPane = new JScrollPane(tableClient);
 		tableClient.setPreferredScrollableViewportSize(dimensionTable);
 		
+		this.panelRecherche = new JPanel();
+		
+		add(panelRecherche);
+		
+		
 		add(contenu);
 		contenu.add("North",scrollPane);
 		contenu.add("Center",panelBouttons);
+		
+		
+
 		
 		panelBouttons.add(bt_ajouter);
 		bt_ajouter.setPreferredSize(dimensionBouttons);
@@ -102,6 +113,11 @@ public class PanelClient extends JPanel{
 		bt_modifier.setPreferredSize(dimensionBouttons);
 		panelBouttons.add(bt_supprimer);
 		bt_supprimer.setPreferredSize(dimensionBouttons);
+		
+		
+		
+		//this.panelRecherche.add(this.lblRecherche);
+		//this.panelRecherche.add(txtRecherche);
 	}
 	
 	public void initHandlers(){
