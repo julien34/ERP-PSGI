@@ -194,7 +194,7 @@ public class FenetrePrincipale extends JFrame
 	   			public void actionPerformed(ActionEvent e)
 	   			{
 	   				
-	   				ajouterOnglet("Gestion des ventes",fenetreVente);
+	   				ajouterOnglet("Ventes Entreprise",fenetreVente);
 	   			}
 	   		});	
 	   		
@@ -204,7 +204,7 @@ public class FenetrePrincipale extends JFrame
 	   			{
 //	   				FenetreVente.remplirInfosClient();
 
-	   				ajouterOnglet("Gestion des ventes",fenetreVente);
+	   				ajouterOnglet("Vente Particulier",fenetreVente);
 	   			}
 	   		});	
 	   		

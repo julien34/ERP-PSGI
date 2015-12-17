@@ -59,8 +59,8 @@ public class FenetreVente extends JPanel{
 	//JTextField ChampTextNom = new JTextField("");
 	//String[] NomClient = {"Zetofrais","Bricot","Vegas","Fonfec","Formigli","Rembert","Ruiz","Manneli"};	
 	
-	private static ArrayList<Client> liste = new ArrayList<Client>();
-	private static String[] titres = {"ID Client","NomClient","PrenomClient","AdresseClient","MailClient","N° Tél", "Catégorie"};
+	private static ArrayList<Commande> liste = new ArrayList<Commande>();
+	private static String[] titres = {"Nom","PrixUnitaire","Quantité","PrixTotal"};
 	private static Object[][] tabFn;
 
 	
@@ -110,7 +110,7 @@ public class FenetreVente extends JPanel{
 
 	
 	
-	int Etat = 0; //1 pour entreprise   2 pour particulier
+	int Etat = 0; //1 pour Particulier   2 pour Entreprise
 
 
 	
@@ -136,16 +136,7 @@ public class FenetreVente extends JPanel{
         }
 	};
 	
-	/*  Object[][] data ={
-			  {"Cho7","Chausette","4","20","80"},
-			  {"Dtf6","Dentifrice","1","6","6"},
-			  {"Sho6r","Chaussure","1","50","50"},
-			  {"VV2","VoitureV2","2","140000","280000"}
-	  };
-	  String title[] = { "Ref","Nom","Quantite","PrixUnitaire","PrixHorsTaxe"};
-	  
-	  JTable tableau = new JTable(data,title);
-	*/
+
 	
 		private Dimension dimensionBouttons = new Dimension(140,26);
 		private Dimension dimensionTextField = new Dimension (180 , 26);
@@ -168,7 +159,7 @@ public class FenetreVente extends JPanel{
 	
 	
 	
-	 public  void remplirInfosClient(){
+	 public  void remplirNomParticulier(){
 		try {
 			Connection cn = DatabaseConnection.getCon();
 			PreparedStatement pst = cn.prepareStatement("SELECT nomclient FROM VENTE_CLIENTS WHERE codecategorieclient = '1'");
@@ -188,40 +179,119 @@ public class FenetreVente extends JPanel{
 			 b.printStackTrace();
 		 }
 		}
-	
-		private ArrayList<Client> getClient() {
-			try{
-				Connection cn = DatabaseConnection.getCon();
-				PreparedStatement pst = cn.prepareStatement("SELECT nomclient FROM VENTE_CLIENTS WHERE codecategorieclient = '1'");
-				ResultSet rs =  pst.executeQuery();
+	 
+	 public  void remplirNomEntreprise(){
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("SELECT nomclient FROM VENTE_CLIENTS WHERE codecategorieclient = '2'");
+			ResultSet rs =  pst.executeQuery();
+			while(rs.next()){	
 				
-				while(rs.next()){
-					String idclient = rs.getString("idclient");
-					String nomclient = rs.getString("nomclient");
-					String prenomclient = rs.getString("prenomclient");
-					String telclient = rs.getString("telclient");
-					String adresseclient = rs.getString("adresseclient");
-					String categorie = rs.getString("codecateg");
-					String mail = rs.getString("emailclient");
 
-					liste.add(new Client(idclient, nomclient, prenomclient, adresseclient ,mail, telclient, categorie));
-				}} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			return liste;
+		     	ComboBoxClient.addItem(rs.getString(1));			
+
+				}
+		
+				rs.close();
+		} catch (SQLException e) {
+		e.printStackTrace();
+		}	
+		 catch(NullPointerException b){
+			 b.printStackTrace();
+		 }
 		}
 	 
 	 
+	 public void remplirInfoParticulier(){
+			try {
+				Connection cn = DatabaseConnection.getCon();
+				PreparedStatement pst = cn.prepareStatement("SELECT * FROM VENTE_CLIENTS WHERE codecategorieclient = '1'");
+				ResultSet rs =  pst.executeQuery();
+				while(rs.next()){	
+					
+					int numeroclientrequete = rs.getRow();
+					int numeroclientcombo = ComboBoxClient.getSelectedIndex();
+					
+					String idclient = rs.getString(1);
+					String nomclient = rs.getString(2);
+					String prenomclient = rs.getString(3);
+					String adresseclient = rs.getString(4);
+					String mail = rs.getString(5);
+					String telclient = rs.getString(6);
+					String categorie = rs.getString(7);
+
+					if(numeroclientrequete-1 == numeroclientcombo)
+					{
+							ChampTextEmail.setText(mail);
+							ChampTextAdresse.setText(adresseclient);
+							ChampTextNumeroTelephone.setText(telclient);
+							ChampTextPrenom.setText(prenomclient);
+						
+					}
+					
+				}
+					rs.close();
+			} catch (SQLException e) {
+			e.printStackTrace();
+			}	
+			 catch(NullPointerException b){
+				 b.printStackTrace();
+			 }
+	 }
+	 
+	 
+	 public void remplirInfoEntreprise(){
+			try {
+				Connection cn = DatabaseConnection.getCon();
+				PreparedStatement pst = cn.prepareStatement("SELECT * FROM VENTE_CLIENTS WHERE codecategorieclient = '2'");
+				ResultSet rs =  pst.executeQuery();
+				while(rs.next()){	
+					
+					int numeroclientrequete = rs.getRow();
+					int numeroclientcombo = ComboBoxClient.getSelectedIndex();
+					
+					String idclient = rs.getString(1);
+					String nomclient = rs.getString(2);
+					String prenomclient = rs.getString(3);
+					String adresseclient = rs.getString(4);
+					String mail = rs.getString(5);
+					String telclient = rs.getString(6);
+					String categorie = rs.getString(7);
+
+					if(numeroclientrequete-1 == numeroclientcombo)
+					{
+							ChampTextEmail.setText(mail);
+							ChampTextAdresse.setText(adresseclient);
+							ChampTextNumeroTelephone.setText(telclient);
+							ChampTextPrenom.setText(prenomclient);
+						
+					}
+					
+				}
+					rs.close();
+			} catch (SQLException e) {
+			e.printStackTrace();
+			}	
+			 catch(NullPointerException b){
+				 b.printStackTrace();
+			 }
+	 }
+ 
 	public void initElementParticulier(){
 	
 		
 		InformationClient.setText("Information du particulier");
 		Prenom.setText("Prenom : ");
+		ComboBoxClient.removeAllItems();
+		remplirNomParticulier();
+		
 	}
 	
 	public void initElementEntreprise(){
 	    InformationClient.setText("Information de l'entreprise");
 		Prenom.setText("Responsable : ");;
+		ComboBoxClient.removeAllItems();
+		remplirNomEntreprise();
 	}
 	
 	public void initElements(){
@@ -230,24 +300,22 @@ public class FenetreVente extends JPanel{
    		{
    			public void actionPerformed(ActionEvent e)
    			{
-   				initElementEntreprise();
-   				
-   				Etat = 1;
+				initElementEntreprise();
+   				validate();
+   				Etat = 2;
 
    			}
    		});
-   		
-
-
-   			
-   			
+		
    		
    		FenetrePrincipale.menuVenteParticulier.addActionListener(new ActionListener()
    		{
    			public void actionPerformed(ActionEvent e)
    			{
+   				
    				initElementParticulier();
-   				Etat = 2;
+   				validate();
+   				Etat = 1;
    			}
    		});	
 			
@@ -275,12 +343,16 @@ public class FenetreVente extends JPanel{
 			//ChampTextNom.setPreferredSize(dimensionTextField);
 			Formulaire.add(Prenom); // 3/1
 			Formulaire.add(ChampTextPrenom); // 3/1
+			ChampTextPrenom.setEditable(false);
 			Formulaire.add(Adresse); // 4/1
 			Formulaire.add(ChampTextAdresse); // 4/1
+			ChampTextAdresse.setEditable(false);
 			Formulaire.add(Email);// 5/1
 			Formulaire.add(ChampTextEmail);// 5/1
+			ChampTextEmail.setEditable(false);
 			Formulaire.add(NumeroTelephone);// 6/1
 			Formulaire.add(ChampTextNumeroTelephone);// 6/1
+			ChampTextNumeroTelephone.setEditable(false);
 			FenetreHaut.add(ModeDePayement); // fenetre haut prend modedepayement 1/2
 			ModeDePayement.add(ModePayement);// 1/1
 			ModeDePayement.add(Carte);
@@ -323,6 +395,9 @@ public class FenetreVente extends JPanel{
 			
 			
 			
+			
+			
+			
 			Carte.addActionListener(new ActionListener() {
 			    public void actionPerformed(ActionEvent e) {
 			    	Cheque.setSelected(false);
@@ -345,6 +420,20 @@ public class FenetreVente extends JPanel{
 			    }
 			  });
 
+				ComboBoxClient.addActionListener(new ActionListener() {			
+				public void actionPerformed(ActionEvent e) {
+						if(Etat == 1)
+							{
+							
+							remplirInfoParticulier();
+							}
+						if(Etat == 2)
+						{
+							remplirInfoEntreprise();
+						}
+					}
+				});
+				
 				AjouterProduit.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
@@ -356,7 +445,7 @@ public class FenetreVente extends JPanel{
 					
 					public void actionPerformed(ActionEvent e) {
 						// TODO Auto-generated method stub
-						remplirInfosClient();
+
 					}
 				});
 				
@@ -375,29 +464,48 @@ public class FenetreVente extends JPanel{
 
 					}
 				};
-				
-				
-				
 
 				ChampTotalHT.addCaretListener(careupdatenew);
 				Annuler.addActionListener(frame -> System.exit(0)); // quand bouton annuler appuy� action
 			    Valider.addActionListener(frame -> Envoyer()); // quand bouton envoy� action
-			  /*
-				public void initHandlers(){
-					txt_id.addKeyListener(new KeyAdapter(){
-						public void keyReleased(KeyEvent e){
-							super.keyReleased(e);
-							if(txt_id.getText().length() > 0){
-								bt_valider.setEnabled(true);
-							}
-							else bt_valider.setEnabled(false);
-						}
-					});
-*/
-			    }
 
-	
+	}
+/*
+	private ArrayList<Commande> getCommande() {
+		try{
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("SELECT nom , prixVente FROM PRODUIT WHERE codecategorieclient = '2'");
+			ResultSet rs =  pst.executeQuery();
+			while(rs.next()){
+				String ref = rs.getString("refFournisseur");
+				String nomFn = rs.getString("nomFournisseur");
+				String siret = rs.getString("siret");
+				String tel = rs.getString("telFournisseur");
+				String adresse = rs.getString("adresseFournisseur");
+				String categorie = rs.getString("nomCategorie");
 
+				liste.add(new Commande(ref, nomFn, siret, tel, adresse, categorie));
+			}} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return liste;
+	}
+    
+    
+	public void setTableau(Commande f, int indice){
+		liste.remove(indice);
+		liste.add(indice,f);
+		
+		tabFn[indice][0] = f.nom;
+		tabFn[indice][1] = f.siret;
+		tabFn[indice][2] = f.tel;
+		tabFn[indice][3] = f.adresse;
+		tabFn[indice][4] = f.categorie;
+		
+		modele.setDataVector(tabFn,titres);
+	}
+
+	*/
 void Envoyer(){
 
 }
