@@ -147,21 +147,17 @@ public class PanelClient extends JPanel{
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				int option = JOptionPane.showConfirmDialog(null, "Confirmer la suppression du produit ?", "Suppression de produit", JOptionPane.YES_NO_OPTION);
+				int option = JOptionPane.showConfirmDialog(null, "Confirmer la suppression du client ?", "Suppression de produit", JOptionPane.YES_NO_OPTION);
 				if(option == JOptionPane.YES_OPTION)
 				{
 					if (clientChoisi != -1)
 					{
 						String value1 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 0));
-						String value2 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 1));
-						String value3 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 2));
-						String value4 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 3));
-						String value5 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 4));
-						String value6 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 5));
+
 						
-						String codeClient = DatabaseConnection.getCodeClient(value1,value2,value3,value4,value5,value6);
+						//String codeClient = DatabaseConnection.getCodeClient(value1,value2,value3,value4,value5,value6);
 						
-						if (DatabaseConnection.requete("DELETE FROM vente_clients WHERE IDCLIENT = "+codeClient)){
+						if (DatabaseConnection.requete("DELETE FROM vente_clients WHERE IDCLIENT = "+value1)){
 						{ modelTableClient.removeRow(tableClient.convertRowIndexToModel(clientChoisi)); }
 				
 						}
