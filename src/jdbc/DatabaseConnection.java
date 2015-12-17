@@ -164,6 +164,30 @@ public class DatabaseConnection
 			return -1;
 		}
 	}
+	
+	static public String getCodeClient(String value1,String value2,String value3,String value4,String value5, String value6)
+	{
+		try
+		{
+			stat = con.createStatement();
+			ResultSet resultat = stat.executeQuery("SELECT IDCLIENT FROM vente_clients WHERE NOMCLIENT = '"+value1+"' AND PRENOMCLIENT = '"+value2+"' AND ADRESSECLIENT = "+(value3)+" AND EMAILCLIENT = "+(value4)+" AND TELCLIENT = "+(value5)+"AND CODECATEG = " +(value6));
+			
+			String codeClient = null;
+			
+			if(resultat.next())
+				codeClient = resultat.getString(1);
+			
+			stat.close();
+			
+			return codeClient;			
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
+	
 	/**
 	 * recupere une arraylist pour la comboBox
 	 * @return ArrayList

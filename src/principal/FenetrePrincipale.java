@@ -257,7 +257,7 @@ public class FenetrePrincipale extends JFrame
    		return panelProduits;
    	}
    	
-   	public PanelClient getPanelClient(){
+   	public static PanelClient getPanelClient(){
 		return panelClient;
    		
    	}

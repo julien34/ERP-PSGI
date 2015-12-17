@@ -16,10 +16,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
+import production.AjouterProduits;
+import production.ModifierProduits;
 
 /**
  * 
@@ -38,12 +42,18 @@ public class PanelClient extends JPanel{
 	private JButton bt_modifier = new JButton("Modifier");
 	private JButton bt_supprimer = new JButton("Supprimer");
 	
+	
+	private int clientChoisi = -1;
+	//private AjouterClient ajouter_p = new AjouterClient();
+	private ModifierClients modifier_p = new ModifierClients();
+	
 	/**
 	 * GridLayout qui contient les informations des Clients
 	 */
-	private JTable tableClient;
+	private static JTable tableClient;
+	
 	private JScrollPane scrollPane;
-	private final String[] nomColonnes = {"Id","Nom","Prenom","Adresseclient","Emailclient","Telehponeclient","codeCategorieclient"};
+	private final static String[] nomColonnes = {"Id","Nom","Prenom","Adresseclient","Emailclient","Telehponeclient","codeCategorieclient"};
 	private static DefaultTableModel modelTableClient = new DefaultTableModel(0,7){
 		Class[] types = {String.class, String.class, String.class,String.class,String.class,String.class,String.class};
 		
@@ -62,7 +72,7 @@ public class PanelClient extends JPanel{
 	private Dimension dimensionBouttons = new Dimension(140,26);
 	private Dimension dimensionTable = new Dimension(540, 224);
 	
-	public void remplirtableClient(){
+	public static void remplirtableClient(){
 		modelTableClient.setDataVector(DatabaseConnection.remplirListeClient(), nomColonnes);
 		tableClient.getRowSorter().toggleSortOrder(0);
 	}
@@ -94,11 +104,45 @@ public class PanelClient extends JPanel{
 	}
 	
 	public void initHandlers(){
+		
+		tableClient.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
+		{
+			public void valueChanged(ListSelectionEvent e) 
+		    {
+				if (e.getValueIsAdjusting()) return;			        
+		        ListSelectionModel selection = (ListSelectionModel) e.getSource();
+		        clientChoisi = selection.getMinSelectionIndex();
+		        
+		        //Désactiver certains boutons si on ne selectionne aucune ligne
+		        bt_modifier.setEnabled(!selection.isSelectionEmpty());
+		        bt_supprimer.setEnabled(!selection.isSelectionEmpty());
+		    }
+		});
+		
 		bt_ajouter.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 			new AjouterClient(framePrincipale);
 			}
 		});
+		
+		bt_modifier.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{ 
+				String value1 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 0));
+				String value2 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 1));
+				String value3 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 2));
+				String value4 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 3));
+				String value5 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 4));
+				String value6 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 5));
+				//contenu.remove(ajouter_p);
+				modifier_p.setVal(value1,value2,value3,value4,value5,value6);
+				contenu.add("South",modifier_p);
+				revalidate();
+			}
+		});
+		
+		
 	}
 	/*public void refreshLigneTableClient(String id, String nom, String prenom, String adresse, String email, String tel, String categorie){
 		int id2 = Integer.parseInt(id);
@@ -112,4 +156,21 @@ public class PanelClient extends JPanel{
 		Object[] obj = {id2, nom, prenom, adresse, email, tel, categ};
 		modelTableClient.addRow(obj);
 	}
+	
+	public void raffraichirLigne(String value1, String value2, String value3, String value4, String value5)
+	{
+	
+		int ligneChoisieTemp = clientChoisi;
+		if (clientChoisi != -1)
+		{			
+			modelTableClient.setValueAt(value1, tableClient.convertRowIndexToModel(ligneChoisieTemp), 0);
+			modelTableClient.setValueAt(value2, tableClient.convertRowIndexToModel(ligneChoisieTemp), 1);
+			modelTableClient.setValueAt(value3, tableClient.convertRowIndexToModel(ligneChoisieTemp), 2);
+			modelTableClient.setValueAt(value4, tableClient.convertRowIndexToModel(ligneChoisieTemp), 3);
+			modelTableClient.setValueAt(value5, tableClient.convertRowIndexToModel(ligneChoisieTemp), 4);
+			modelTableClient.setValueAt(value5, tableClient.convertRowIndexToModel(ligneChoisieTemp), 5);
+		}
+	}
+	
+	
 }
