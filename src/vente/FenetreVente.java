@@ -64,7 +64,7 @@ public class FenetreVente extends JPanel{
 	private static Object[][] tabFn;
 
 	
-	JComboBox ComboBoxClient = new JComboBox();
+	static JComboBox ComboBoxClient = new JComboBox();
 	
 	JLabel Prenom = new JLabel("");
 	JTextField ChampTextPrenom = new JTextField("");
@@ -156,6 +156,7 @@ public class FenetreVente extends JPanel{
 	this.frame = frame;
 	initElements();
 	
+	
 	}
 	
 	public void remplirtableCommande(){
@@ -165,28 +166,15 @@ public class FenetreVente extends JPanel{
 	
 	
 	
-	 public void remplirInfosClient(){
+	 public  void remplirInfosClient(){
 		try {
 			Connection cn = DatabaseConnection.getCon();
 			PreparedStatement pst = cn.prepareStatement("SELECT nomclient FROM VENTE_CLIENTS WHERE codecategorieclient = '1'");
 			ResultSet rs =  pst.executeQuery();
-			while(rs.next()){	
-				
-				String idclient = rs.getString("idclient");
-				String nomclient = rs.getString("nomclient");
-				String prenomclient = rs.getString("prenomclient");
-				String telclient = rs.getString("telclient");
-				String adresseclient = rs.getString("adresseclient");
-				String categorie = rs.getString("codecateg");
-				String mail = rs.getString("emailclient");
-				
-				liste.add(new Client(idclient, nomclient, prenomclient, adresseclient ,mail, telclient, categorie));
 
-				
-		     	ComboBoxClient.addItem(rs.getString(nomclient));
-			
-
-				}
+			rs.next();
+			String test = rs.getString(1);
+			ChampTextPrenom.setText(test);			
 				rs.close();
 		} catch (SQLException e) {
 		e.printStackTrace();
@@ -255,7 +243,6 @@ public class FenetreVente extends JPanel{
 			Formulaire.add(Nom);// 2/1
 			//Formulaire.add(ChampTextNom);// 2/1
 			
-			this.remplirInfosClient();
 			Formulaire.add(ComboBoxClient);
 			//ChampTextNom.setPreferredSize(dimensionTextField);
 			Formulaire.add(Prenom); // 3/1
@@ -306,54 +293,6 @@ public class FenetreVente extends JPanel{
 			Buttons.add(Valider);
 			Buttons.add(Annuler);
 			
-			
-
-			
-			
-			ComboBoxClient.addActionListener(new ActionListener(){
-				public void actionPerformed(ActionEvent e) {
-					
-								
-						ChampTextPrenom.setText("Juda");
-						ChampTextAdresse.setText("5rueDuFrigo");
-						ChampTextEmail.setText("juda.bricot@mail.osef");
-						ChampTextNumeroTelephone.setText("0606060606");  	 
-						
-
-/*
-		   			try {
-		   				Connection cn = DatabaseConnection.getCon();
-		   				PreparedStatement pst = cn.prepareStatement("SELECT c.refCommande, c.dateCommande, f.refFournisseur, f.nomFournisseur, SUM(p.prixProduit*lc.quantite) AS montantTotal FROM CommandesFournisseur c JOIN Fournisseurs f ON f.refFournisseur = c.refFournisseur JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande JOIN ProduitsFournisseur p ON p.refProduit = lc.refProduit GROUP BY c.refCommande, c.dateCommande, f.refFournisseur, f.nomFournisseur ORDER BY c.dateCommande DESC");
-		   				ResultSet rs = pst.executeQuery();
-		   				
-		   				
-		   				while(rs.next()){
-
-		   					String refCommande = rs.getString("refCommande");
-		   					Date date = rs.getDate("dateCommande");
-		   					String refFournisseur = rs.getString("refFournisseur");
-		   					String nomFournisseur = rs.getString("nomFournisseur");
-		   					String montantTotal = rs.getString("montantTotal")+"â‚¬";
-
-		   					this.listeCommandes.add(new CommandesFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal));
-		   				}
-		   			} catch (SQLException e) {
-		   				e.printStackTrace();
-		   			}*/
-				
-
-
-								//	frame.getPanelClient().refreshListeTableClient(id, nom, prenom, adresse, email, tel, categorie);
-						
-						
-						
-									
-		
-					
-				}
-			});
-			
-
 			
 			
 			Carte.addActionListener(new ActionListener() {
