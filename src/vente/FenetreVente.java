@@ -278,8 +278,15 @@ public class FenetreVente extends JPanel{
 	 }
  
 	public void initElementParticulier(){
-	
+	/*
+		JTextField ChampTextPrenom =  JTextField("");
 		
+		JTextField ChampTextAdresse =  JTextField("");
+		
+		JTextField ChampTextEmail =  JTextField("");
+		
+		JTextField ChampTextNumeroTelephone =  JTextField("");  	
+		*/
 		InformationClient.setText("Information du particulier");
 		Prenom.setText("Prenom : ");
 		ComboBoxClient.removeAllItems();

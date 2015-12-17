@@ -6,6 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.*;
 
@@ -16,9 +20,8 @@ public class AjouterProduitCommande extends JDialog
 {	
 	private static FenetrePrincipale frame;
 
-	String[] NomProduit = {"Voiture","Chaussette","lave-glace","pneu","dentifrice","porte","test"};	
 	JLabel Produit = new JLabel("Produit");
-	JComboBox ComboBoxProduit = new JComboBox(NomProduit);
+	JComboBox ComboBoxProduit = new JComboBox();
 
 	JLabel LQuantite = new JLabel("Qte");	
 	JSpinner SpinQuantite = new JSpinner();
@@ -72,7 +75,47 @@ public class AjouterProduitCommande extends JDialog
 		
 		ButtonAnnuler.addActionListener(frame ->dispose()); // quand bouton annuler appuy� action
 
+   		FenetrePrincipale.menuVenteEntreprise.addActionListener(new ActionListener()
+   		{
+   			public void actionPerformed(ActionEvent e)
+   			{
+				initElementEntreprise();
+   				validate();
 
+   			}
+   		});
+   		
 		setVisible(true);
 	}
+	
+	
+	public void initElementEntreprise(){
+
+		ComboBoxProduit.removeAllItems();
+		remplirProduit();
+	}
+
+		
+   	 public  void remplirProduit(){
+ 		try {
+ 			Connection cn = DatabaseConnection.getCon();
+ 			PreparedStatement pst = cn.prepareStatement("SELECT description FROM PRODUITS");
+ 			ResultSet rs =  pst.executeQuery();
+ 			while(rs.next()){	
+ 				
+
+ 		     	ComboBoxProduit.addItem(rs.getString(1)) ;			
+
+ 				}
+ 		
+ 				rs.close();
+ 		} catch (SQLException e) {
+ 		e.printStackTrace();
+ 		}	
+
+   	 }
+	
+	
 }
+
+
