@@ -45,7 +45,7 @@ public class PopupCommande extends JDialog {
 			this.setTitle("Nouvelle commande d'achat");
 		}
 		else {
-			this.setTitle("Modification de la commande d'achat nÂ°"+this.commande.getRefCommande()+" du "+this.commande.getDate()+" ("+this.commande.getNomFourniseur()+")");
+			this.setTitle("Modification de la commande d'achat n°"+this.commande.getRefCommande()+" du "+this.commande.getDate()+" ("+this.commande.getNomFourniseur()+")");
 		}
 		
 		this.setSize(850, 650);
