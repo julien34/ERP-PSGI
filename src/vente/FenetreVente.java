@@ -107,6 +107,8 @@ public class FenetreVente extends JPanel{
 	JScrollPane scrollPane =  new JScrollPane();
 	JTable tableCommande;
 	
+
+	
 	
 	int Etat = 0; //1 pour entreprise   2 pour particulier
 
@@ -171,10 +173,13 @@ public class FenetreVente extends JPanel{
 			Connection cn = DatabaseConnection.getCon();
 			PreparedStatement pst = cn.prepareStatement("SELECT nomclient FROM VENTE_CLIENTS WHERE codecategorieclient = '1'");
 			ResultSet rs =  pst.executeQuery();
+			while(rs.next()){	
+				
 
-			rs.next();
-			String test = rs.getString(1);
-			ChampTextPrenom.setText(test);			
+		     	ComboBoxClient.addItem(rs.getString(1));			
+
+				}
+		
 				rs.close();
 		} catch (SQLException e) {
 		e.printStackTrace();
@@ -184,7 +189,29 @@ public class FenetreVente extends JPanel{
 		 }
 		}
 	
-			
+		private ArrayList<Client> getClient() {
+			try{
+				Connection cn = DatabaseConnection.getCon();
+				PreparedStatement pst = cn.prepareStatement("SELECT nomclient FROM VENTE_CLIENTS WHERE codecategorieclient = '1'");
+				ResultSet rs =  pst.executeQuery();
+				
+				while(rs.next()){
+					String idclient = rs.getString("idclient");
+					String nomclient = rs.getString("nomclient");
+					String prenomclient = rs.getString("prenomclient");
+					String telclient = rs.getString("telclient");
+					String adresseclient = rs.getString("adresseclient");
+					String categorie = rs.getString("codecateg");
+					String mail = rs.getString("emailclient");
+
+					liste.add(new Client(idclient, nomclient, prenomclient, adresseclient ,mail, telclient, categorie));
+				}} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			return liste;
+		}
+	 
+	 
 	public void initElementParticulier(){
 	
 		
@@ -244,6 +271,7 @@ public class FenetreVente extends JPanel{
 			//Formulaire.add(ChampTextNom);// 2/1
 			
 			Formulaire.add(ComboBoxClient);
+			//remplirInfosClient();
 			//ChampTextNom.setPreferredSize(dimensionTextField);
 			Formulaire.add(Prenom); // 3/1
 			Formulaire.add(ChampTextPrenom); // 3/1
@@ -321,6 +349,14 @@ public class FenetreVente extends JPanel{
 					public void actionPerformed(ActionEvent e) {
 						
 						 new AjouterProduitCommande(frame);
+					}
+				});
+				
+				SupprimerProduit.addActionListener(new ActionListener() {
+					
+					public void actionPerformed(ActionEvent e) {
+						// TODO Auto-generated method stub
+						remplirInfosClient();
 					}
 				});
 				
