@@ -73,10 +73,26 @@ public class AjouterProduitCommande extends JDialog
 		panelButton.add(ButtonAnnuler);
 		
 		ButtonOk.addActionListener(new ActionListener() {
-			
 			public void actionPerformed(ActionEvent e) {
 				ValeurSpin = (Integer) SpinQuantite.getValue();
-				System.out.println("valeur du spin : " + ValeurSpin);	
+				String nomProduitCombo = ComboBoxProduit.getName();
+				System.out.println(nomProduitCombo);
+				//System.out.println("valeur du spin : " + ValeurSpin);	
+			
+				try {
+					Connection cn = DatabaseConnection.getCon();
+					PreparedStatement pst = cn.prepareStatement("SELECT description FROM PRODUITVENTE");
+					ResultSet rs =  pst.executeQuery();
+					while(rs.next()){	
+						
+
+						}
+				
+						rs.close();
+				} catch (SQLException f) {
+				f.printStackTrace();
+				}	
+				
 				
 			}
 		});
@@ -98,7 +114,7 @@ public class AjouterProduitCommande extends JDialog
    	 public void remplirProduit(){
  		try {
  			Connection cn = DatabaseConnection.getCon();
- 			PreparedStatement pst = cn.prepareStatement("SELECT description FROM PRODUITS");//PRODUITS ou PRODUITVENTE (test)
+ 			PreparedStatement pst = cn.prepareStatement("SELECT description FROM PRODUITVENTE");//PRODUITS ou PRODUITVENTE (test)
  			ResultSet rs =  pst.executeQuery();
  			while(rs.next()){	
  				
@@ -112,6 +128,8 @@ public class AjouterProduitCommande extends JDialog
  		}	
    	 }
 
+
+   	 
 
    	 
 }
