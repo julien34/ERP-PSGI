@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -125,6 +126,9 @@ public class AjouterClient extends JDialog{
 				
 				if(DatabaseConnection.requete("INSERT INTO VENTE_CLIENTS(idclient, nomclient, prenomclient, adresseclient, emailclient, telclient, codecategorieclient) VALUES  ('"+id+"','"+nom+"','"+prenom+"','"+adresse+"','"+email+"','"+tel+"','"+categorie+"')") == true){
 					frame.getPanelClient().refreshListeTableClient(id, nom, prenom, adresse, email, tel, categorie);
+				}
+				else{
+					System.out.println("La requete ne c'est pas executer correctement.");
 				}
 			}
 		});

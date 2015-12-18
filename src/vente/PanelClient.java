@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -25,6 +26,7 @@ import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 import production.AjouterProduits;
 import production.ModifierProduits;
+import vente.ModifierClients;
 
 /**
  * 
@@ -49,7 +51,7 @@ public class PanelClient extends JPanel{
 	
 	private int clientChoisi = -1;
 	//private AjouterClient ajouter_p = new AjouterClient();
-	private ModifierClients modifier_p = new ModifierClients();
+	//private ModifierClients modifier_p = new ModifierClients(null);
 	
 	/**
 	 * GridLayout qui contient les informations des Clients
@@ -146,15 +148,17 @@ public class PanelClient extends JPanel{
 		{
 			public void actionPerformed(ActionEvent e)
 			{ 
-				String value1 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 0));
-				String value2 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 1));
-				String value3 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 2));
-				String value4 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 3));
-				String value5 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 4));
-				String value6 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 5));
-				//contenu.remove(ajouter_p);
-				modifier_p.setVal(value1,value2,value3,value4,value5,value6);
-				contenu.add("South",modifier_p);
+			    String id = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 0));
+			    String nom = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 1));
+			    String prenom = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 2));
+			    String adresse = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 3));
+			    String mail = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 4));
+			    String tel = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 5));
+			    String categ = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 6));
+			    
+			    Client client = new Client(id,nom,prenom,adresse,mail,tel,categ);
+			    //ModifierClients
+				contenu.add("South", new ModifierClients(client));
 				revalidate();
 			}
 		});
@@ -184,12 +188,6 @@ public class PanelClient extends JPanel{
 		
 		
 	}
-	/*public void refreshLigneTableClient(String id, String nom, String prenom, String adresse, String email, String tel, String categorie){
-		int id2 = Integer.parseInt(id);
-		int categ = Integer.parseInt(categorie);
-		
-	}*/
-	
 	public void refreshListeTableClient(String id, String nom, String prenom, String adresse, String email, String tel, String categorie){
 		int id2 = Integer.parseInt(id);
 		int categ = Integer.parseInt(categorie);
@@ -197,18 +195,18 @@ public class PanelClient extends JPanel{
 		modelTableClient.addRow(obj);
 	}
 	
-	public void raffraichirLigne(String value1, String value2, String value3, String value4, String value5)
+	public void raffraichirLigne(String nom, String prenom, String adresse, String email, String tel, String categorie)
 	{
 	
 		int ligneChoisieTemp = clientChoisi;
 		if (clientChoisi != -1)
 		{			
-			modelTableClient.setValueAt(value1, tableClient.convertRowIndexToModel(ligneChoisieTemp), 0);
-			modelTableClient.setValueAt(value2, tableClient.convertRowIndexToModel(ligneChoisieTemp), 1);
-			modelTableClient.setValueAt(value3, tableClient.convertRowIndexToModel(ligneChoisieTemp), 2);
-			modelTableClient.setValueAt(value4, tableClient.convertRowIndexToModel(ligneChoisieTemp), 3);
-			modelTableClient.setValueAt(value5, tableClient.convertRowIndexToModel(ligneChoisieTemp), 4);
-			modelTableClient.setValueAt(value5, tableClient.convertRowIndexToModel(ligneChoisieTemp), 5);
+			modelTableClient.setValueAt(nom, tableClient.convertRowIndexToModel(ligneChoisieTemp), 0);
+			modelTableClient.setValueAt(prenom, tableClient.convertRowIndexToModel(ligneChoisieTemp), 1);
+			modelTableClient.setValueAt(adresse, tableClient.convertRowIndexToModel(ligneChoisieTemp), 2);
+			modelTableClient.setValueAt(email, tableClient.convertRowIndexToModel(ligneChoisieTemp), 3);
+			modelTableClient.setValueAt(tel, tableClient.convertRowIndexToModel(ligneChoisieTemp), 4);
+			modelTableClient.setValueAt(categorie, tableClient.convertRowIndexToModel(ligneChoisieTemp), 5);
 		}
 	}
 	

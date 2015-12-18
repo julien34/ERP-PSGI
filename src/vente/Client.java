@@ -35,7 +35,7 @@ public class Client {
 		this.mailclient = mailclient;
 	}
 	
-	public String IdClient() {
+	public String getIdClient() {
 		return idclient;
 	}
 
