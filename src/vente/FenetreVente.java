@@ -30,6 +30,7 @@ import achat.CommandesFournisseur;
 import achat.Fournisseur;
 
 import javax.swing.event.CaretEvent;
+
 import java.lang.*;
 
 import jdbc.DatabaseConnection;
@@ -100,7 +101,7 @@ public class FenetreVente extends JPanel{
 	JTextField ChampTotalTTC = new JTextField(""+valeurTTC);	  
 	JLabel RienTotaux1 = new JLabel("");
 	JLabel RienTotaux2 = new JLabel("");
-	JButton AjouterProduit = new JButton("Ajouter");
+	static JButton AjouterProduit = new JButton("Ajouter");
 	JButton ModifierProduit = new JButton("Modifier");
 	JButton SupprimerProduit = new JButton("Supprimer");
 	
@@ -166,7 +167,6 @@ public class FenetreVente extends JPanel{
 			ResultSet rs =  pst.executeQuery();
 			while(rs.next()){	
 				
-
 		     	ComboBoxClient.addItem(rs.getString(1));			
 
 				}
@@ -175,10 +175,7 @@ public class FenetreVente extends JPanel{
 		} catch (SQLException e) {
 		e.printStackTrace();
 		}	
-		 catch(NullPointerException b){
-			 b.printStackTrace();
-		 }
-		}
+	}
 	 
 	 public  void remplirNomEntreprise(){
 		try {
@@ -196,10 +193,7 @@ public class FenetreVente extends JPanel{
 		} catch (SQLException e) {
 		e.printStackTrace();
 		}	
-		 catch(NullPointerException b){
-			 b.printStackTrace();
-		 }
-		}
+	}
 	 
 	 
 	 public void remplirInfoParticulier(){
@@ -234,9 +228,6 @@ public class FenetreVente extends JPanel{
 			} catch (SQLException e) {
 			e.printStackTrace();
 			}	
-			 catch(NullPointerException b){
-				 b.printStackTrace();
-			 }
 	 }
 	 
 	 
@@ -272,21 +263,11 @@ public class FenetreVente extends JPanel{
 			} catch (SQLException e) {
 			e.printStackTrace();
 			}	
-			 catch(NullPointerException b){
-				 b.printStackTrace();
-			 }
 	 }
  
+	 
+	 
 	public void initElementParticulier(){
-	/*
-		JTextField ChampTextPrenom =  JTextField("");
-		
-		JTextField ChampTextAdresse =  JTextField("");
-		
-		JTextField ChampTextEmail =  JTextField("");
-		
-		JTextField ChampTextNumeroTelephone =  JTextField("");  	
-		*/
 		InformationClient.setText("Information du particulier");
 		Prenom.setText("Prenom : ");
 		ComboBoxClient.removeAllItems();
@@ -310,7 +291,6 @@ public class FenetreVente extends JPanel{
 				initElementEntreprise();
    				validate();
    				Etat = 2;
-
    			}
    		});
 		
@@ -319,7 +299,6 @@ public class FenetreVente extends JPanel{
    		{
    			public void actionPerformed(ActionEvent e)
    			{
-   				
    				initElementParticulier();
    				validate();
    				Etat = 1;

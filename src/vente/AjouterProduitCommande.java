@@ -25,6 +25,8 @@ public class AjouterProduitCommande extends JDialog
 
 	JLabel LQuantite = new JLabel("Qte");	
 	JSpinner SpinQuantite = new JSpinner();
+	int ValeurSpin =0;
+	
 	
 	JButton ButtonOk = new JButton("Valider");
 	JButton ButtonAnnuler = new JButton("Annuler");
@@ -32,7 +34,7 @@ public class AjouterProduitCommande extends JDialog
 	private JPanel panelProduit = new JPanel();
 	private JPanel panelButton = new JPanel();
 
-	
+
 	public AjouterProduitCommande(FenetrePrincipale frame)
 	{
 		super(frame,"Ajouter un produit",true);
@@ -58,7 +60,6 @@ public class AjouterProduitCommande extends JDialog
 	public void initElements()
 	{
 		add(panelTable);
-	
 		panelTable.add("North",panelProduit);
 		panelProduit.add(Produit);
 		panelProduit.add(ComboBoxProduit);
@@ -70,40 +71,37 @@ public class AjouterProduitCommande extends JDialog
 		panelButton.add(ButtonOk);
 		ButtonOk.setPreferredSize(new Dimension (100,26));
 		panelButton.add(ButtonAnnuler);
-		ButtonAnnuler.setPreferredSize(new Dimension (100,26));
-	
 		
+		ButtonOk.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent e) {
+				ValeurSpin = (Integer) SpinQuantite.getValue();
+				System.out.println("valeur du spin : " + ValeurSpin);	
+				
+			}
+		});
+		
+		ButtonAnnuler.setPreferredSize(new Dimension (100,26));		
 		ButtonAnnuler.addActionListener(frame ->dispose()); // quand bouton annuler appuy� action
-
-   		FenetrePrincipale.menuVenteEntreprise.addActionListener(new ActionListener()
-   		{
-   			public void actionPerformed(ActionEvent e)
-   			{
-				initElementEntreprise();
-   				validate();
-
-   			}
-   		});
-   		
+   
+		initProduit();		
 		setVisible(true);
 	}
 	
 	
-	public void initElementEntreprise(){
+	public void initProduit(){
 
-		ComboBoxProduit.removeAllItems();
 		remplirProduit();
 	}
 
 		
-   	 public  void remplirProduit(){
+   	 public void remplirProduit(){
  		try {
  			Connection cn = DatabaseConnection.getCon();
- 			PreparedStatement pst = cn.prepareStatement("SELECT description FROM PRODUITS");
+ 			PreparedStatement pst = cn.prepareStatement("SELECT description FROM PRODUITS");//PRODUITS ou PRODUITVENTE (test)
  			ResultSet rs =  pst.executeQuery();
  			while(rs.next()){	
  				
-
  		     	ComboBoxProduit.addItem(rs.getString(1)) ;			
 
  				}
@@ -112,10 +110,10 @@ public class AjouterProduitCommande extends JDialog
  		} catch (SQLException e) {
  		e.printStackTrace();
  		}	
-
    	 }
-	
-	
+
+
+   	 
 }
 
 
