@@ -46,8 +46,12 @@ public class PanelClient extends JPanel{
 	private JButton bt_modifier = new JButton("Modifier");
 	private JButton bt_supprimer = new JButton("Supprimer");
 	
-	private static JTextField txtRecherche;
+	private JButton bt_rech= new JButton("Rechercher");
+	
+	private JTextField txtRecherche;
 	private JLabel lblRecherche;
+	
+	private JPanel panelGrid = new JPanel();
 	
 	private int clientChoisi = -1;
 	//private AjouterClient ajouter_p = new AjouterClient();
@@ -97,17 +101,23 @@ public class PanelClient extends JPanel{
 		scrollPane = new JScrollPane(tableClient);
 		tableClient.setPreferredScrollableViewportSize(dimensionTable);
 		
+		this.panelGrid = new JPanel(new GridLayout(2,1));
+		
 		this.panelRecherche = new JPanel();
+		lblRecherche = new JLabel("Rechercher : ");
+		txtRecherche = new JTextField(20);
 		
 		add(panelRecherche);
 		
+		add(panelGrid);
 		
 		add(contenu);
-		contenu.add("North",scrollPane);
-		contenu.add("Center",panelBouttons);
+		contenu.add("North",panelRecherche);
+		contenu.add("Center",scrollPane);
+		contenu.add("South",panelBouttons);
 		
 		
-
+		//add(panelRecherche);
 		
 		panelBouttons.add(bt_ajouter);
 		bt_ajouter.setPreferredSize(dimensionBouttons);
@@ -118,8 +128,11 @@ public class PanelClient extends JPanel{
 		
 		
 		
-		//this.panelRecherche.add(this.lblRecherche);
-		//this.panelRecherche.add(txtRecherche);
+		panelRecherche.add(lblRecherche);
+		panelRecherche.add(txtRecherche);
+		panelRecherche.add(bt_rech);
+	
+		panelGrid.add(contenu);
 	}
 	
 	public void initHandlers(){
@@ -158,7 +171,7 @@ public class PanelClient extends JPanel{
 			    
 			    Client client = new Client(id,nom,prenom,adresse,mail,tel,categ);
 			    //ModifierClients
-				contenu.add("South", new ModifierClients(client));
+				panelGrid.add(new ModifierClients(client));
 				revalidate();
 			}
 		});
