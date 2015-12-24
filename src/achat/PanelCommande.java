@@ -41,17 +41,17 @@ public class PanelCommande extends JPanel{
 	private Object[][] tabCo;
 	private Object[] titres = {"N° Commande","Fournisseur","Date", "Montant"};
 	
-	//On crÃ©er la JTable et son modÃ¨le
+	//On créer la JTable et son modèle
 	private static JTable tableau = new JTable(new DefaultTableModel());
 	private static UneditableTableModel modele;
 	private JScrollPane scrollPane;
 	
-	//On crÃ©er les composants que 'on va se servir dans plusieurs mÃ©thodes :
+	//On créer les composants que 'on va se servir dans plusieurs méthodes :
 	private JButton btnNouveau, btnModifier, btnAnnuler;
 
 	public PanelCommande(FenetrePrincipale f){
 		
-		//On rÃ©cupÃ¨re l'ensemble des founisseurs prÃ©sents dans la BDD
+		//On récupère l'ensemble des founisseurs présents dans la BDD
 		this.getCommande();
 				
 		//On remplit la JTable
@@ -60,7 +60,7 @@ public class PanelCommande extends JPanel{
 		//On initialise l'ensemble des composants sur le JPanel
 		this.initElements();
 				
-		//On initialise l'ensemble des Ã©couteurs
+		//On initialise l'ensemble des écouteurs
 		this.initEcouteurs();
 	}
 	
@@ -93,14 +93,14 @@ public class PanelCommande extends JPanel{
 	
 	
 	/**
-	 * MÃ©thode qui remplit le tableau avec les valeurs de l'arraylist, mais aussi la JTable.
+	 * Méthode qui remplit le tableau avec les valeurs de l'arraylist, mais aussi la JTable.
 	 */
 	private void remplirTableau(){
 		
-		int nbDeCo = this.listeCommandes.size();//On calcule la taille de l'arrylist pour crÃ©er un tableau adÃ©quat
-		this.tabCo = new Object[nbDeCo][4];//On crÃ©er le tableau de la taille rÃ©cupÃ©rÃ©e 
+		int nbDeCo = this.listeCommandes.size();//On calcule la taille de l'arrylist pour créer un tableau adéquat
+		this.tabCo = new Object[nbDeCo][4];//On créer le tableau de la taille récupérée 
 		
-		//On remplit ce dernier avec les CommandesFournisseur rÃ©cupÃ©rÃ©es
+		//On remplit ce dernier avec les CommandesFournisseur récupérées
 		for(CommandesFournisseur cf : this.listeCommandes){
 			this.tabCo[this.listeCommandes.indexOf(cf)][0] = cf.getRefCommande();
 			this.tabCo[this.listeCommandes.indexOf(cf)][1] = cf.getNomFourniseur();
@@ -123,14 +123,14 @@ public class PanelCommande extends JPanel{
 	
 	
 	/**
-	 * MÃ©thode qui initialise les Ã©lÃ©ments de toute la page.
+	 * Méthode qui initialise les éléments de toute la page.
 	 */
 	private void initElements(){
 		
-		//on dÃ©fini le layout du JPanel principal
+		//on défini le layout du JPanel principal
 		this.setLayout(new BorderLayout());
 		
-		//On crÃ©er les panels
+		//On créer les panels
 		JPanel panelRechercheNord = new JPanel();
 		
 		JPanel panelGrilleCentre = new JPanel(new GridLayout(2,1));
@@ -138,7 +138,7 @@ public class PanelCommande extends JPanel{
 		JPanel panelBouton = new JPanel();
 		
 		
-		//On crÃ©er les composants
+		//On créer les composants
 		JLabel lblRechercheCommande = new JLabel("N° Commande : ");
 		JTextField txtRechercheCommande = new JTextField(10);
 		JLabel lblRechercheFournisseur = new JLabel("Fournisseur : ");
@@ -152,7 +152,7 @@ public class PanelCommande extends JPanel{
 		this.btnModifier = new JButton("Modifier");
 		this.btnAnnuler = new JButton("Annuler");
 		
-		//On grise l'accÃ¨s aux boutons modifier et annuler tant qu'une ligne n'est pas sÃ©lectionnÃ©e
+		//On grise l'accès aux boutons modifier et annuler tant qu'une ligne n'est pas sélectionnée
 		this.btnModifier.setEnabled(false);
 		this.btnAnnuler.setEnabled(false);
 		
@@ -183,7 +183,7 @@ public class PanelCommande extends JPanel{
 	
 	
 	/**
-	 * MÃ©thode qui initialise les Ã©couteurs.
+	 * Méthode qui initialise les écouteurs.
 	 */
 	private void initEcouteurs(){
 		

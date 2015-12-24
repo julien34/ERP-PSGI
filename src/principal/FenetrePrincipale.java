@@ -2,12 +2,15 @@ package principal;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener; 
+
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+
+import achat.PanelCategorie;
 import achat.PanelCommande;
 import achat.PanelFournisseur;
 import components.ButtonTabComponent;
@@ -33,9 +36,11 @@ public class FenetrePrincipale extends JFrame
         JMenuItem menuBddDeconnexion = new JMenuItem("Deconnexion");
     
         //Achats
-        JMenu menuAchats = new JMenu("Achats");
-        JMenuItem menuAchatFournisseur = new JMenuItem("Fournisseurs");
-        JMenuItem menuAchatCommande = new JMenuItem("Commandes");
+        JMenu menuAchats = new JMenu("Achats");//Menu achat de la barre
+        JMenu menuAchatFournisseur = new JMenu("Fournisseurs");//Sous menu fournisseurs
+        JMenuItem menuAchatAjoutFournisseur = new JMenuItem("Fournisseurs");//Item ajouter un fournisseur
+        JMenuItem menuAchatAjoutCategorie = new JMenuItem("Catégories");//Item ajouter une catégorie de fournisseurs
+        JMenuItem menuAchatCommande = new JMenuItem("Commandes");//Item commande
         
         //Ventes
         JMenu menuVentes = new JMenu("Ventes");
@@ -102,6 +107,8 @@ public class FenetrePrincipale extends JFrame
 	    
 	        //Achats
 				menu.add(menuAchats);
+				menuAchatFournisseur.add(menuAchatAjoutCategorie);
+				menuAchatFournisseur.add(menuAchatAjoutFournisseur);
 				menuAchats.add(menuAchatFournisseur);
 				menuAchats.add(menuAchatCommande);
 				
@@ -160,7 +167,7 @@ public class FenetrePrincipale extends JFrame
 	   		});	
 	   		
 	   		//Achats
-	   		menuAchatFournisseur.addActionListener(new ActionListener()
+	   		menuAchatAjoutFournisseur.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e){
 	   				if(PanelFournisseur.getTableau().isEmpty()){
@@ -171,6 +178,12 @@ public class FenetrePrincipale extends JFrame
 	   				}
 	   			}
 	   		});	
+	   		
+	   		menuAchatAjoutCategorie.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ajouterOnglet("Catégories fournisseurs", new PanelCategorie(framePrincipale));
+				}
+			});
 	   		
 	   		menuAchatCommande.addActionListener(new ActionListener() {
 				
