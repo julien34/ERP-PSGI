@@ -236,6 +236,9 @@ public class PanelFournisseur extends JPanel{
 				String categorie = rs.getString("nomCategorie");
 
 				liste.add(new Fournisseur(ref, nomFn, siret, tel, adresse, categorie));
+				
+				this.remplirTableau();
+				
 			}} catch (SQLException e) {
 			e.printStackTrace();
 		}

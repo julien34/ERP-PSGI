@@ -40,15 +40,13 @@ public class PanelCategorie extends JPanel{
 	 * @param f, la fenetrePrincipale
 	 */
 	public PanelCategorie(FenetrePrincipale f){
-		this.setLayout(new BorderLayout());//Le panel sera en Borderlayout
+		this.initTab();//On initie le tableau des catégories
 		
 		this.initPanel();//On créer les différents panels
 		this.initElements();//On instancie les différents composants du panel
 		this.initEcouteurs();//On créer les écouteurs de tous les boutons
 		
 		this.setVisible(true);//On rend visible le panel
-		
-		this.initTab();//On initie le tableau des catégories
 	}
 	
 	
@@ -56,6 +54,7 @@ public class PanelCategorie extends JPanel{
 	 * Méthode qui initialise le panel de gestion des catégories fournisseurs
 	 */
 	private void initPanel(){
+		this.setLayout(new BorderLayout());//Le panel sera en Borderlayout
 		this.panelNord = new JPanel();//Panel de recherche dans les catégories de fournisseurs
 		this.panelCentre = new JPanel(new BorderLayout());//Panel qui recevra la grid + les boutons
 		this.panelGrille = new JPanel();//On créer un panel qui va recevoir la grille
@@ -87,7 +86,7 @@ public class PanelCategorie extends JPanel{
 		this.panelBoutons.add(this.btnAjouter);
 		this.panelBoutons.add(this.btnModifier);
 		
-		//On ajoute le scfollPane au panel central
+		//On ajoute le scrollPane au panel central
 		this.panelGrille.add(this.scrollPane);
 		
 		//On met en place le panel du centre avec la grid et les boutons
@@ -141,8 +140,8 @@ public class PanelCategorie extends JPanel{
 		//On créer une table modele et un JTable. On assigne le modele à la JTable
 		this.tableCategorie = new UneditableTableModel(0,2);
 		this.tableCategorie.setDataVector(tabCategories, tabTitres);
-		this.tableau = new JTable(tableCategorie);
 		
+		this.tableau = new JTable(tableCategorie);
 		this.tableau.setAutoCreateRowSorter(false);
 		this.tableau.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		this.tableau.setPreferredScrollableViewportSize(new Dimension(800, 224));
