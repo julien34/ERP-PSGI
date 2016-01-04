@@ -175,14 +175,13 @@ public class PopupModifFournisseur extends JDialog{
 				PreparedStatement pst;
 				
 				//On récupère le numéro de la catégorie depuis l'Arraylist :
-				String idCategorie = "";
-				int indice = 0;
-				
-				while (idCategorie.equals("")){
-					idCategorie = PopupModifFournisseur.listeCategorie.get(indice).getId();
-					indice =+ 1;
+				String idCategorie = "0";
+				for (Categorie categorie : listeCategorie) {
+					if (categorie.getNom().equals(chCategorie.getSelectedItem())){
+						idCategorie = categorie.getId();
+					}
 				}
-
+				
 				try {
 					pst = cn.prepareStatement("UPDATE Fournisseurs SET nomFournisseur = ?, siret = ?, telFournisseur = ?, adresseFournisseur = ?, categorieFournisseur = ? WHERE refFournisseur = ?");
 					pst.setString(1, PopupModifFournisseur.this.txtNom.getText());

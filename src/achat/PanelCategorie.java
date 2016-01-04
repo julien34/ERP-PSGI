@@ -3,6 +3,8 @@ package achat;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.ScrollPane;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
+import achat.popup.PopupAjoutCategorie;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 
@@ -27,12 +30,13 @@ public class PanelCategorie extends JPanel{
 	private JLabel lblrecherche;
 	private JButton btnAjouter, btnModifier;
 	private JPanel panelNord, panelCentre, panelGrille, panelBoutons;
-	private String[] tabTitres = {"Code","Catégorie"};
-	private Object[][] tabCategories;
-	private UneditableTableModel tableCategorie;
-	private ArrayList<Categorie> listeCategorie = new ArrayList<Categorie>();
-	private JScrollPane scrollPane = new JScrollPane();
-	private JTable tableau;
+	private static String[] tabTitres = {"Code","Catégorie"};
+	private static Object[][] tabCategories;
+	private static UneditableTableModel tableCategorie;
+	private static ArrayList<Categorie> listeCategorie = new ArrayList<Categorie>();
+
+	private static JScrollPane scrollPane = new JScrollPane();
+	private static JTable tableau;
 	
 	
 	/**
@@ -47,6 +51,15 @@ public class PanelCategorie extends JPanel{
 		this.initEcouteurs();//On créer les écouteurs de tous les boutons
 		
 		this.setVisible(true);//On rend visible le panel
+	}
+	
+	
+	/**
+	 * Méthode qui retourne la liste des catégories.
+	 * @return la liste des catégories
+	 */
+	public static ArrayList<Categorie> getListeCategorie() {
+		return listeCategorie;
 	}
 	
 	
@@ -102,7 +115,7 @@ public class PanelCategorie extends JPanel{
 	/**
 	 * Méthode qui récupère les catégories et les ajoute dans l'arrayList.
 	 */
-	private void initTab(){
+	private static void initTab(){
 		
 		try {
 			Connection cn = DatabaseConnection.getCon();
@@ -110,10 +123,10 @@ public class PanelCategorie extends JPanel{
 			ResultSet rs = st.executeQuery("SELECT * FROM CategoriesFournisseur");
 			
 			while(rs.next()){
-				this.listeCategorie.add(new Categorie(rs.getString("refCategorie"), rs.getString("nomCategorie")));
+				listeCategorie.add(new Categorie(rs.getString("refCategorie"), rs.getString("nomCategorie")));
 			}
 			
-			this.remplirTableau();
+			remplirTableau();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -125,28 +138,28 @@ public class PanelCategorie extends JPanel{
 	/**
 	 * Méthode qui remplit le tableau 
 	 */
-	private void remplirTableau(){
+	private static void remplirTableau(){
 		
 		//On calcule la longueur de l'arrayList et on créer un nouvceau tableau de cette taille
-		int longueurTab = this.listeCategorie.size();
-		this.tabCategories = new Object[longueurTab][2];
+		int longueurTab = listeCategorie.size();
+		tabCategories = new Object[longueurTab][2];
 		
 		//On remplit le tableau
-		for (Categorie cat : this.listeCategorie){
-			this.tabCategories[this.listeCategorie.indexOf(cat)][0] = cat.getId();
-			this.tabCategories[this.listeCategorie.indexOf(cat)][1] = cat.getNom();
+		for (Categorie cat : listeCategorie){
+			tabCategories[listeCategorie.indexOf(cat)][0] = cat.getId();
+			tabCategories[listeCategorie.indexOf(cat)][1] = cat.getNom();
 		}
 		
 		//On créer une table modele et un JTable. On assigne le modele à la JTable
-		this.tableCategorie = new UneditableTableModel(0,2);
-		this.tableCategorie.setDataVector(tabCategories, tabTitres);
+		tableCategorie = new UneditableTableModel(0,2);
+		tableCategorie.setDataVector(tabCategories, tabTitres);
 		
-		this.tableau = new JTable(tableCategorie);
-		this.tableau.setAutoCreateRowSorter(false);
-		this.tableau.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		this.tableau.setPreferredScrollableViewportSize(new Dimension(800, 224));
+		tableau = new JTable(tableCategorie);
+		tableau.setAutoCreateRowSorter(false);
+		tableau.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tableau.setPreferredScrollableViewportSize(new Dimension(800, 224));
 		
-		this.scrollPane = new JScrollPane(this.tableau);
+		scrollPane = new JScrollPane(tableau);
 	}
 	
 	
@@ -154,6 +167,29 @@ public class PanelCategorie extends JPanel{
 	 * Méthode qui initialise les écouteurs du panel
 	 */
 	private void initEcouteurs(){
+		this.btnAjouter.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new PopupAjoutCategorie();
+			}
+		});
+	}
+
+	
+	/**
+	 * Méthode qui ajoute la catégorie créée au tableau
+	 */
+	public static void majTableau(Categorie c){
+		listeCategorie.add(c);
+		int nouvelleLongueur = listeCategorie.size();
+		tabCategories = new Object[nouvelleLongueur][2];
 		
+		for (Categorie cat : listeCategorie){
+			tabCategories[listeCategorie.indexOf(cat)][0] = cat.getId();
+			tabCategories[listeCategorie.indexOf(cat)][1] = cat.getNom();
+		}
+		
+		tableCategorie.setDataVector(tabCategories, tabTitres);
 	}
 }

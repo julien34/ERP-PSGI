@@ -33,6 +33,10 @@ public class PopupAjoutFournisseur extends JDialog{
 	private Choice chCategorie;
 	private static ArrayList<Categorie> listeCategorie;
 	
+	
+	/**
+	 * Constructeur de la popup.
+	 */
 	public PopupAjoutFournisseur(){
 		
 		this.initElements();//On initie les éléments sur les JPanels
@@ -168,12 +172,11 @@ public class PopupAjoutFournisseur extends JDialog{
 					PreparedStatement pst = cn.prepareStatement("INSERT INTO Fournisseurs(refFournisseur, nomFournisseur, siret, telFournisseur, adresseFournisseur, categorieFournisseur) Values(seqRefFournisseur.NEXTVAL,?,?,?,?,?)");
 
 					//On récupère le numéro de la catégorie depuis l'Arraylist :
-					String idCategorie = "";
-					int indice = 0;
-					
-					while (idCategorie.equals("")){
-						idCategorie = PopupAjoutFournisseur.listeCategorie.get(indice).getId();
-						indice =+ 1;
+					String idCategorie = "0";
+					for (Categorie categorie : listeCategorie) {
+						if (categorie.getNom().equals(chCategorie.getSelectedItem())){
+							idCategorie = categorie.getId();
+						}
 					}
 					
 					pst.setString(1, PopupAjoutFournisseur.this.txtNom.getText());
