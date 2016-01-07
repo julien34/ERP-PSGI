@@ -66,6 +66,7 @@ public class FenetrePrincipale extends JFrame
    	
    	//Achat
    	private static PanelFournisseur panelFournisseur = null;
+   	private static PanelCategorie panelCategorie = null;
    	private static PanelCommande panelCommande = null;
    	
    	//Vente
@@ -170,6 +171,7 @@ public class FenetrePrincipale extends JFrame
 	   		menuAchatAjoutFournisseur.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e){
+	   				//On vérifie que le tableau ne soit pas vide pour éviter de mettre 2 fois les données dedans
 	   				if(PanelFournisseur.getTableau().isEmpty()){
 	   					ajouterOnglet("Fournisseurs", panelFournisseur = new PanelFournisseur(framePrincipale));
 	   				}
@@ -181,7 +183,13 @@ public class FenetrePrincipale extends JFrame
 	   		
 	   		menuAchatAjoutCategorie.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					ajouterOnglet("Catégories fournisseurs", new PanelCategorie(framePrincipale));
+	   				//On vérifie que le tableau ne soit pas vide pour éviter de mettre 2 fois les données dedans
+					if(PanelCategorie.getListeCategorie().isEmpty()){
+						ajouterOnglet("Catégories fournisseurs", panelCategorie = new PanelCategorie(framePrincipale));
+					}
+					else{
+						ajouterOnglet("Catégories fournisseurs", panelCategorie);
+					}
 				}
 			});
 	   		

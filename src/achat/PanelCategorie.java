@@ -192,4 +192,13 @@ public class PanelCategorie extends JPanel{
 		
 		tableCategorie.setDataVector(tabCategories, tabTitres);
 	}
+	
+	
+	
+	/**
+	 * Méthode qui charge uniquement les catégories qui sont tapées dans le champs de recherche.
+	 */
+	private void majTableaurecherche(){
+		
+	}
 }
