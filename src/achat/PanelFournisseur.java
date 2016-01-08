@@ -168,7 +168,7 @@ public class PanelFournisseur extends JPanel{
 		tableau.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 
-				//Permettre d'utiliser les bouton modifier et supprimer
+				//Permettre d'utiliser les boutons modifier et supprimer
 				btnModifier.setEnabled(true);
 				btnSupprimer.setEnabled(true);
 

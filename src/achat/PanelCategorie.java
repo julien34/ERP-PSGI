@@ -2,10 +2,14 @@ package achat;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,15 +24,16 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import achat.popup.PopupAjoutCategorie;
+import achat.popup.PopupModifCategorie;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 
 public class PanelCategorie extends JPanel{
 	
 	//On instancie les éléments de la page
-	private JTextField txtRecherche;
+	private static JTextField txtRecherche;
 	private JLabel lblrecherche;
-	private JButton btnAjouter, btnModifier;
+	private static JButton btnAjouter, btnModifier;
 	private JPanel panelNord, panelCentre, panelGrille, panelBoutons;
 	private static String[] tabTitres = {"Code","Catégorie"};
 	private static Object[][] tabCategories;
@@ -44,7 +49,7 @@ public class PanelCategorie extends JPanel{
 	 * @param f, la fenetrePrincipale
 	 */
 	public PanelCategorie(FenetrePrincipale f){
-		this.initTab();//On initie le tableau des catégories
+		initTab();//On initie le tableau des catégories
 		
 		this.initPanel();//On créer les différents panels
 		this.initElements();//On instancie les différents composants du panel
@@ -83,24 +88,27 @@ public class PanelCategorie extends JPanel{
 		/*PANEL NORD*/
 		//On créer lee champs et le label recherche
 		this.lblrecherche = new JLabel("Catégorie : ");
-		this.txtRecherche = new JTextField(10);
+		txtRecherche = new JTextField(10);
 		
 		//On ajoute
 		this.panelNord.add(this.lblrecherche);
-		this.panelNord.add(this.txtRecherche);
+		this.panelNord.add(txtRecherche);
 		
 		
 		/*PANEL CENTRE*/
 		//On créer les boutons (pas de suppression)
-		this.btnAjouter = new JButton("Ajouter");
-		this.btnModifier = new JButton("Modifier");
+		btnAjouter = new JButton("Ajouter");
+		btnModifier = new JButton("Modifier");
+		
+		//On grise le bouton modifier (car aucune ligne n'est sélectionnée au départ)
+		btnModifier.setEnabled(false);
 		
 		//On les ajoute au panelBoutons
-		this.panelBoutons.add(this.btnAjouter);
-		this.panelBoutons.add(this.btnModifier);
+		this.panelBoutons.add(btnAjouter);
+		this.panelBoutons.add(btnModifier);
 		
 		//On ajoute le scrollPane au panel central
-		this.panelGrille.add(this.scrollPane);
+		this.panelGrille.add(scrollPane);
 		
 		//On met en place le panel du centre avec la grid et les boutons
 		this.panelCentre.add(this.panelGrille, BorderLayout.CENTER);
@@ -120,7 +128,7 @@ public class PanelCategorie extends JPanel{
 		try {
 			Connection cn = DatabaseConnection.getCon();
 			Statement st = cn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_READ_ONLY);
-			ResultSet rs = st.executeQuery("SELECT * FROM CategoriesFournisseur");
+			ResultSet rs = st.executeQuery("SELECT * FROM CategoriesFournisseur ORDER BY nomCategorie");
 			
 			while(rs.next()){
 				listeCategorie.add(new Categorie(rs.getString("refCategorie"), rs.getString("nomCategorie")));
@@ -167,21 +175,57 @@ public class PanelCategorie extends JPanel{
 	 * Méthode qui initialise les écouteurs du panel
 	 */
 	private void initEcouteurs(){
-		this.btnAjouter.addActionListener(new ActionListener() {
+		
+		//Bouton ajouter
+		btnAjouter.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new PopupAjoutCategorie();
 			}
 		});
+		
+		//Bouton modifier
+		btnModifier.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new PopupModifCategorie(PanelCategorie.getListeCategorie().get(tableau.getSelectedRow()),tableau.getSelectedRow());
+			}
+		});
+		
+		//Champs de texte "Rechercher"
+		txtRecherche.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				
+				//On désactive le clic sur le bouton modifier
+				PanelCategorie.btnModifier.setEnabled(false);
+				
+				PanelCategorie.majTableauRecherche();
+				tableCategorie.setDataVector(tabCategories, tabTitres);
+			}
+		});
+		
+		//Double clic sur une ligne
+		tableau.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+				//On autorique le clic sur le bouton modifier
+				PanelCategorie.btnModifier.setEnabled(true);
+				
+				if (e.getClickCount()%2 == 0){
+					new PopupModifCategorie(PanelCategorie.getListeCategorie().get(tableau.getSelectedRow()),tableau.getSelectedRow());
+				}
+			}
+		});
 	}
 
-	
 	/**
-	 * Méthode qui ajoute la catégorie créée au tableau
+	 * Méthode qui met à jour le tableau en fonction de l'arraylist courante (à réutiliser dans les autres méthodes).
 	 */
-	public static void majTableau(Categorie c){
-		listeCategorie.add(c);
+	private static void maj(){
 		int nouvelleLongueur = listeCategorie.size();
 		tabCategories = new Object[nouvelleLongueur][2];
 		
@@ -194,11 +238,51 @@ public class PanelCategorie extends JPanel{
 	}
 	
 	
+	/**
+	 * Méthode qui ajoute la catégorie créée au tableau
+	 */
+	public static void majTableau(Categorie c){
+		listeCategorie.add(c);
+		maj();
+	}
+	
+	
+	/**
+	 * Méthode qui modifie une catégorie et met à jour le tableau.
+	 * @param c, la catégorie modifiée.
+	 * @param indice, l'indice dans l'arraylist de la catégorie modifiée.
+	 */
+	public static void majTableauModif(Categorie c, int indice){
+		listeCategorie.remove(indice);
+		listeCategorie.add(indice,c);
+		maj();
+	}
+	
 	
 	/**
 	 * Méthode qui charge uniquement les catégories qui sont tapées dans le champs de recherche.
 	 */
-	private void majTableaurecherche(){
-		
+	private static void majTableauRecherche(){
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("SELECT * FROM CategoriesFournisseur WHERE UPPER(nomCategorie) LIKE UPPER(?) ORDER BY nomCategorie");
+			pst.setString(1, "%"+txtRecherche.getText()+"%");
+			ResultSet rs = pst.executeQuery();
+			
+			listeCategorie.clear();
+			
+			while(rs.next()){
+				listeCategorie.add(new Categorie(rs.getString("refCategorie"), rs.getString("nomCategorie")));
+			}
+			
+			maj();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static JButton getBtonModifier(){
+		return btnModifier;
 	}
 }
