@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -29,6 +30,7 @@ import com.toedter.calendar.JDateChooser;
 
 import achat.CommandesFournisseur;
 import achat.LignesCommande;
+import achat.PanelCommande;
 import achat.UneditableTableModel;
 
 public class PopupCommande extends JDialog {
@@ -39,8 +41,9 @@ public class PopupCommande extends JDialog {
 	private Object[] titres = {"Code","Description","Catégorie","Prix HT","Qté","Total HT"};
 	
 	private JLabel lblFournisseurCode, lblMontantTotalHt;
-	private JButton btnCalculerTotal;
-	
+	private JButton btnCalculerTotal, btnValider, btnAnnuler;
+	private JDateChooser jdcDateLivr, jdcDate;
+		
 	//On créer la JTable et son modèle
 	private static JTable tableau = new JTable(new DefaultTableModel());
 	private static UneditableTableModel modele = new UneditableTableModel(0,5);
@@ -51,6 +54,7 @@ public class PopupCommande extends JDialog {
 	 * Constructeur vide. Créer une nouvelle commande.
 	 */
 	public PopupCommande(){
+		this.listeLignesCommande.removeAll(listeLignesCommande);
 		this.initFenetre();
 		this.initElements();
 		this.initEcouteurs();
@@ -67,6 +71,7 @@ public class PopupCommande extends JDialog {
 		this.initElements();
 		this.initEcouteurs();
 		this.getProduitsCommande();
+		this.preRemplir();
 	}
 	
 	
@@ -110,7 +115,7 @@ public class PopupCommande extends JDialog {
 		this.lblFournisseurCode = new JLabel("Aucun fournisseur sélectionné");
 		JButton btnRechercher = new JButton("Rechercher");
 		JLabel lblDate = new JLabel("Date : ");
-		JDateChooser jdcDate = new JDateChooser();
+		this.jdcDate = new JDateChooser();
 		
 		panelGrilleNord.add(lblFournisseur);
 		panelGrilleNord.add(lblFournisseurCode);
@@ -160,7 +165,7 @@ public class PopupCommande extends JDialog {
 		JLabel lblPrCent = new JLabel("%");
 		JTextField txtRemise = new JTextField(10);
 		JLabel lblDateLivr = new JLabel("Date de livraison : ");
-		JDateChooser jdcDateLivr = new JDateChooser();
+		this.jdcDateLivr = new JDateChooser();
 		JLabel lblPaiement = new JLabel("Type de paiement : ");
 		Choice chPaiement = new Choice();
 		chPaiement.add("Chèque");
@@ -173,7 +178,7 @@ public class PopupCommande extends JDialog {
 		gauche2.add(txtRemise);
 		gauche2.add(lblPrCent);
 		gauche3.add(lblDateLivr);
-		gauche3.add(jdcDateLivr);
+		gauche3.add(this.jdcDateLivr);
 		gauche4.add(lblPaiement);
 		gauche4.add(chPaiement);
 		
@@ -211,8 +216,8 @@ public class PopupCommande extends JDialog {
 		
 		
 		//On créer et ajoute les composants du panelParametrageSud
-		JButton btnValider = new JButton("Valider");
-		JButton btnAnnuler = new JButton("Annuler");
+		this.btnValider = new JButton("Valider");
+		this.btnAnnuler = new JButton("Annuler");
 		panelParametrageSud.add(btnValider);
 		panelParametrageSud.add(btnAnnuler);
 		
@@ -254,11 +259,23 @@ public class PopupCommande extends JDialog {
 	 * Méthode qui initialise les écouteurs.
 	 */
 	private void initEcouteurs(){
+		
+		//Bouton pour calculer le total de la commande
 		this.btnCalculerTotal.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PopupCommande.this.calculerTotal();
+			}
+		});
+		
+		
+		//Bouton pour valider une commande
+		this.btnValider.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PopupCommande.this.ajouterCommande(PopupCommande.this.commande);
 			}
 		});
 	}
@@ -268,7 +285,6 @@ public class PopupCommande extends JDialog {
 	 * Méthode qui récupère l'ensemble des produits qui sont dans la commande.
 	 */
 	private void getProduitsCommande(){
-		this.lblFournisseurCode.setText(this.commande.getNomFourniseur()+" ("+this.commande.getRefFournisseur()+")");
 		try {
 			Connection cn = DatabaseConnection.getCon();
 			PreparedStatement pst = cn.prepareStatement("SELECT * FROM LignesCommandeFournisseur lc JOIN Produits p ON p.codeproduit = lc.refProduit JOIN Categorie c ON c.codeCategorie = p.categorie WHERE refCommande = ?");
@@ -297,6 +313,19 @@ public class PopupCommande extends JDialog {
 	
 	
 	/**
+	 * Méthode qui remplit les différents label avec les caractéristiques de la commande.
+	 */
+	private void preRemplir(){
+		this.calculerTotal();
+		if(this.commande.getNomFourniseur() != null){
+			this.lblFournisseurCode.setText(this.commande.getNomFourniseur()+" ("+this.commande.getRefFournisseur()+")");
+		}
+		
+		this.jdcDate.setDate(this.commande.getDate());
+	}
+	
+	
+	/**
 	 * Méthode qui calcule le total de la commande.
 	 */
 	private void calculerTotal(){
@@ -306,5 +335,33 @@ public class PopupCommande extends JDialog {
 		}
 		
 		this.lblMontantTotalHt.setText(total+" €");
+	}
+	
+	
+	/**
+	 * Méthode qui ajoute dans la base de donnée une nouvelle commande (vide).
+	 */
+	private void ajouterCommande(CommandesFournisseur C){
+		
+		//On vérifie si la commande est dans l'arraylist des commandes
+		if(PanelCommande.getListeCommande().contains(this.commande)){
+			System.out.println("A MODIFIER");
+		}
+		
+		else {
+			System.out.println("A CREER");
+			
+			try {
+				Connection cn = DatabaseConnection.getCon();
+				PreparedStatement pst = cn.prepareStatement("INSERT INTO CommandesFournisseur(refCommande, dateCommande, etatCommande) VALUES(seqRefCommande.NEXTVAL, CURRENT_DATE, 'En cours')");
+				pst.executeQuery();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		PanelCommande.getCommande();
+		PanelCommande.remplirTableau();
+		dispose();
 	}
 }

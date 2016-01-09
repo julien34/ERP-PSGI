@@ -37,25 +37,24 @@ import principal.FenetrePrincipale;
 
 public class PanelCommande extends JPanel{
 	
-	private ArrayList<CommandesFournisseur> listeCommandes = new ArrayList<CommandesFournisseur>();
-	private Object[][] tabCo;
-	private Object[] titres = {"N° Commande","Fournisseur","Date", "Montant", "Etat"};
+	public static ArrayList<CommandesFournisseur> listeCommandes = new ArrayList<CommandesFournisseur>();
+	private static Object[][] tabCo;
+	private static Object[] titres = {"N° Commande","Fournisseur","Date", "Montant", "Etat"};
 	
 	//On créer la JTable et son modèle
 	private static JTable tableau = new JTable(new DefaultTableModel());
-	private static UneditableTableModel modele;
-	private JScrollPane scrollPane;
+	private static UneditableTableModel modele = new UneditableTableModel(0,5);
+	private static JScrollPane scrollPane;
 	
 	//On créer les composants que 'on va se servir dans plusieurs méthodes :
 	private JButton btnNouveau, btnModifier, btnAnnuler;
 
 	public PanelCommande(FenetrePrincipale f){
+		listeCommandes.removeAll(listeCommandes);
 		
 		//On récupère l'ensemble des founisseurs présents dans la BDD
-		this.getCommande();
+		getCommande();
 				
-		//On remplit la JTable
-		this.remplirTableau();
 				
 		//On initialise l'ensemble des composants sur le JPanel
 		this.initElements();
@@ -65,27 +64,38 @@ public class PanelCommande extends JPanel{
 	}
 	
 	
+	
+	/**
+	 * Getter de la liste des commandes.
+	 * @return, la liste des commandes.
+	 */
+	public static ArrayList<CommandesFournisseur> getListeCommande(){
+		return listeCommandes;
+	}
+	
+	
 	/**
 	 * Méthode qui récupère l'ensemble des commandes de la base de données et les ajoute dans une ArrayList.
 	 */
-	private void getCommande(){
-		
+	public static void getCommande(){
+		listeCommandes.removeAll(listeCommandes);
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT c.refCommande, c.dateCommande, c.etatCommande, f.refFournisseur, f.nomFournisseur, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM CommandesFournisseur c JOIN Fournisseurs f ON f.refFournisseur = c.refFournisseur LEFT JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande LEFT JOIN Produits p ON p.codeProduit = lc.refProduit GROUP BY c.refCommande, c.dateCommande, c.etatCommande,f.refFournisseur, f.nomFournisseur ORDER BY c.dateCommande DESC");
+			PreparedStatement pst = cn.prepareStatement("SELECT c.refCommande, c.dateCommande, c.etatCommande, f.refFournisseur, f.nomFournisseur, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM CommandesFournisseur c LEFT JOIN Fournisseurs f ON f.refFournisseur = c.refFournisseur LEFT JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande LEFT JOIN Produits p ON p.codeProduit = lc.refProduit GROUP BY c.refCommande, c.dateCommande, c.etatCommande,f.refFournisseur, f.nomFournisseur ORDER BY c.dateCommande DESC");
 			ResultSet rs = pst.executeQuery();
 			
 			
 			while(rs.next()){
-
-				String refCommande = rs.getString("refCommande");
-				Date date = rs.getDate("dateCommande");
-				String refFournisseur = rs.getString("refFournisseur");
-				String nomFournisseur = rs.getString("nomFournisseur");
-				String montantTotal;
-				String etatCommande = rs.getString("etatCommande");
+				String refCommande, refFournisseur, nomFournisseur, montantTotal, etatCommande;
+				Date date;
 				
-				//Vérification si le montantTotal n'est pas null
+				refCommande = rs.getString("refCommande");
+				date = rs.getDate("dateCommande");
+				refFournisseur = rs.getString("refFournisseur");
+				nomFournisseur = rs.getString("nomFournisseur");
+				etatCommande = rs.getString("etatCommande");
+				
+				//Montant total non vide
 				if (rs.getString("montantTotal") == null){
 					montantTotal = "Pas de produits";
 				}
@@ -93,7 +103,10 @@ public class PanelCommande extends JPanel{
 					montantTotal = rs.getString("montantTotal")+" €";
 				}
 
-				this.listeCommandes.add(new CommandesFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal, etatCommande));
+				listeCommandes.add(new CommandesFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal, etatCommande));
+				
+				//On remplit la JTable
+				remplirTableau();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -102,33 +115,38 @@ public class PanelCommande extends JPanel{
 	
 	
 	/**
-	 * Méthode qui remplit le tableau avec les valeurs de l'arraylist, mais aussi la JTable.
+	 * Méthode qui met à jour le tableau de commandes.
 	 */
-	private void remplirTableau(){
-		
-		int nbDeCo = this.listeCommandes.size();//On calcule la taille de l'arrylist pour créer un tableau adéquat
-		this.tabCo = new Object[nbDeCo][5];//On créer le tableau de la taille récupérée 
+	public static void maj(){
+		int nbDeCo = listeCommandes.size();//On calcule la taille de l'arrylist pour créer un tableau adéquat
+		tabCo = new Object[nbDeCo][5];//On créer le tableau de la taille récupérée 
 		
 		//On remplit ce dernier avec les CommandesFournisseur récupérées
-		for(CommandesFournisseur cf : this.listeCommandes){
-			this.tabCo[this.listeCommandes.indexOf(cf)][0] = cf.getRefCommande();
-			this.tabCo[this.listeCommandes.indexOf(cf)][1] = cf.getNomFourniseur();
-			this.tabCo[this.listeCommandes.indexOf(cf)][2] = cf.getDate();
-			this.tabCo[this.listeCommandes.indexOf(cf)][3] = cf.getMontantTotal();
-			this.tabCo[this.listeCommandes.indexOf(cf)][4] = cf.getEtatCommande();
+		for(CommandesFournisseur cf : listeCommandes){
+			tabCo[listeCommandes.indexOf(cf)][0] = cf.getRefCommande();
+			tabCo[listeCommandes.indexOf(cf)][1] = cf.getNomFourniseur();
+			tabCo[listeCommandes.indexOf(cf)][2] = cf.getDate();
+			tabCo[listeCommandes.indexOf(cf)][3] = cf.getMontantTotal();
+			tabCo[listeCommandes.indexOf(cf)][4] = cf.getEtatCommande();
 		}
 		
-		
-		modele = new UneditableTableModel(0,5);
 		modele.setDataVector(tabCo,titres);
 		
-		tableau = new JTable(modele);
 		
+	}
+	
+	
+	/**
+	 * Méthode qui remplit le tableau avec les valeurs de l'arraylist, mais aussi la JTable.
+	 */
+	public static void remplirTableau(){
+		maj();
+		tableau = new JTable(modele);
 		tableau.setAutoCreateRowSorter(false);
 		tableau.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tableau.setPreferredScrollableViewportSize(new Dimension(800, 224));
 		
-		this.scrollPane = new JScrollPane(tableau);
+		scrollPane = new JScrollPane(tableau);
 	}
 	
 	
@@ -177,7 +195,7 @@ public class PanelCommande extends JPanel{
 		panelRechercheNord.add(lblRechercheMontant);
 		panelRechercheNord.add(txtRechercheMontant);
 		
-		panelGrille.add(this.scrollPane);
+		panelGrille.add(scrollPane);
 		panelBouton.add(this.btnNouveau);
 		panelBouton.add(this.btnModifier);
 		panelBouton.add(this.btnAnnuler);
