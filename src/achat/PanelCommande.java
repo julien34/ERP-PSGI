@@ -39,7 +39,7 @@ public class PanelCommande extends JPanel{
 	
 	private ArrayList<CommandesFournisseur> listeCommandes = new ArrayList<CommandesFournisseur>();
 	private Object[][] tabCo;
-	private Object[] titres = {"N° Commande","Fournisseur","Date", "Montant"};
+	private Object[] titres = {"N° Commande","Fournisseur","Date", "Montant", "Etat"};
 	
 	//On créer la JTable et son modèle
 	private static JTable tableau = new JTable(new DefaultTableModel());
@@ -72,7 +72,7 @@ public class PanelCommande extends JPanel{
 		
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT c.refCommande, c.dateCommande, f.refFournisseur, f.nomFournisseur, SUM(p.prixProduit*lc.quantite) AS montantTotal FROM CommandesFournisseur c JOIN Fournisseurs f ON f.refFournisseur = c.refFournisseur JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande JOIN ProduitsFournisseur p ON p.refProduit = lc.refProduit GROUP BY c.refCommande, c.dateCommande, f.refFournisseur, f.nomFournisseur ORDER BY c.dateCommande DESC");
+			PreparedStatement pst = cn.prepareStatement("SELECT c.refCommande, c.dateCommande, c.etatCommande, f.refFournisseur, f.nomFournisseur, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM CommandesFournisseur c JOIN Fournisseurs f ON f.refFournisseur = c.refFournisseur LEFT JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande LEFT JOIN Produits p ON p.codeProduit = lc.refProduit GROUP BY c.refCommande, c.dateCommande, c.etatCommande,f.refFournisseur, f.nomFournisseur ORDER BY c.dateCommande DESC");
 			ResultSet rs = pst.executeQuery();
 			
 			
@@ -82,9 +82,18 @@ public class PanelCommande extends JPanel{
 				Date date = rs.getDate("dateCommande");
 				String refFournisseur = rs.getString("refFournisseur");
 				String nomFournisseur = rs.getString("nomFournisseur");
-				String montantTotal = rs.getString("montantTotal")+" €";
+				String montantTotal;
+				String etatCommande = rs.getString("etatCommande");
+				
+				//Vérification si le montantTotal n'est pas null
+				if (rs.getString("montantTotal") == null){
+					montantTotal = "Pas de produits";
+				}
+				else {
+					montantTotal = rs.getString("montantTotal")+" €";
+				}
 
-				this.listeCommandes.add(new CommandesFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal));
+				this.listeCommandes.add(new CommandesFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal, etatCommande));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -98,7 +107,7 @@ public class PanelCommande extends JPanel{
 	private void remplirTableau(){
 		
 		int nbDeCo = this.listeCommandes.size();//On calcule la taille de l'arrylist pour créer un tableau adéquat
-		this.tabCo = new Object[nbDeCo][4];//On créer le tableau de la taille récupérée 
+		this.tabCo = new Object[nbDeCo][5];//On créer le tableau de la taille récupérée 
 		
 		//On remplit ce dernier avec les CommandesFournisseur récupérées
 		for(CommandesFournisseur cf : this.listeCommandes){
@@ -106,6 +115,7 @@ public class PanelCommande extends JPanel{
 			this.tabCo[this.listeCommandes.indexOf(cf)][1] = cf.getNomFourniseur();
 			this.tabCo[this.listeCommandes.indexOf(cf)][2] = cf.getDate();
 			this.tabCo[this.listeCommandes.indexOf(cf)][3] = cf.getMontantTotal();
+			this.tabCo[this.listeCommandes.indexOf(cf)][4] = cf.getEtatCommande();
 		}
 		
 		

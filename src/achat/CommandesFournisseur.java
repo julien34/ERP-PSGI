@@ -4,15 +4,16 @@ import java.sql.Date;
 
 public class CommandesFournisseur {
 	
-	private String refCommande, refFournisseur, nomFourniseur, montantTotal;
+	private String refCommande, refFournisseur, nomFourniseur, montantTotal, etatCommande;
 	private Date date;
 
-	public CommandesFournisseur(String refCommande, Date date, String refFournisseur, String nomFournisseur, String montantTotal){
+	public CommandesFournisseur(String refCommande, Date date, String refFournisseur, String nomFournisseur, String montantTotal, String etatCommande){
 		this.refCommande = refCommande;
 		this.date = date;
 		this.refFournisseur = refFournisseur;
 		this.nomFourniseur = nomFournisseur;
 		this.montantTotal = montantTotal;
+		this.etatCommande = etatCommande;
 	}
 	
 	public String getMontantTotal() {
@@ -53,5 +54,9 @@ public class CommandesFournisseur {
 
 	public void setNomFourniseur(String nomFourniseur) {
 		this.nomFourniseur = nomFourniseur;
+	}
+	
+	public String getEtatCommande(){
+		return this.etatCommande;
 	}
 }
