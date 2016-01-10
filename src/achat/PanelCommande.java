@@ -44,18 +44,18 @@ public class PanelCommande extends JPanel{
 	//On créer la JTable et son modèle
 	private static JTable tableau = new JTable(new DefaultTableModel());
 	private static UneditableTableModel modele = new UneditableTableModel(0,5);
-	private static JScrollPane scrollPane;
+	private static JScrollPane scrollPane  = new JScrollPane(tableau);
 	
 	//On créer les composants que 'on va se servir dans plusieurs méthodes :
-	private JButton btnNouveau, btnModifier, btnAnnuler;
+	private static JButton btnNouveau, btnModifier, btnAnnuler;
 
 	public PanelCommande(FenetrePrincipale f){
-		System.out.println(listeCommandes.size());
-		listeCommandes.removeAll(listeCommandes);
 		
 		//On récupère l'ensemble des founisseurs présents dans la BDD
 		getCommande();
-				
+		
+		//On remplit la JTable
+		remplirTableau();
 				
 		//On initialise l'ensemble des composants sur le JPanel
 		this.initElements();
@@ -84,7 +84,6 @@ public class PanelCommande extends JPanel{
 			PreparedStatement pst = cn.prepareStatement("SELECT c.refCommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.dateLivr, c.typePaiement, f.refFournisseur, f.nomFournisseur, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM CommandesFournisseur c LEFT JOIN Fournisseurs f ON f.refFournisseur = c.refFournisseur LEFT JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande LEFT JOIN Produits p ON p.codeProduit = lc.refProduit GROUP BY c.refCommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.dateLivr, c.typePaiement, f.refFournisseur, f.nomFournisseur ORDER BY c.dateCommande DESC");
 			ResultSet rs = pst.executeQuery();
 			
-			
 			while(rs.next()){
 				String refCommande, refFournisseur, nomFournisseur, montantTotal, etatCommande, typePaiement;
 				double tauxTva, remise;
@@ -111,8 +110,6 @@ public class PanelCommande extends JPanel{
 
 				listeCommandes.add(new CommandesFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal, etatCommande, tauxTva, remise, dateLivr, typePaiement));
 				
-				//On remplit la JTable
-				remplirTableau();
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -145,14 +142,14 @@ public class PanelCommande extends JPanel{
 	 */
 	public static void remplirTableau(){
 		
+		maj();
+		
 		tableau = new JTable(modele);
 		tableau.setAutoCreateRowSorter(false);
 		tableau.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tableau.setPreferredScrollableViewportSize(new Dimension(800, 224));
-		
-		maj();
-		
-		scrollPane = new JScrollPane(tableau);
+
+		scrollPane.setViewportView(tableau);
 	}
 	
 	
@@ -182,13 +179,12 @@ public class PanelCommande extends JPanel{
 		JLabel lblRechercheMontant = new JLabel("Montant : ");
 		JTextField txtRechercheMontant = new JTextField(5);
 		
-		this.btnNouveau = new JButton("Ajouter");
-		this.btnModifier = new JButton("Modifier");
-		this.btnAnnuler = new JButton("Annuler");
+		btnNouveau = new JButton("Ajouter");
+		btnModifier = new JButton("Modifier");
+		btnAnnuler = new JButton("Annuler");
 		
 		//On grise l'accès aux boutons modifier et annuler tant qu'une ligne n'est pas sélectionnée
-		this.btnModifier.setEnabled(false);
-		this.btnAnnuler.setEnabled(false);
+		setBtn(false);
 		
 		
 		//On ajoute les composants aux panels
@@ -202,9 +198,9 @@ public class PanelCommande extends JPanel{
 		panelRechercheNord.add(txtRechercheMontant);
 		
 		panelGrille.add(scrollPane);
-		panelBouton.add(this.btnNouveau);
-		panelBouton.add(this.btnModifier);
-		panelBouton.add(this.btnAnnuler);
+		panelBouton.add(btnNouveau);
+		panelBouton.add(btnModifier);
+		panelBouton.add(btnAnnuler);
 		
 		panelGrilleCentre.add(panelGrille);
 		panelGrilleCentre.add(panelBouton);
@@ -219,26 +215,25 @@ public class PanelCommande extends JPanel{
 	/**
 	 * Méthode qui initialise les écouteurs.
 	 */
-	private void initEcouteurs(){
+	public void initEcouteurs(){
 		
 		//Clic et double clic sur une ligne
 		tableau.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				super.mouseClicked(e);
-				btnModifier.setEnabled(true);
-				btnAnnuler.setEnabled(true);
+				
+				//On active la possibilité de cliquer sur les boutons annuler et modifier
+				setBtn(true);
 				
 				if (e.getClickCount()%2 == 0){
-					//new PopupCommande(listeCommandes.get(tableau.getSelectedRow()));
-					System.out.println(listeCommandes.get(tableau.getSelectedRow()).getRefCommande());
+					new PopupCommande(listeCommandes.get(tableau.getSelectedRow()));
 				}
 			}
 		});
 		
 		
 		//Bouton "Nouveau"
-		this.btnNouveau.addActionListener(new ActionListener() {
+		btnNouveau.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -248,12 +243,22 @@ public class PanelCommande extends JPanel{
 		
 		
 		//Bouton "Modifier"
-		this.btnModifier.addActionListener(new ActionListener() {
+		btnModifier.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				new PopupCommande(listeCommandes.get(tableau.getSelectedRow()));
 			}
 		});
+	}
+	
+	
+	/**
+	 * Change la possibilité d'appuyer sur le bouton modifier et annuler selon son paramètre.
+	 * @param b, un booléen.
+	 */
+	public static void setBtn(boolean b){
+		btnModifier.setEnabled(b);
+		btnAnnuler.setEnabled(b);
 	}
 }

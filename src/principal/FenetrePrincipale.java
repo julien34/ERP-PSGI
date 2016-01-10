@@ -67,7 +67,7 @@ public class FenetrePrincipale extends JFrame
    	//Achat
    	private static PanelFournisseur panelFournisseur = null;
    	private static PanelCategorie panelCategorie = null;
-   	private static PanelCommande panelCommande = null;
+   	public static PanelCommande panelCommande = null;
    	
    	//Vente
    	private static PanelVente panelVente;

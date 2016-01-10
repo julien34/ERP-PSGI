@@ -7,10 +7,12 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -23,6 +25,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
+import principal.FenetrePrincipale;
 import jdbc.DatabaseConnection;
 
 import com.toedter.calendar.JDateChooser;
@@ -43,7 +46,7 @@ public class PopupCommande extends JDialog {
 	private JTextField txtRemise;
 	private JButton btnCalculerTotal, btnValider, btnAnnuler;
 	private JDateChooser jdcDateLivr, jdcDate;
-	private Choice chTauxTva;
+	private Choice chTauxTva, chPaiement;
 		
 	//On créer la JTable et son modèle
 	private static JTable tableau = new JTable(new DefaultTableModel());
@@ -118,6 +121,7 @@ public class PopupCommande extends JDialog {
 		JButton btnRechercher = new JButton("Rechercher");
 		JLabel lblDate = new JLabel("Date : ");
 		this.jdcDate = new JDateChooser();
+		this.jdcDate.setEnabled(false);
 		
 		panelGrilleNord.add(lblFournisseur);
 		panelGrilleNord.add(lblFournisseurCode);
@@ -171,7 +175,7 @@ public class PopupCommande extends JDialog {
 		JLabel lblDateLivr = new JLabel("Date de livraison : ");
 		this.jdcDateLivr = new JDateChooser();
 		JLabel lblPaiement = new JLabel("Type de paiement : ");
-		Choice chPaiement = new Choice();
+		this.chPaiement = new Choice();
 		chPaiement.add("Chèque");
 		chPaiement.add("Espèces");
 		chPaiement.add("Virement");
@@ -335,11 +339,27 @@ public class PopupCommande extends JDialog {
 			this.lblFournisseurCode.setText(this.commande.getNomFourniseur()+" ("+this.commande.getRefFournisseur()+")");
 		}
 		
+		//On remplit la date
 		this.jdcDate.setDate(this.commande.getDate());
 		
 		//On selectionne de base le montant de TVA approprié à la commande (si non 0%)
 		if(this.commande.getTauxTva() != null){
 			this.chTauxTva.select(String.valueOf(this.commande.getTauxTva()));
+		}
+		
+		//On selectionne de base le type de paiement
+		if(this.commande.getTypePaiement() != null){
+			this.chPaiement.select(this.commande.getTypePaiement());
+		}
+		
+		//On affiche le taux remise de base
+		if(this.commande.getRemise() != null){
+			this.txtRemise.setText(String.valueOf(this.commande.getRemise()));
+		}
+		
+		//On remplit la date de livraison
+		if(this.commande.getDateLivr() != null){
+			this.jdcDateLivr.setDate(this.commande.getDateLivr());
 		}
 		
 		//On effectue les calculs
@@ -380,26 +400,77 @@ public class PopupCommande extends JDialog {
 	/**
 	 * Méthode qui ajoute dans la base de donnée une nouvelle commande (vide).
 	 */
-	private void ajouterCommande(CommandesFournisseur C){
+	private void ajouterCommande(CommandesFournisseur c){
 		
 		//On vérifie si la commande est dans l'arraylist des commandes
-		if(PanelCommande.getListeCommande().contains(this.commande)){
-			System.out.println("A MODIFIER");
-		}
-		
-		else {
-			System.out.println("A CREER");
+		if(PanelCommande.getListeCommande().contains(c)){
+			
+			//On vérifie les champs vides
+			if(this.txtRemise.getText().isEmpty()){
+				this.txtRemise.setText("0");//remise = 0 si vide
+			}
+			
+			if(this.commande.getTauxTva() == null){
+				this.chTauxTva.select("0.0");//TVA à 0 si vide
+			}
+			
+			if(this.jdcDateLivr.getDate() == null || this.jdcDateLivr.getDate().before(this.jdcDate.getDate())){
+				this.jdcDateLivr.setDate(this.commande.getDate());//Date de livraison = date de création si vide ou antérieur à la création
+			}
 			
 			try {
 				Connection cn = DatabaseConnection.getCon();
-				PreparedStatement pst = cn.prepareStatement("INSERT INTO CommandesFournisseur(refCommande, dateCommande, etatCommande) VALUES(seqRefCommande.NEXTVAL, CURRENT_DATE, 'En cours')");
+				PreparedStatement pst = cn.prepareStatement("UPDATE CommandesFournisseur SET dateCommande = ?, refFournisseur = ?, tauxTVA = ?, remise = ?, dateLivr = ?, typepaiement = ? WHERE refCommande = ?");
+				pst.setDate(1, new Date(this.jdcDate.getDate().getTime()));
+				pst.setString(2, this.commande.getRefFournisseur());
+				pst.setFloat(3, Float.valueOf(this.chTauxTva.getSelectedItem()));
+				pst.setFloat(4, Float.valueOf(this.txtRemise.getText()));
+				pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
+				pst.setString(6, this.chPaiement.getSelectedItem());
+				pst.setString(7, c.getRefCommande());
 				pst.executeQuery();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		//Si non on la créer
+		else {
+			
+			//On vérifie les champs vides
+			if(this.txtRemise.getText().isEmpty()){
+				this.txtRemise.setText("0");//remise = 0 si vide
+			}
+			
+			try {
+				Connection cn = DatabaseConnection.getCon();
+				PreparedStatement pst = cn.prepareStatement("INSERT INTO CommandesFournisseur(refCommande, dateCommande, refFournisseur, etatCommande, tauxTVA, remise, dateLivr, typepaiement) VALUES(seqRefCommande.NEXTVAL,CURRENT_DATE,?,?,?,?,?,?)");
+				pst.setString(1, "45");
+				pst.setString(2, "En cours");
+				pst.setFloat(3, Float.valueOf(this.chTauxTva.getSelectedItem()));
+				pst.setFloat(4, Float.valueOf(this.txtRemise.getText()));
+				
+				if(this.jdcDateLivr.getDate() == null){
+					Calendar cal = Calendar.getInstance(); 
+					Date date = new Date(cal.getTimeInMillis());
+					pst.setDate(5, date);
+				}
+				else{
+					pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
+				}
+				
+				pst.setString(6, this.chPaiement.getSelectedItem());
+				pst.executeQuery();
+				
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
 		
 		PanelCommande.getCommande();
+		PanelCommande.maj();
+		PanelCommande.setBtn(false);
 		dispose();
 	}
 }
