@@ -4,16 +4,21 @@ import java.sql.Date;
 
 public class CommandesFournisseur {
 	
-	private String refCommande, refFournisseur, nomFourniseur, montantTotal, etatCommande;
-	private Date date;
+	private String refCommande, refFournisseur, nomFourniseur, montantTotal, etatCommande, typePaiement;
+	Double tauxTva, remise;
+	private Date date, dateLivr;
 
-	public CommandesFournisseur(String refCommande, Date date, String refFournisseur, String nomFournisseur, String montantTotal, String etatCommande){
+	public CommandesFournisseur(String refCommande, Date date, String refFournisseur, String nomFournisseur, String montantTotal, String etatCommande, double tauxTva, double remise, Date dateLivr, String typePaiement){
 		this.refCommande = refCommande;
 		this.date = date;
 		this.refFournisseur = refFournisseur;
 		this.nomFourniseur = nomFournisseur;
 		this.montantTotal = montantTotal;
 		this.etatCommande = etatCommande;
+		this.typePaiement = typePaiement;
+		this.tauxTva = tauxTva;
+		this.remise = remise;
+		this.dateLivr = dateLivr;
 	}
 	
 	public String getMontantTotal() {
@@ -59,4 +64,42 @@ public class CommandesFournisseur {
 	public String getEtatCommande(){
 		return this.etatCommande;
 	}
+
+	public String getTypePaiement() {
+		return typePaiement;
+	}
+
+	public void setTypePaiement(String typePaiement) {
+		this.typePaiement = typePaiement;
+	}
+
+	public Double getTauxTva() {
+		return tauxTva;
+	}
+
+	public void setTauxTva(Double tauxTva) {
+		this.tauxTva = tauxTva;
+	}
+
+	public Double getRemise() {
+		return remise;
+	}
+
+	public void setRemise(Double remise) {
+		this.remise = remise;
+	}
+
+	public Date getDateLivr() {
+		return dateLivr;
+	}
+
+	public void setDateLivr(Date dateLivr) {
+		this.dateLivr = dateLivr;
+	}
+
+	public void setEtatCommande(String etatCommande) {
+		this.etatCommande = etatCommande;
+	}
+	
+	
 }

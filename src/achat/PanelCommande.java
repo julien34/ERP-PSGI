@@ -50,6 +50,7 @@ public class PanelCommande extends JPanel{
 	private JButton btnNouveau, btnModifier, btnAnnuler;
 
 	public PanelCommande(FenetrePrincipale f){
+		System.out.println(listeCommandes.size());
 		listeCommandes.removeAll(listeCommandes);
 		
 		//On récupère l'ensemble des founisseurs présents dans la BDD
@@ -62,7 +63,6 @@ public class PanelCommande extends JPanel{
 		//On initialise l'ensemble des écouteurs
 		this.initEcouteurs();
 	}
-	
 	
 	
 	/**
@@ -78,22 +78,28 @@ public class PanelCommande extends JPanel{
 	 * Méthode qui récupère l'ensemble des commandes de la base de données et les ajoute dans une ArrayList.
 	 */
 	public static void getCommande(){
-		listeCommandes.removeAll(listeCommandes);
+		listeCommandes.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT c.refCommande, c.dateCommande, c.etatCommande, f.refFournisseur, f.nomFournisseur, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM CommandesFournisseur c LEFT JOIN Fournisseurs f ON f.refFournisseur = c.refFournisseur LEFT JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande LEFT JOIN Produits p ON p.codeProduit = lc.refProduit GROUP BY c.refCommande, c.dateCommande, c.etatCommande,f.refFournisseur, f.nomFournisseur ORDER BY c.dateCommande DESC");
+			PreparedStatement pst = cn.prepareStatement("SELECT c.refCommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.dateLivr, c.typePaiement, f.refFournisseur, f.nomFournisseur, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM CommandesFournisseur c LEFT JOIN Fournisseurs f ON f.refFournisseur = c.refFournisseur LEFT JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande LEFT JOIN Produits p ON p.codeProduit = lc.refProduit GROUP BY c.refCommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.dateLivr, c.typePaiement, f.refFournisseur, f.nomFournisseur ORDER BY c.dateCommande DESC");
 			ResultSet rs = pst.executeQuery();
 			
 			
 			while(rs.next()){
-				String refCommande, refFournisseur, nomFournisseur, montantTotal, etatCommande;
-				Date date;
+				String refCommande, refFournisseur, nomFournisseur, montantTotal, etatCommande, typePaiement;
+				double tauxTva, remise;
+				Date date, dateLivr;
 				
 				refCommande = rs.getString("refCommande");
 				date = rs.getDate("dateCommande");
 				refFournisseur = rs.getString("refFournisseur");
 				nomFournisseur = rs.getString("nomFournisseur");
 				etatCommande = rs.getString("etatCommande");
+				tauxTva = rs.getDouble("tauxTva");
+				remise = rs.getDouble("remise");
+				dateLivr = rs.getDate("dateLivr");
+				typePaiement = rs.getString("typePaiement");
+				
 				
 				//Montant total non vide
 				if (rs.getString("montantTotal") == null){
@@ -103,7 +109,7 @@ public class PanelCommande extends JPanel{
 					montantTotal = rs.getString("montantTotal")+" €";
 				}
 
-				listeCommandes.add(new CommandesFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal, etatCommande));
+				listeCommandes.add(new CommandesFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal, etatCommande, tauxTva, remise, dateLivr, typePaiement));
 				
 				//On remplit la JTable
 				remplirTableau();
@@ -131,8 +137,6 @@ public class PanelCommande extends JPanel{
 		}
 		
 		modele.setDataVector(tabCo,titres);
-		
-		
 	}
 	
 	
@@ -140,11 +144,13 @@ public class PanelCommande extends JPanel{
 	 * Méthode qui remplit le tableau avec les valeurs de l'arraylist, mais aussi la JTable.
 	 */
 	public static void remplirTableau(){
-		maj();
+		
 		tableau = new JTable(modele);
 		tableau.setAutoCreateRowSorter(false);
 		tableau.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tableau.setPreferredScrollableViewportSize(new Dimension(800, 224));
+		
+		maj();
 		
 		scrollPane = new JScrollPane(tableau);
 	}
@@ -224,7 +230,8 @@ public class PanelCommande extends JPanel{
 				btnAnnuler.setEnabled(true);
 				
 				if (e.getClickCount()%2 == 0){
-					new PopupCommande(listeCommandes.get(tableau.getSelectedRow()));
+					//new PopupCommande(listeCommandes.get(tableau.getSelectedRow()));
+					System.out.println(listeCommandes.get(tableau.getSelectedRow()).getRefCommande());
 				}
 			}
 		});

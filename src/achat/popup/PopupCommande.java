@@ -11,7 +11,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -40,9 +39,11 @@ public class PopupCommande extends JDialog {
 	private Object[][] tabLignesCo;
 	private Object[] titres = {"Code","Description","Catégorie","Prix HT","Qté","Total HT"};
 	
-	private JLabel lblFournisseurCode, lblMontantTotalHt;
+	private JLabel lblFournisseurCode, lblMontantTotalHt, lblMontantRemise, lblMontantTva, lblMontantTtc;
+	private JTextField txtRemise;
 	private JButton btnCalculerTotal, btnValider, btnAnnuler;
 	private JDateChooser jdcDateLivr, jdcDate;
+	private Choice chTauxTva;
 		
 	//On créer la JTable et son modèle
 	private static JTable tableau = new JTable(new DefaultTableModel());
@@ -66,6 +67,7 @@ public class PopupCommande extends JDialog {
 	 * @param cmd, une commande de type CommandesFournisseur. Modifie la commande passée en paramètre.
 	 */
 	public PopupCommande(CommandesFournisseur cmd){
+		this.listeLignesCommande.removeAll(listeLignesCommande);
 		this.commande = cmd;
 		this.initFenetre();
 		this.initElements();
@@ -157,13 +159,15 @@ public class PopupCommande extends JDialog {
 		
 		//panelParametrageCentreGauche
 		JLabel lblTauxTva = new JLabel("Taux TVA : "); 
-		Choice chTauxTva = new Choice();
-		chTauxTva.add("5,5%");
-		chTauxTva.add("10%");
-		chTauxTva.add("20%");
+		this.chTauxTva = new Choice();
+		chTauxTva.add("0.0");
+		chTauxTva.add("5.5");
+		chTauxTva.add("10.0");
+		chTauxTva.add("20.0");
+		JLabel prctTva = new JLabel("%");
 		JLabel lblRemise = new JLabel("Remise : "); 
 		JLabel lblPrCent = new JLabel("%");
-		JTextField txtRemise = new JTextField(10);
+		this.txtRemise = new JTextField(10);
 		JLabel lblDateLivr = new JLabel("Date de livraison : ");
 		this.jdcDateLivr = new JDateChooser();
 		JLabel lblPaiement = new JLabel("Type de paiement : ");
@@ -174,6 +178,7 @@ public class PopupCommande extends JDialog {
 		
 		gauche1.add(lblTauxTva);
 		gauche1.add(chTauxTva);
+		gauche1.add(prctTva);
 		gauche2.add(lblRemise);
 		gauche2.add(txtRemise);
 		gauche2.add(lblPrCent);
@@ -195,11 +200,11 @@ public class PopupCommande extends JDialog {
 		JLabel lblTotalHt = new JLabel("Total HT : "); 
 		this.lblMontantTotalHt = new JLabel();
 		JLabel lblRemise2 = new JLabel("Remise : ");
-		JLabel lblMontantRemise = new JLabel();
+		this.lblMontantRemise = new JLabel();
 		JLabel lblTva = new JLabel("TVA : ");
-		JLabel lblMontantTva = new JLabel();
+		this.lblMontantTva = new JLabel();
 		JLabel lblTotalTtc = new JLabel("Total TTC : ");
-		JLabel lblMontantTtc = new JLabel();
+		this.lblMontantTtc = new JLabel();
 		
 		
 		panelParametrageCentreDroite.add(lblTotalHt);
@@ -278,6 +283,16 @@ public class PopupCommande extends JDialog {
 				PopupCommande.this.ajouterCommande(PopupCommande.this.commande);
 			}
 		});
+		
+		
+		//Bouton pour fermer la page (annuler)
+		this.btnAnnuler.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
 	}
 	
 	
@@ -292,8 +307,6 @@ public class PopupCommande extends JDialog {
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
-				
-				
 				String refProduit = rs.getString("refProduit");
 				String nomProduit = rs.getString("description");
 				String categorieProduit = rs.getString("nomCategorie");
@@ -316,12 +329,21 @@ public class PopupCommande extends JDialog {
 	 * Méthode qui remplit les différents label avec les caractéristiques de la commande.
 	 */
 	private void preRemplir(){
-		this.calculerTotal();
+		
+		//On remplit le nom du fournisseur
 		if(this.commande.getNomFourniseur() != null){
 			this.lblFournisseurCode.setText(this.commande.getNomFourniseur()+" ("+this.commande.getRefFournisseur()+")");
 		}
 		
 		this.jdcDate.setDate(this.commande.getDate());
+		
+		//On selectionne de base le montant de TVA approprié à la commande (si non 0%)
+		if(this.commande.getTauxTva() != null){
+			this.chTauxTva.select(String.valueOf(this.commande.getTauxTva()));
+		}
+		
+		//On effectue les calculs
+		this.calculerTotal();
 	}
 	
 	
@@ -329,12 +351,29 @@ public class PopupCommande extends JDialog {
 	 * Méthode qui calcule le total de la commande.
 	 */
 	private void calculerTotal(){
-		float total = 0;
+		
+		//On calcule le total
+		double total = 0;
 		for(LignesCommande lc : this.listeLignesCommande){
 			total += lc.getTotal();
 		}
+		this.lblMontantTotalHt.setText(total+"€");
 		
-		this.lblMontantTotalHt.setText(total+" €");
+		//On calcule la remise par rapport au total
+		double remise = 0;
+		try {
+		     remise = (Double.parseDouble(this.txtRemise.getText())/100)*total;
+		} catch(NumberFormatException nfe) {
+			//nfe.printStackTrace();
+		}
+		this.lblMontantRemise.setText("-"+String.valueOf(remise)+"€");
+		
+		//On calcule le montant de la TVA par rapport au taux
+		double montantTva = 0;
+		montantTva = (Double.parseDouble(this.chTauxTva.getSelectedItem())/100)*(total-remise);
+		this.lblMontantTva.setText(String.valueOf(montantTva)+"€");
+		
+		this.lblMontantTtc.setText(String.valueOf(total-remise+montantTva)+"€");
 	}
 	
 	
@@ -361,7 +400,6 @@ public class PopupCommande extends JDialog {
 		}
 		
 		PanelCommande.getCommande();
-		PanelCommande.remplirTableau();
 		dispose();
 	}
 }
