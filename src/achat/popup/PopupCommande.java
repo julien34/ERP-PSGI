@@ -31,22 +31,26 @@ import jdbc.DatabaseConnection;
 import com.toedter.calendar.JDateChooser;
 
 import achat.CommandesFournisseur;
+import achat.Fournisseur;
 import achat.LignesCommande;
 import achat.PanelCommande;
 import achat.UneditableTableModel;
 
 public class PopupCommande extends JDialog {
 	
+	private static Fournisseur fournisseur;
 	private CommandesFournisseur commande;
 	private ArrayList<LignesCommande> listeLignesCommande = new ArrayList<LignesCommande>();
 	private Object[][] tabLignesCo;
 	private Object[] titres = {"Code","Description","Catégorie","Prix HT","Qté","Total HT"};
 	
-	private JLabel lblFournisseurCode, lblMontantTotalHt, lblMontantRemise, lblMontantTva, lblMontantTtc;
+	private JLabel lblMontantTotalHt, lblMontantRemise, lblMontantTva, lblMontantTtc;
+	private static JLabel lblFournisseurCode;
 	private JTextField txtRemise;
-	private JButton btnCalculerTotal, btnValider, btnAnnuler;
+	private JButton btnCalculerTotal, btnValider, btnAnnuler, btnRechercher;
 	private JDateChooser jdcDateLivr, jdcDate;
 	private Choice chTauxTva, chPaiement;
+	private PopupCommandeSelectFournisseur fenetreSelectFn;
 		
 	//On créer la JTable et son modèle
 	private static JTable tableau = new JTable(new DefaultTableModel());
@@ -117,8 +121,8 @@ public class PopupCommande extends JDialog {
 		
 		//On créer et ajoute les composants du panelGrilleNord
 		JLabel lblFournisseur = new JLabel("Fournisseur (code) : ");
-		this.lblFournisseurCode = new JLabel("Aucun fournisseur sélectionné");
-		JButton btnRechercher = new JButton("Rechercher");
+		lblFournisseurCode = new JLabel("Aucun fournisseur sélectionné");
+		this.btnRechercher = new JButton("Rechercher");
 		JLabel lblDate = new JLabel("Date : ");
 		this.jdcDate = new JDateChooser();
 		this.jdcDate.setEnabled(false);
@@ -297,6 +301,16 @@ public class PopupCommande extends JDialog {
 				dispose();
 			}
 		});
+		
+		
+		//Bouton de recherche de fournisseur
+		this.btnRechercher.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PopupCommande.this.fenetreSelectFn = new PopupCommandeSelectFournisseur();
+			}
+		});
 	}
 	
 	
@@ -422,7 +436,15 @@ public class PopupCommande extends JDialog {
 				Connection cn = DatabaseConnection.getCon();
 				PreparedStatement pst = cn.prepareStatement("UPDATE CommandesFournisseur SET dateCommande = ?, refFournisseur = ?, tauxTVA = ?, remise = ?, dateLivr = ?, typepaiement = ? WHERE refCommande = ?");
 				pst.setDate(1, new Date(this.jdcDate.getDate().getTime()));
-				pst.setString(2, this.commande.getRefFournisseur());
+				
+				//Si un fournisseur est sélectionné
+				if(fournisseur.getRef().isEmpty()){
+					pst.setString(2, "");
+				}
+				else{
+					pst.setString(2, fournisseur.getRef());
+				}
+				
 				pst.setFloat(3, Float.valueOf(this.chTauxTva.getSelectedItem()));
 				pst.setFloat(4, Float.valueOf(this.txtRemise.getText()));
 				pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
@@ -446,7 +468,15 @@ public class PopupCommande extends JDialog {
 			try {
 				Connection cn = DatabaseConnection.getCon();
 				PreparedStatement pst = cn.prepareStatement("INSERT INTO CommandesFournisseur(refCommande, dateCommande, refFournisseur, etatCommande, tauxTVA, remise, dateLivr, typepaiement) VALUES(seqRefCommande.NEXTVAL,CURRENT_DATE,?,?,?,?,?,?)");
-				pst.setString(1, "45");
+				
+				//Si un fournisseur est sélectionné
+				if(fournisseur.getRef().isEmpty()){
+					pst.setString(1, "");
+				}
+				else{
+					pst.setString(1, fournisseur.getRef());
+				}
+				
 				pst.setString(2, "En cours");
 				pst.setFloat(3, Float.valueOf(this.chTauxTva.getSelectedItem()));
 				pst.setFloat(4, Float.valueOf(this.txtRemise.getText()));
@@ -472,5 +502,15 @@ public class PopupCommande extends JDialog {
 		PanelCommande.maj();
 		PanelCommande.setBtn(false);
 		dispose();
+	}
+	
+	
+	/**
+	 * Méthode qui change le fournisseur avec celui sélectionné dans la liste.
+	 * @param f, le Fournisseur à changer.
+	 */
+	public static void setFournisseur(Fournisseur f){
+		lblFournisseurCode.setText(f.getNom()+" ("+f.getRef()+")");
+		fournisseur = f;
 	}
 }
