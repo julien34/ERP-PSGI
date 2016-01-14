@@ -139,6 +139,43 @@ public class DatabaseConnection
 		}
 	}
 	
+	static public Object[][] remplirLigneCmd()
+	{
+		int longueurTableau = 0;
+		int indexActuel = 0;
+			
+		try
+		{
+			stat = con.createStatement();
+			ResultSet resultat = stat.executeQuery("SELECT COUNT(*) FROM lignecmd");
+			while(resultat.next())
+			{
+				longueurTableau = resultat.getInt("COUNT(*)");
+			}
+			resultat.close();
+			Object[][] databaseData = new Object[longueurTableau][5];
+			
+			resultat = stat.executeQuery("SELECT * FROM lignecmd");
+			while(resultat.next())
+			{
+				databaseData[indexActuel][0] = resultat.getString("numLigne");
+				databaseData[indexActuel][1] = resultat.getString("nomProduit");
+				databaseData[indexActuel][2] = resultat.getString("quantite");
+				databaseData[indexActuel][3] = resultat.getString("prixUni");
+				databaseData[indexActuel][4] = resultat.getString("prixTotal");
+				indexActuel++;
+			}
+			resultat.close();		
+			stat.close();
+			return databaseData;
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
+	
 	/**
 	 * Methode pour obtenir la cl� primaire de la table produits
 	 */
