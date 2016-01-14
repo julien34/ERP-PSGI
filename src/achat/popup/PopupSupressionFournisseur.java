@@ -93,9 +93,12 @@ public class PopupSupressionFournisseur extends JDialog{
 					pst.executeQuery();
 					PanelFournisseur.majTableauSuppr(PopupSupressionFournisseur.this.fournisseur);
 					PopupSupressionFournisseur.this.dispose();//On ferme la fenÃªtre
-					JOptionPane.showMessageDialog(null, "Fournisseur supprimÃ© avec succÃ¨s","Vous venez de supprimer le fournisseur "+PopupSupressionFournisseur.this.fournisseur.getRef()+".",JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Fournisseur supprimé avec succès","Vous venez de supprimer le fournisseur "+PopupSupressionFournisseur.this.fournisseur.getRef()+".",JOptionPane.INFORMATION_MESSAGE);
 				} catch (SQLException e1) {
 					e1.printStackTrace();
+					JOptionPane.showMessageDialog(null,"Ce fournisseur est assigné à une ou plusieurs commande(s).","Erreur",JOptionPane.ERROR_MESSAGE);
+
+					
 				}
 
 				

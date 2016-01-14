@@ -25,6 +25,7 @@ import javax.swing.ListSelectionModel;
 
 import achat.popup.PopupAjoutCategorie;
 import achat.popup.PopupModifCategorie;
+import achat.popup.PopupSuppressionCategorie;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 
@@ -33,7 +34,7 @@ public class PanelCategorie extends JPanel{
 	//On instancie les éléments de la page
 	private static JTextField txtRecherche;
 	private JLabel lblrecherche;
-	private static JButton btnAjouter, btnModifier;
+	private static JButton btnAjouter, btnModifier, btnSupprimer;
 	private JPanel panelNord, panelCentre, panelGrille, panelBoutons;
 	private static String[] tabTitres = {"Code","Catégorie"};
 	private static Object[][] tabCategories;
@@ -99,13 +100,16 @@ public class PanelCategorie extends JPanel{
 		//On créer les boutons (pas de suppression)
 		btnAjouter = new JButton("Ajouter");
 		btnModifier = new JButton("Modifier");
+		btnSupprimer = new JButton("Supprimer");
 		
 		//On grise le bouton modifier (car aucune ligne n'est sélectionnée au départ)
 		btnModifier.setEnabled(false);
+		btnSupprimer.setEnabled(false);
 		
 		//On les ajoute au panelBoutons
 		this.panelBoutons.add(btnAjouter);
 		this.panelBoutons.add(btnModifier);
+		this.panelBoutons.add(btnSupprimer);
 		
 		//On ajoute le scrollPane au panel central
 		this.panelGrille.add(scrollPane);
@@ -194,6 +198,16 @@ public class PanelCategorie extends JPanel{
 			}
 		});
 		
+		
+		//Bouton supprimer
+		btnSupprimer.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new PopupSuppressionCategorie(PanelCategorie.getListeCategorie().get(tableau.getSelectedRow()),tableau.getSelectedRow());
+			}
+		});
+		
 		//Champs de texte "Rechercher"
 		txtRecherche.addKeyListener(new KeyAdapter() {
 			@Override
@@ -201,6 +215,7 @@ public class PanelCategorie extends JPanel{
 				
 				//On désactive le clic sur le bouton modifier
 				PanelCategorie.btnModifier.setEnabled(false);
+				PanelCategorie.btnSupprimer.setEnabled(false);
 				
 				PanelCategorie.majTableauRecherche();
 				tableCategorie.setDataVector(tabCategories, tabTitres);
@@ -214,6 +229,7 @@ public class PanelCategorie extends JPanel{
 				
 				//On autorique le clic sur le bouton modifier
 				PanelCategorie.btnModifier.setEnabled(true);
+				PanelCategorie.btnSupprimer.setEnabled(true);
 				
 				if (e.getClickCount()%2 == 0){
 					new PopupModifCategorie(PanelCategorie.getListeCategorie().get(tableau.getSelectedRow()),tableau.getSelectedRow());
@@ -260,6 +276,17 @@ public class PanelCategorie extends JPanel{
 	
 	
 	/**
+	 * Méthode qui supprimer une catégorie et met à jour le tableau.
+	 * @param c, la catégorie supprimée.
+	 * @param indice, l'indice dans l'arraylist de la catégorie supprimée.
+	 */
+	public static void majTableauSuppr(Categorie c, int indice){
+		listeCategorie.remove(indice);
+		maj();
+	}
+	
+	
+	/**
 	 * Méthode qui charge uniquement les catégories qui sont tapées dans le champs de recherche.
 	 */
 	private static void majTableauRecherche(){
@@ -282,7 +309,21 @@ public class PanelCategorie extends JPanel{
 		}
 	}
 	
+	
+	/**
+	 * Méthode getter qui retourne le bouton modifier.
+	 * @return le bouton modifier.
+	 */
 	public static JButton getBtonModifier(){
 		return btnModifier;
+	}
+	
+	
+	/**
+	 * Méthode getter qui retourne le bouton supprimer.
+	 * @return le bouton supprimer.
+	 */
+	public static JButton getBtonSupprimer(){
+		return btnSupprimer;
 	}
 }
