@@ -115,13 +115,13 @@ public class FenetreVente extends JPanel{
 
 	
 		
+	private static JTable tableLigne;
 	
 	
-	
-	private final String[] nomColonnes = { "Ref","Nom","Quantite","PrixUnitaire","PrixHorsTaxe"};
+	private final static  String[] nomColonnes = { "Ref","Nom","Quantite","PrixUnitaire","PrixHorsTaxe"};
 
 	private static DefaultTableModel modelTableCommande = new DefaultTableModel(0,5){
-		Class[] types = {Integer.class, String.class, String.class,Float.class,Float.class};
+		Class[] types = {String.class, String.class, int.class,Float.class,Float.class};
 		
         @Override
         public Class getColumnClass(int columnIndex) 
@@ -142,8 +142,13 @@ public class FenetreVente extends JPanel{
 		private Dimension dimensionTextField = new Dimension (180 , 26);
 		private Dimension dimensionTable = new Dimension(600, 150);
 
-	   
-	
+		public static void remplirTabLigneCmd(){
+			
+			modelTableCommande.setDataVector(DatabaseConnection.remplirLigneCmd(), nomColonnes);
+			tableLigne.getRowSorter().toggleSortOrder(0);	
+			
+		}
+		
 	
 	public FenetreVente(FenetrePrincipale frame) {
 	this.frame = frame;
@@ -304,12 +309,12 @@ public class FenetreVente extends JPanel{
    			}
    		});	
 			
-		tableCommande = new JTable(modelTableCommande);
-		tableCommande.setAutoCreateRowSorter(true); //permet de trier les colonnes
-		tableCommande.getRowSorter().toggleSortOrder(0);
-		tableCommande.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		scrollPane = new JScrollPane(tableCommande);
-		tableCommande.setPreferredScrollableViewportSize(dimensionTable);
+   		tableLigne = new JTable(modelTableCommande);
+   		tableLigne.setAutoCreateRowSorter(true); //permet de trier les colonnes
+   		tableLigne.getRowSorter().toggleSortOrder(0);
+   		tableLigne.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane = new JScrollPane(tableLigne);
+		tableLigne.setPreferredScrollableViewportSize(dimensionTable);
 		
 		
 		//add(Buttons,BorderLayout.SOUTH);

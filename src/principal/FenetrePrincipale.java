@@ -156,6 +156,7 @@ public class FenetrePrincipale extends JFrame
 	   			public void actionPerformed(ActionEvent e)
 	   			{
 	   				new FenetreConnexion(framePrincipale);
+	   			
 	   			}
 	   		});
 	   		menuBddDeconnexion.addActionListener(new ActionListener()
@@ -220,7 +221,7 @@ public class FenetrePrincipale extends JFrame
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
-	   				
+	   				FenetreVente.remplirTabLigneCmd();
 	   				ajouterOnglet("Gestion des ventes",fenetreVente);
 	   			}
 	   		});	
@@ -229,8 +230,8 @@ public class FenetrePrincipale extends JFrame
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
-//	   				FenetreVente.remplirInfosClient();
-
+//   				FenetreVente.remplirInfosClient();
+	   				FenetreVente.remplirTabLigneCmd();
 	   				ajouterOnglet("Gestion des ventes",fenetreVente);
 	   			}
 	   		});	
@@ -242,6 +243,7 @@ public class FenetrePrincipale extends JFrame
 	   			{
 	//   				FenetreVente.remplirInfosClient();
 	   				PanelClient.remplirtableClient();
+	   				
 	   				ajouterOnglet("Gestion des clients", panelClient);
 	   			}
 	   		});	
