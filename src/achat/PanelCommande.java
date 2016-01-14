@@ -61,6 +61,7 @@ public class PanelCommande extends JPanel{
 	private static JButton btnNouveau, btnModifier, btnAnnuler;
 	private static JTextField txtRechercheCommande, txtRechercheFournisseur, txtRechercheMontant;
 	private static JDateChooser jdcDate;
+	private static String dateRecherche = "";
 
 	public PanelCommande(FenetrePrincipale f){
 		
@@ -137,16 +138,12 @@ public class PanelCommande extends JPanel{
 	public static void getCommandeRecherche(){
 		listeCommandes.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
 		
-		SimpleDateFormat formater = null;
-		Date aujourdhui = new Date(PanelCommande.jdcDate.getDate().getTime());
-		formater = new SimpleDateFormat("dd/MM/yy");
-		
 		try {
 			Connection cn = DatabaseConnection.getCon();
 			PreparedStatement pst = cn.prepareStatement("SELECT c.refCommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.dateLivr, c.typePaiement, f.refFournisseur, f.nomFournisseur, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM CommandesFournisseur c LEFT JOIN Fournisseurs f ON f.refFournisseur = c.refFournisseur LEFT JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande LEFT JOIN Produits p ON p.codeProduit = lc.refProduit WHERE UPPER(c.refCommande) LIKE UPPER(?) AND UPPER(f.nomFournisseur) LIKE UPPER(?) AND c.dateCommande LIKE ? GROUP BY c.refCommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.dateLivr, c.typePaiement, f.refFournisseur, f.nomFournisseur HAVING COALESCE(SUM(p.prixAchat*lc.quantite),0) LIKE ? ORDER BY c.dateCommande DESC");
 			pst.setString(1, "%"+PanelCommande.txtRechercheCommande.getText()+"%");
 			pst.setString(2, "%"+PanelCommande.txtRechercheFournisseur.getText()+"%");
-			pst.setString(3, "%"+String.valueOf(formater.format(aujourdhui))+"%");
+			pst.setString(3, "%"+PanelCommande.dateRecherche+"%");
 			pst.setString(4, "%"+PanelCommande.txtRechercheMontant.getText()+"%");
 			ResultSet rs = pst.executeQuery();
 			
@@ -322,19 +319,47 @@ public class PanelCommande extends JPanel{
 		/*-------------------------*/
 		
 		//Txt numéro de la commande
+		txtRechercheCommande.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				PanelCommande.this.initDate();//On change la date si elle est vide
+				PanelCommande.getCommandeRecherche();
+				PanelCommande.maj();
+			}
+		});
 		
-		//Date
+		//Ecouteur de la Date
 		jdcDate.addPropertyChangeListener(new PropertyChangeListener() {
 			
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if("date".equals(evt.getPropertyName())){
+					PanelCommande.this.initDate();//On change la date si elle est vide
 					PanelCommande.getCommandeRecherche();
 					PanelCommande.maj();
 				}
 			}
 		});
 		
+		//Txt nom du fournisseur
+		txtRechercheFournisseur.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				PanelCommande.this.initDate();//On change la date si elle est vide
+				PanelCommande.getCommandeRecherche();
+				PanelCommande.maj();
+			}
+		});
+		
+		//Txt du montant de la commande
+		txtRechercheMontant.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				PanelCommande.this.initDate();//On change la date si elle est vide
+				PanelCommande.getCommandeRecherche();
+				PanelCommande.maj();
+			}
+		});
 	}
 	
 	
@@ -345,5 +370,22 @@ public class PanelCommande extends JPanel{
 	public static void setBtn(boolean b){
 		btnModifier.setEnabled(b);
 		btnAnnuler.setEnabled(b);
+	}
+	
+	
+	/**
+	 * Méthode qui change la date si elle est vide ou l'attribut avec son contenue si elle est remplie.
+	 */
+	private void initDate(){
+		
+		if(jdcDate.getDate() == null){
+			PanelCommande.dateRecherche = "";
+		}
+		else{
+			SimpleDateFormat formater = null;
+			Date aujourdhui = new Date(PanelCommande.jdcDate.getDate().getTime());
+			formater = new SimpleDateFormat("dd/MM/yy");
+			PanelCommande.dateRecherche = String.valueOf(formater.format(aujourdhui));
+		}
 	}
 }

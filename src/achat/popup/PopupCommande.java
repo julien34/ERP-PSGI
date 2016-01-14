@@ -18,6 +18,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -409,6 +410,7 @@ public class PopupCommande extends JDialog {
 		     remise = (Double.parseDouble(this.txtRemise.getText())/100)*total;
 		} catch(NumberFormatException nfe) {
 			//nfe.printStackTrace();
+			JOptionPane.showMessageDialog(null,"'"+this.txtRemise.getText()+"'"+" n'est pas une remise possible.","Erreur",JOptionPane.ERROR_MESSAGE);
 		}
 		this.lblMontantRemise.setText("-"+String.valueOf(remise)+"€");
 		
@@ -442,6 +444,8 @@ public class PopupCommande extends JDialog {
 				this.jdcDateLivr.setDate(this.commande.getDate());//Date de livraison = date de création si vide ou antérieur à la création
 			}
 			
+			this.calculerTotal();//On calcule el total de la commande
+			
 			try {
 				Connection cn = DatabaseConnection.getCon();
 				PreparedStatement pst = cn.prepareStatement("UPDATE CommandesFournisseur SET dateCommande = ?, refFournisseur = ?, tauxTVA = ?, remise = ?, dateLivr = ?, typepaiement = ? WHERE refCommande = ?");
@@ -466,6 +470,8 @@ public class PopupCommande extends JDialog {
 			if(this.txtRemise.getText().isEmpty()){
 				this.txtRemise.setText("0");//remise = 0 si vide
 			}
+			
+			this.calculerTotal();//On calcule el total de la commande
 			
 			try {
 				Connection cn = DatabaseConnection.getCon();
