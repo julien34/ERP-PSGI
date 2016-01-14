@@ -5,8 +5,18 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.InputMethodEvent;
+import java.awt.event.InputMethodListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,6 +24,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -48,6 +59,8 @@ public class PanelCommande extends JPanel{
 	
 	//On créer les composants que 'on va se servir dans plusieurs méthodes :
 	private static JButton btnNouveau, btnModifier, btnAnnuler;
+	private static JTextField txtRechercheCommande, txtRechercheFournisseur, txtRechercheMontant;
+	private static JDateChooser jdcDate;
 
 	public PanelCommande(FenetrePrincipale f){
 		
@@ -82,6 +95,59 @@ public class PanelCommande extends JPanel{
 		try {
 			Connection cn = DatabaseConnection.getCon();
 			PreparedStatement pst = cn.prepareStatement("SELECT c.refCommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.dateLivr, c.typePaiement, f.refFournisseur, f.nomFournisseur, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM CommandesFournisseur c LEFT JOIN Fournisseurs f ON f.refFournisseur = c.refFournisseur LEFT JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande LEFT JOIN Produits p ON p.codeProduit = lc.refProduit GROUP BY c.refCommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.dateLivr, c.typePaiement, f.refFournisseur, f.nomFournisseur ORDER BY c.dateCommande DESC");
+			ResultSet rs = pst.executeQuery();
+			
+			while(rs.next()){
+				String refCommande, refFournisseur, nomFournisseur, montantTotal, etatCommande, typePaiement;
+				double tauxTva, remise;
+				Date date, dateLivr;
+				
+				refCommande = rs.getString("refCommande");
+				date = rs.getDate("dateCommande");
+				refFournisseur = rs.getString("refFournisseur");
+				nomFournisseur = rs.getString("nomFournisseur");
+				etatCommande = rs.getString("etatCommande");
+				tauxTva = rs.getDouble("tauxTva");
+				remise = rs.getDouble("remise");
+				dateLivr = rs.getDate("dateLivr");
+				typePaiement = rs.getString("typePaiement");
+				
+				
+				//Montant total non vide
+				if (rs.getString("montantTotal") == null){
+					montantTotal = "Pas de produits";
+				}
+				else {
+					montantTotal = rs.getString("montantTotal")+" €";
+				}
+
+				listeCommandes.add(new CommandesFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal, etatCommande, tauxTva, remise, dateLivr, typePaiement));
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	/**
+	 * Méthode qui récupère l'ensemble des commandes de la base de données selon la recherche des champs et les ajoute dans une ArrayList.
+	 */
+	public static void getCommandeRecherche(){
+		listeCommandes.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
+		
+		SimpleDateFormat formater = null;
+		Date aujourdhui = new Date(PanelCommande.jdcDate.getDate().getTime());
+		formater = new SimpleDateFormat("dd/MM/yy");
+		
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("SELECT c.refCommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.dateLivr, c.typePaiement, f.refFournisseur, f.nomFournisseur, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM CommandesFournisseur c LEFT JOIN Fournisseurs f ON f.refFournisseur = c.refFournisseur LEFT JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande LEFT JOIN Produits p ON p.codeProduit = lc.refProduit WHERE UPPER(c.refCommande) LIKE UPPER(?) AND UPPER(f.nomFournisseur) LIKE UPPER(?) AND c.dateCommande LIKE ? GROUP BY c.refCommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.dateLivr, c.typePaiement, f.refFournisseur, f.nomFournisseur HAVING COALESCE(SUM(p.prixAchat*lc.quantite),0) LIKE ? ORDER BY c.dateCommande DESC");
+			pst.setString(1, "%"+PanelCommande.txtRechercheCommande.getText()+"%");
+			pst.setString(2, "%"+PanelCommande.txtRechercheFournisseur.getText()+"%");
+			pst.setString(3, "%"+String.valueOf(formater.format(aujourdhui))+"%");
+			pst.setString(4, "%"+PanelCommande.txtRechercheMontant.getText()+"%");
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
@@ -171,13 +237,13 @@ public class PanelCommande extends JPanel{
 		
 		//On créer les composants
 		JLabel lblRechercheCommande = new JLabel("N° Commande : ");
-		JTextField txtRechercheCommande = new JTextField(10);
+		txtRechercheCommande = new JTextField(10);
 		JLabel lblRechercheFournisseur = new JLabel("Fournisseur : ");
-		JTextField txtRechercheFournisseur = new JTextField(10);
+		txtRechercheFournisseur = new JTextField(10);
 		JLabel lblRechercheDate = new JLabel("Date : ");
-		JDateChooser jdcDate = new JDateChooser();
+		jdcDate = new JDateChooser();
 		JLabel lblRechercheMontant = new JLabel("Montant : ");
-		JTextField txtRechercheMontant = new JTextField(5);
+		txtRechercheMontant = new JTextField(5);
 		
 		btnNouveau = new JButton("Ajouter");
 		btnModifier = new JButton("Modifier");
@@ -250,6 +316,25 @@ public class PanelCommande extends JPanel{
 				new PopupCommande(listeCommandes.get(tableau.getSelectedRow()));
 			}
 		});
+		
+		/*-------------------------*/
+		/*ECOUTEURS DE LA RECHERCHE*/
+		/*-------------------------*/
+		
+		//Txt numéro de la commande
+		
+		//Date
+		jdcDate.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if("date".equals(evt.getPropertyName())){
+					PanelCommande.getCommandeRecherche();
+					PanelCommande.maj();
+				}
+			}
+		});
+		
 	}
 	
 	

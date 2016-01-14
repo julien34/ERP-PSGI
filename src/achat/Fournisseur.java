@@ -3,6 +3,27 @@ package achat;
 public class Fournisseur {
 	String ref, nom, siret, tel, adresse, categorie;
 	
+	
+	public Fournisseur(String ref, String nom, String siret, String tel, String adresse, String categorie){
+		this.ref = ref;
+		this.nom = nom;
+		this.siret = siret;
+		this.tel = tel;
+		this.adresse = adresse;
+		this.categorie = categorie;
+	}
+	
+	public Fournisseur(String ref, String nom){
+		this.ref = ref;
+		this.nom = nom;
+	}
+	
+	public Fournisseur(){
+		this.ref = "";
+		this.nom = "";
+	}
+	
+	
 	public String getCategorie() {
 		return categorie;
 	}
@@ -50,15 +71,5 @@ public class Fournisseur {
 	public String getAdresse() {
 		return adresse;
 	}
-
-	public Fournisseur(String ref, String nom, String siret, String tel, String adresse, String categorie){
-		this.ref = ref;
-		this.nom = nom;
-		this.siret = siret;
-		this.tel = tel;
-		this.adresse = adresse;
-		this.categorie = categorie;
-	}
-	
 	
 }

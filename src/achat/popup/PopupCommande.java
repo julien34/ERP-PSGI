@@ -25,7 +25,6 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-import principal.FenetrePrincipale;
 import jdbc.DatabaseConnection;
 
 import com.toedter.calendar.JDateChooser;
@@ -38,7 +37,7 @@ import achat.UneditableTableModel;
 
 public class PopupCommande extends JDialog {
 	
-	private static Fournisseur fournisseur;
+	private static Fournisseur fournisseur = new Fournisseur();
 	private CommandesFournisseur commande;
 	private ArrayList<LignesCommande> listeLignesCommande = new ArrayList<LignesCommande>();
 	private Object[][] tabLignesCo;
@@ -94,7 +93,7 @@ public class PopupCommande extends JDialog {
 			this.setTitle("Nouvelle commande d'achat");
 		}
 		else {
-			this.setTitle("Modification de la commande d'achat n°"+this.commande.getRefCommande()+" du "+this.commande.getDate()+" ("+this.commande.getNomFourniseur()+")");
+			this.setTitle("Modification de la commande d'achat n°"+this.commande.getRefCommande()+" du "+this.commande.getDate());
 		}
 		
 		this.setSize(850, 650);
@@ -110,6 +109,14 @@ public class PopupCommande extends JDialog {
 	 * Méthode qui initialise l'ensemble de tous les panels et composants de la fenetre.
 	 */
 	private void initElements(){
+		
+		//On défini le fournisseur s'il est présent dans la commande si non vide
+		if(this.commande == null || this.commande.getRefFournisseur() == null){
+			fournisseur = new Fournisseur();
+		}
+		else{
+			fournisseur = new Fournisseur(this.commande.getRefFournisseur(), this.commande.getNomFourniseur());
+		}
 		
 		//On créer les différents panels du haut
 		this.setLayout(new GridLayout(2, 1));//On défini la popup avec un layout en grid
@@ -349,8 +356,11 @@ public class PopupCommande extends JDialog {
 	private void preRemplir(){
 		
 		//On remplit le nom du fournisseur
-		if(this.commande.getNomFourniseur() != null){
-			this.lblFournisseurCode.setText(this.commande.getNomFourniseur()+" ("+this.commande.getRefFournisseur()+")");
+		if(fournisseur.getRef().equals("")){
+			lblFournisseurCode.setText("Sélectionner un founisseur");
+		}
+		else{
+			lblFournisseurCode.setText(fournisseur.getNom()+" ("+fournisseur.getRef()+")");
 		}
 		
 		//On remplit la date
@@ -436,15 +446,7 @@ public class PopupCommande extends JDialog {
 				Connection cn = DatabaseConnection.getCon();
 				PreparedStatement pst = cn.prepareStatement("UPDATE CommandesFournisseur SET dateCommande = ?, refFournisseur = ?, tauxTVA = ?, remise = ?, dateLivr = ?, typepaiement = ? WHERE refCommande = ?");
 				pst.setDate(1, new Date(this.jdcDate.getDate().getTime()));
-				
-				//Si un fournisseur est sélectionné
-				if(fournisseur.getRef().isEmpty()){
-					pst.setString(2, "");
-				}
-				else{
-					pst.setString(2, fournisseur.getRef());
-				}
-				
+				pst.setString(2, fournisseur.getRef());
 				pst.setFloat(3, Float.valueOf(this.chTauxTva.getSelectedItem()));
 				pst.setFloat(4, Float.valueOf(this.txtRemise.getText()));
 				pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
@@ -468,15 +470,7 @@ public class PopupCommande extends JDialog {
 			try {
 				Connection cn = DatabaseConnection.getCon();
 				PreparedStatement pst = cn.prepareStatement("INSERT INTO CommandesFournisseur(refCommande, dateCommande, refFournisseur, etatCommande, tauxTVA, remise, dateLivr, typepaiement) VALUES(seqRefCommande.NEXTVAL,CURRENT_DATE,?,?,?,?,?,?)");
-				
-				//Si un fournisseur est sélectionné
-				if(fournisseur.getRef().isEmpty()){
-					pst.setString(1, "");
-				}
-				else{
-					pst.setString(1, fournisseur.getRef());
-				}
-				
+				pst.setString(1, fournisseur.getRef());
 				pst.setString(2, "En cours");
 				pst.setFloat(3, Float.valueOf(this.chTauxTva.getSelectedItem()));
 				pst.setFloat(4, Float.valueOf(this.txtRemise.getText()));
@@ -501,6 +495,7 @@ public class PopupCommande extends JDialog {
 		PanelCommande.getCommande();
 		PanelCommande.maj();
 		PanelCommande.setBtn(false);
+		setFournisseur(new Fournisseur());
 		dispose();
 	}
 	
