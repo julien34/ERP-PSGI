@@ -41,15 +41,16 @@ public class FenetreVente extends JPanel{
 	
 	private static FenetrePrincipale frame;
 	JPanel FenetrePrincipal = new JPanel(new GridLayout(3,1)); // 3 lignes 1 colones 
-	JPanel FenetreHaut = new JPanel(new GridLayout(1,2,50,50)); // 1 ligne 2 colones
 	JPanel Formulaire = new JPanel(new GridLayout(6, 1));// 6 lignes 1 colone
-	JPanel ModeDePayement = new JPanel(new GridLayout(4, 2));//
+
 	JPanel Commande = new JPanel(new GridLayout(3,1));
-	JPanel ModifierTableau = new JPanel(new FlowLayout(FlowLayout.CENTER,40,0));
-	JPanel Buttons = new JPanel(new GridLayout());	//ajout par la droite
 	JPanel LesTotaux = new JPanel(new GridLayout(5,1));	
+	
+	JPanel Buttons = new JPanel(new GridLayout(2,3));
+	JPanel ButtonsHaut = new JPanel(new FlowLayout(FlowLayout.CENTER,40,0));
+	JPanel ButtonsBas = new JPanel(new FlowLayout(FlowLayout.CENTER,40,0));
+	
 	JLabel InformationClient = new JLabel("");
-	JLabel ModePayement = new JLabel("Mode de Payement");
 	
 	JLabel Rien = new JLabel("");
 	JLabel RienButtons1 = new JLabel("");
@@ -80,9 +81,7 @@ public class FenetreVente extends JPanel{
 	JTextField ChampTextNumeroTelephone = new JTextField("");  	  
 	
 	//ButtonGroup bg = new ButtonGroup();
-	JRadioButton Carte = new JRadioButton("Carte");
-	JRadioButton Cheque = new JRadioButton("Cheque");
-	JRadioButton Espece = new JRadioButton("Espece");	
+
 	
 	
 	JButton Valider = new JButton("Valider");	  
@@ -139,7 +138,7 @@ public class FenetreVente extends JPanel{
 	
 
 	
-		private Dimension dimensionBouttons = new Dimension(140,26);
+		private Dimension dimensionBouttons = new Dimension(100,26);
 		private Dimension dimensionTextField = new Dimension (180 , 26);
 		private Dimension dimensionTable = new Dimension(600, 150);
 
@@ -314,9 +313,8 @@ public class FenetreVente extends JPanel{
 		
 		
 		//add(Buttons,BorderLayout.SOUTH);
-		add("NORTH",FenetreHaut);
+			add(Formulaire);
 		//	FenetrePrincipal.add(FenetreHaut); // FenetrePrincipal 1/1 prend fenetre haut
-			FenetreHaut.add(Formulaire); //FenetreHaut prend formulaire  1/1
 		
 			//    */* position dans le tableau
 			Formulaire.add(InformationClient); //  1/1
@@ -339,14 +337,9 @@ public class FenetreVente extends JPanel{
 			Formulaire.add(NumeroTelephone);// 6/1
 			Formulaire.add(ChampTextNumeroTelephone);// 6/1
 			ChampTextNumeroTelephone.setEditable(false);
-			FenetreHaut.add(ModeDePayement); // fenetre haut prend modedepayement 1/2
-			ModeDePayement.add(ModePayement);// 1/1
-			ModeDePayement.add(Carte);
-			ModeDePayement.add(Cheque);
-			ModeDePayement.add(Espece);
-			Carte.setSelected(true);
+
 			
-			add("CENTER",Commande);
+			add(Commande);
 			
 			Commande.add(scrollPane);
 			
@@ -354,57 +347,45 @@ public class FenetreVente extends JPanel{
 			
 			Commande.add(LesTotaux);
 			LesTotaux.add(TotalHT);
+			TotalHT.setHorizontalAlignment(TotalHT.RIGHT);
 			LesTotaux.add(ChampTotalHT);
 			ChampTotalHT.setPreferredSize(dimensionTextField);
 			LesTotaux.add(TVA);
+			TVA.setHorizontalAlignment(TVA.RIGHT);
 			LesTotaux.add(ChampTVA);
 			LesTotaux.add(TotalTTC);
+			TotalTTC.setHorizontalAlignment(TotalTTC.RIGHT);
+
 			LesTotaux.add(ChampTotalTTC);
-			LesTotaux.add(AjouterProduit);
-			LesTotaux.add(ModifierProduit);			
-			LesTotaux.add(SupprimerProduit);
-			Commande.add(ModifierTableau);
-			ModifierTableau.add("CENTER",AjouterProduit);
+
+			Commande.add(Buttons);
+			Buttons.add(ButtonsHaut);
+			ButtonsHaut.add("CENTER",AjouterProduit);
 			AjouterProduit.setPreferredSize(dimensionBouttons);
-			ModifierTableau.add("CENTER",ModifierProduit);		
+			ButtonsHaut.add("CENTER",ModifierProduit);		
 			ModifierProduit.setPreferredSize(dimensionBouttons);
-			ModifierTableau.add("CENTER",SupprimerProduit);
+			ButtonsHaut.add("CENTER",SupprimerProduit);
 			SupprimerProduit.setPreferredSize(dimensionBouttons);
 			
-			add("SOUTH",Buttons);
-
-			Buttons.add(RienTotaux1);
-			Buttons.add(RienTotaux2);
-			Buttons.add(RienButtons1);
-			Buttons.add(Valider);
-			Buttons.add(Annuler);
+			
+			Buttons.add(ButtonsBas);
+			ButtonsBas.add("SOUTH",Valider);
+			Valider.setPreferredSize(dimensionBouttons);
+			ButtonsBas.add("SOUTH",Annuler);
+			Annuler.setPreferredSize(dimensionBouttons);
 			
 			
 			
-			
-			
-			
-			Carte.addActionListener(new ActionListener() {
-			    public void actionPerformed(ActionEvent e) {
-			    	Cheque.setSelected(false);
-			    	Espece.setSelected(false);
-			    }
+			Valider.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent arg0) {
+					
+					 new Livraison(frame);
+					
+				}
 			});
+			
 
-				Cheque.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-			    	Carte.setSelected(false);
-			    	Espece.setSelected(false);
-					}
-			    });
-
-				Espece.addActionListener(new ActionListener() {
-			    public void actionPerformed(ActionEvent e) {
-			    	Cheque.setSelected(false);
-			    	Carte.setSelected(false);		
-			    						
-			    }
-			  });
 
 				ComboBoxClient.addActionListener(new ActionListener() {			
 				public void actionPerformed(ActionEvent e) {
