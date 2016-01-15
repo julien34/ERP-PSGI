@@ -40,14 +40,14 @@ public class PopupCommande extends JDialog {
 	
 	private static Fournisseur fournisseur = new Fournisseur();
 	private CommandesFournisseur commande;
-	private ArrayList<LignesCommande> listeLignesCommande = new ArrayList<LignesCommande>();
-	private Object[][] tabLignesCo;
-	private Object[] titres = {"Code","Description","Catégorie","Prix HT","Qté","Total HT"};
+	private static ArrayList<LignesCommande> listeLignesCommande = new ArrayList<LignesCommande>();
+	private static Object[][] tabLignesCo;
+	private static Object[] titres = {"Code","Description","Catégorie","Prix HT","Qté","Total HT"};
 	
 	private JLabel lblMontantTotalHt, lblMontantRemise, lblMontantTva, lblMontantTtc;
 	private static JLabel lblFournisseurCode;
 	private JTextField txtRemise;
-	private JButton btnCalculerTotal, btnValider, btnAnnuler, btnRechercher;
+	private JButton btnCalculerTotal, btnValider, btnAnnuler, btnRechercher, btnAjouter, btnModifier, btnSupprimer;
 	private JDateChooser jdcDateLivr, jdcDate;
 	private Choice chTauxTva, chPaiement;
 	private PopupCommandeSelectFournisseur fenetreSelectFn;
@@ -62,10 +62,15 @@ public class PopupCommande extends JDialog {
 	 * Constructeur vide. Créer une nouvelle commande.
 	 */
 	public PopupCommande(){
-		this.listeLignesCommande.removeAll(listeLignesCommande);
+		listeLignesCommande.removeAll(listeLignesCommande);
 		this.initFenetre();
 		this.initElements();
 		this.initEcouteurs();
+		
+		//On grise les boutons pour ajouter/modifier/supprimer un produits
+		this.btnAjouter.setEnabled(false);
+		this.btnModifier.setEnabled(false);
+		this.btnSupprimer.setEnabled(false);
 	}
 	
 	
@@ -74,7 +79,7 @@ public class PopupCommande extends JDialog {
 	 * @param cmd, une commande de type CommandesFournisseur. Modifie la commande passée en paramètre.
 	 */
 	public PopupCommande(CommandesFournisseur cmd){
-		this.listeLignesCommande.removeAll(listeLignesCommande);
+		listeLignesCommande.removeAll(listeLignesCommande);
 		this.commande = cmd;
 		this.initFenetre();
 		this.initElements();
@@ -151,15 +156,15 @@ public class PopupCommande extends JDialog {
 		panelGrilleCentre.add(scrollPane);
 		
 		//On créer et on ajout les composants du panelGrilleSud
-		JButton btnAjouter = new JButton("Ajouter");
-		JButton btnModifier = new JButton("Modifier");
-		JButton btnSupprimer = new JButton("Supprimer");
+		this.btnAjouter = new JButton("Ajouter");
+		this.btnModifier = new JButton("Modifier");
+		this.btnSupprimer = new JButton("Supprimer");
 		this.btnCalculerTotal = new JButton("Calculer Total");
 		
-		panelGrilleSud.add(btnAjouter);
-		panelGrilleSud.add(btnModifier);
-		panelGrilleSud.add(btnSupprimer);
-		panelGrilleSud.add(btnCalculerTotal);
+		panelGrilleSud.add(this.btnAjouter);
+		panelGrilleSud.add(this.btnModifier);
+		panelGrilleSud.add(this.btnSupprimer);
+		panelGrilleSud.add(this.btnCalculerTotal);
 		
 		
 		//On créer les différents panels du bas
@@ -176,10 +181,10 @@ public class PopupCommande extends JDialog {
 		//panelParametrageCentreGauche
 		JLabel lblTauxTva = new JLabel("Taux TVA : "); 
 		this.chTauxTva = new Choice();
-		chTauxTva.add("0.0");
-		chTauxTva.add("5.5");
-		chTauxTva.add("10.0");
-		chTauxTva.add("20.0");
+		this.chTauxTva.add("0.0");
+		this.chTauxTva.add("5.5");
+		this.chTauxTva.add("10.0");
+		this.chTauxTva.add("20.0");
 		JLabel prctTva = new JLabel("%");
 		JLabel lblRemise = new JLabel("Remise : "); 
 		JLabel lblPrCent = new JLabel("%");
@@ -259,17 +264,17 @@ public class PopupCommande extends JDialog {
 	/**
 	 * Méthode qui remplit le tableau avec les données présentes dans l'arrayList.
 	 */
-	private void maj(){
-		int nouvelleLongueur = this.listeLignesCommande.size();
-		this.tabLignesCo = new Object[nouvelleLongueur][6];
+	public static void maj(){
+		int nouvelleLongueur = listeLignesCommande.size();
+		tabLignesCo = new Object[nouvelleLongueur][6];
 		
-		for(LignesCommande lc : this.listeLignesCommande){
-			this.tabLignesCo[listeLignesCommande.indexOf(lc)][0] = lc.getRefProduit();
-			this.tabLignesCo[listeLignesCommande.indexOf(lc)][1] = lc.getNomproduit();
-			this.tabLignesCo[listeLignesCommande.indexOf(lc)][2] = lc.getCategorieProduit();
-			this.tabLignesCo[listeLignesCommande.indexOf(lc)][3] = lc.getpHT()+"€";
-			this.tabLignesCo[listeLignesCommande.indexOf(lc)][4] = lc.getQte();
-			this.tabLignesCo[listeLignesCommande.indexOf(lc)][5] = lc.getTotal()+"€";
+		for(LignesCommande lc : listeLignesCommande){
+			tabLignesCo[listeLignesCommande.indexOf(lc)][0] = lc.getRefProduit();
+			tabLignesCo[listeLignesCommande.indexOf(lc)][1] = lc.getNomproduit();
+			tabLignesCo[listeLignesCommande.indexOf(lc)][2] = lc.getCategorieProduit();
+			tabLignesCo[listeLignesCommande.indexOf(lc)][3] = lc.getpHT()+"€";
+			tabLignesCo[listeLignesCommande.indexOf(lc)][4] = lc.getQte();
+			tabLignesCo[listeLignesCommande.indexOf(lc)][5] = lc.getTotal()+"€";
 		}
 		
 		modele.setDataVector(tabLignesCo, titres);
@@ -287,6 +292,16 @@ public class PopupCommande extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				PopupCommande.this.calculerTotal();
+			}
+		});
+		
+		
+		//Bouton Ajouter
+		this.btnAjouter.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new PopupCommandeAjoutLigne(PopupCommande.this.commande.getRefCommande());
 			}
 		});
 		
@@ -340,10 +355,10 @@ public class PopupCommande extends JDialog {
 				int qte = rs.getInt("quantite");
 				double total = pHT*qte;
 				
-				PopupCommande.this.listeLignesCommande.add(new LignesCommande(refProduit, nomProduit, categorieProduit, pHT, qte, total));
+				PopupCommande.listeLignesCommande.add(new LignesCommande(refProduit, nomProduit, categorieProduit, pHT, qte, total));
 			}
 			
-			this.maj();
+			maj();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -399,7 +414,7 @@ public class PopupCommande extends JDialog {
 		
 		//On calcule le total
 		double total = 0;
-		for(LignesCommande lc : this.listeLignesCommande){
+		for(LignesCommande lc : listeLignesCommande){
 			total += lc.getTotal();
 		}
 		this.lblMontantTotalHt.setText(total+"€");
@@ -513,5 +528,14 @@ public class PopupCommande extends JDialog {
 	public static void setFournisseur(Fournisseur f){
 		lblFournisseurCode.setText(f.getNom()+" ("+f.getRef()+")");
 		fournisseur = f;
+	}
+	
+	
+	/**
+	 * Métode qui rajoute à la commande un produit avec une quantité.
+	 * @param lc, une ligne de commande à ajouter à la ommande.
+	 */
+	public static void addArrayListLigneCommande(LignesCommande lc){
+		listeLignesCommande.add(lc);
 	}
 }

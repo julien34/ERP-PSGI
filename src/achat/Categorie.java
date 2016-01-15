@@ -1,7 +1,12 @@
 package achat;
 
 public class Categorie {
-	private String id, nom;
+	private String id, nom, idParent;
+	
+	public Categorie(String id, String nom){
+		this.nom = nom;
+		this.id = id;
+	}
 	
 	public String getId() {
 		return id;
@@ -17,10 +22,5 @@ public class Categorie {
 
 	public void setNom(String nom) {
 		this.nom = nom;
-	}
-
-	public Categorie(String id, String nom){
-		this.nom = nom;
-		this.id = id;
 	}
 }

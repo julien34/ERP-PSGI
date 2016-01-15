@@ -71,7 +71,7 @@ public class PopupCommandeSelectFournisseur extends JFrame{
 		this.btnAnnuler = new JButton("Annuler");
 		this.btnValider.setEnabled(false);//On grise le bouton valider
 		this.scrollPane = new ScrollPane();
-		this.scrollPane.setSize(450, 200);
+		this.scrollPane.setSize(450, 180);
 		
 		//Ajouts des composants aux différents panels
 		this.scrollPane.add(this.jList);
