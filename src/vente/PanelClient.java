@@ -171,8 +171,8 @@ public class PanelClient extends JPanel{
 			    
 			    Client client = new Client(id,nom,prenom,adresse,mail,tel,categ);
 			    //ModifierClients
-				panelGrid.add(new ModifierClients(client));
-				revalidate();
+				new ModifierClients(framePrincipale, client);
+				//revalidate();
 			}
 		});
 		

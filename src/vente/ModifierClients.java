@@ -8,8 +8,9 @@ import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 import vente.Client;
 
-public class ModifierClients extends JPanel
+public class ModifierClients extends JDialog
 {	
+	private static FenetrePrincipale frame;
 	private JPanel panelGrid = new JPanel(new GridLayout(5,1));
 	private JPanel panelFlow1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	private JPanel panelFlow2 = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -53,9 +54,13 @@ public class ModifierClients extends JPanel
 	/**
 	 * Le constructeur par défaut fait appel à la fonction init
 	 */
-	public ModifierClients(Client client)
+	public ModifierClients(FenetrePrincipale frame, Client client)
 	{	
+		
+		super(frame,"Modifier un client");
+		this.frame = frame;
 		initElements();
+		initFrame();
 		codeClient = Integer.parseInt(client.getIdClient());
 		Nom.setText(client.getNomClient());
 		Prenom.setText(client.getPrenomClient());
@@ -65,6 +70,13 @@ public class ModifierClients extends JPanel
 		Categorie.setText(client.getCategorie());
 	}
 	
+	public void initFrame(){
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setSize(512,288);	
+		setLocationRelativeTo(null);
+		setResizable(false);
+		setVisible(true);
+	}
 	public void initElements()
 	{
 		//Création des boutons
@@ -105,7 +117,7 @@ public class ModifierClients extends JPanel
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				panelGrid.setVisible(false);
+				setVisible(false);
 			}
 		});
 		
@@ -120,7 +132,7 @@ public class ModifierClients extends JPanel
 							String idClient = Integer.toString(codeClient);
 							FenetrePrincipale.getPanelClient().raffraichirLigne(idClient, Nom.getText(),Prenom.getText(),Adresse.getText(),Email.getText(),Telephone.getText(), Categorie.getText());
 							JOptionPane.showMessageDialog(null, "Client modifié avec succès.", "Modification de Client", JOptionPane.INFORMATION_MESSAGE);
-							panelGrid.setVisible(false);
+							setVisible(false);
 						}
 						else JOptionPane.showMessageDialog(null, "Erreur de modification du client. Vérifiez vos champs.", "Modification de client", JOptionPane.WARNING_MESSAGE);
 					}
