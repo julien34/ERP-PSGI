@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -53,8 +55,8 @@ public class PopupCommande extends JDialog {
 	private PopupCommandeSelectFournisseur fenetreSelectFn;
 		
 	//On créer la JTable et son modèle
-	private static JTable tableau = new JTable(new DefaultTableModel());
 	private static UneditableTableModel modele = new UneditableTableModel(0,5);
+	private static JTable tableau = new JTable(modele);
 	private JScrollPane scrollPane;
 	
 	
@@ -62,7 +64,8 @@ public class PopupCommande extends JDialog {
 	 * Constructeur vide. Créer une nouvelle commande.
 	 */
 	public PopupCommande(){
-		listeLignesCommande.removeAll(listeLignesCommande);
+		listeLignesCommande.clear();
+		maj();//On mets à jour pour éviter que la table ne se remplisse avec les produits de la dernière commande
 		this.initFenetre();
 		this.initElements();
 		this.initEcouteurs();
@@ -79,7 +82,7 @@ public class PopupCommande extends JDialog {
 	 * @param cmd, une commande de type CommandesFournisseur. Modifie la commande passée en paramètre.
 	 */
 	public PopupCommande(CommandesFournisseur cmd){
-		listeLignesCommande.removeAll(listeLignesCommande);
+		listeLignesCommande.clear();
 		this.commande = cmd;
 		this.initFenetre();
 		this.initElements();

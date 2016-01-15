@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 
 import jdbc.DatabaseConnection;
@@ -33,7 +34,8 @@ public class PopupCommandeAjoutLigne extends JDialog{
 	private ArrayList<Produit> listeProduits = new ArrayList<Produit>();
 	private ArrayList<Categorie> listeCategorie = new ArrayList<Categorie>();
 	private JButton btnAjouter, btnAnnuler;
-	private JTextField txtNomProduitRecherche, txtQte;
+	private JTextField txtNomProduitRecherche;
+	private JSpinner txtQte;
 	private Choice chCategorieRecherche = new Choice();
 	private DefaultListModel<String> dLMProduits = new DefaultListModel<String>();
 	private JList<String> jListProduit = new JList<String>(this.dLMProduits);
@@ -85,7 +87,7 @@ public class PopupCommandeAjoutLigne extends JDialog{
 		JLabel lblProduit = new JLabel("Produit : ");
 		JLabel lblQte = new JLabel("Qté : ");
 		this.txtNomProduitRecherche = new JTextField(10);
-		this.txtQte = new JTextField(4);
+		this.txtQte = new JSpinner();
 		this.btnAjouter = new JButton("Ajouter");
 		this.btnAjouter.setEnabled(false);
 		this.btnAnnuler = new JButton("Annuler");
@@ -245,14 +247,14 @@ public class PopupCommandeAjoutLigne extends JDialog{
 		
 		//On vérifie que la qté saisie soit un nombre > 0.
 		try{
-			int qte = Integer.valueOf(this.txtQte.getText());
+			int qte = this.txtQte.getComponentCount();
 			Double total = qte*pHT;
 			
 			//On créer la ligne de commande
 			this.ligneCommande = new LignesCommande(refProduit, nomProduit, categorieProduit, pHT, qte, total);
 			
 		} catch(NumberFormatException nfe){
-			JOptionPane.showMessageDialog(null,"'"+this.txtQte.getText()+"'"+" n'est pas une quantité possible.","Erreur",JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null,"'"+this.txtQte.getComponentCount()+"'"+" n'est pas une quantité possible.","Erreur",JOptionPane.ERROR_MESSAGE);
 
 		}
 	}
