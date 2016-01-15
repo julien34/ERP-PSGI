@@ -63,11 +63,6 @@ public class ModifierClients extends JPanel
 		Email.setText(client.getMailClient());
 		Telephone.setText(client.getTelClient());
 		Categorie.setText(client.getCategorie());
-	}	
-	
-	public JButton getRetour()
-	{
-		return retour;
 	}
 	
 	public void initElements()
@@ -106,20 +101,29 @@ public class ModifierClients extends JPanel
 		panelFlow4.add(retour);		
 		panelFlow5.add(error);
 		
-		//Action si click sur bouton
-		modifier.addActionListener(new ActionListener()
+		retour.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				//Si la requete à réussie
-				if(DatabaseConnection.requete("UPDATE vente_clients SET NOMCLIENT ='"+Nom.getText()+"', PRENOMCLIENT='"+Prenom.getText()+"', ADRESSECLIENT='"+Adresse.getText()+"', EMAILCLIENT='"+Email.getText()+"', TELCLIENT='"+Telephone.getText()+"', CODECATEGORIECLIENT='"+Integer.parseInt(Categorie.getText())+"' WHERE IDCLIENT='"+codeClient+"'"))
-				{
-					FenetrePrincipale.getPanelClient().raffraichirLigne(Nom.getText(),Prenom.getText(),Adresse.getText(),Email.getText(),Telephone.getText(), Categorie.getText());
-					JOptionPane.showMessageDialog(null, "Client modifié avec succès.", "Modification de Client", JOptionPane.INFORMATION_MESSAGE);
-					panelGrid.setVisible(false);
-				}
-				else JOptionPane.showMessageDialog(null, "Erreur de modification du client. Vérifiez vos champs.", "Modification de client", JOptionPane.WARNING_MESSAGE);
+				panelGrid.setVisible(false);
 			}
 		});
+		
+		//Action si click sur bouton
+				modifier.addActionListener(new ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						//Si la requete à réussie
+						if(DatabaseConnection.requete("UPDATE vente_clients SET NOMCLIENT ='"+Nom.getText()+"', PRENOMCLIENT='"+Prenom.getText()+"', ADRESSECLIENT='"+Adresse.getText()+"', EMAILCLIENT='"+Email.getText()+"', TELCLIENT='"+Telephone.getText()+"', CODECATEGORIECLIENT='"+Integer.parseInt(Categorie.getText())+"' WHERE IDCLIENT='"+codeClient+"'"))
+						{
+							String idClient = Integer.toString(codeClient);
+							FenetrePrincipale.getPanelClient().raffraichirLigne(idClient, Nom.getText(),Prenom.getText(),Adresse.getText(),Email.getText(),Telephone.getText(), Categorie.getText());
+							JOptionPane.showMessageDialog(null, "Client modifié avec succès.", "Modification de Client", JOptionPane.INFORMATION_MESSAGE);
+							panelGrid.setVisible(false);
+						}
+						else JOptionPane.showMessageDialog(null, "Erreur de modification du client. Vérifiez vos champs.", "Modification de client", JOptionPane.WARNING_MESSAGE);
+					}
+				});
 	}
 }

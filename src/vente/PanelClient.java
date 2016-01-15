@@ -180,19 +180,19 @@ public class PanelClient extends JPanel{
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				int option = JOptionPane.showConfirmDialog(null, "Confirmer la suppression du client ?", "Suppression de produit", JOptionPane.YES_NO_OPTION);
+				int option = JOptionPane.showConfirmDialog(null, "Confirmer la suppression du client ?", "Suppression de client", JOptionPane.YES_NO_OPTION);
 				if(option == JOptionPane.YES_OPTION)
 				{
 					if (clientChoisi != -1)
 					{
-						String value1 = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 0));
-
-						
-						//String codeClient = DatabaseConnection.getCodeClient(value1,value2,value3,value4,value5,value6);
-						
-						if (DatabaseConnection.requete("DELETE FROM vente_clients WHERE IDCLIENT = "+value1)){
-						{ modelTableClient.removeRow(tableClient.convertRowIndexToModel(clientChoisi)); }
-				
+						String id = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 0));
+						Integer idClient = Integer.parseInt(id);
+						if (DatabaseConnection.requete("DELETE FROM vente_clients WHERE IDCLIENT = '"+idClient+"'")){
+							modelTableClient.removeRow(tableClient.convertRowIndexToModel(clientChoisi));
+							JOptionPane.showMessageDialog(null, "Client supprimer avec succès.", "Suppression de client", JOptionPane.INFORMATION_MESSAGE);
+						}
+						else{
+							System.out.println("Suppression du client interrompu");
 						}
 					}
 				}
@@ -202,26 +202,25 @@ public class PanelClient extends JPanel{
 		
 	}
 	public void refreshListeTableClient(String id, String nom, String prenom, String adresse, String email, String tel, String categorie){
-		int id2 = Integer.parseInt(id);
-		int categ = Integer.parseInt(categorie);
-		Object[] obj = {id2, nom, prenom, adresse, email, tel, categ};
+		//int id2 = Integer.parseInt(id);
+		//int categ = Integer.parseInt(categorie);
+		Object[] obj = {id, nom, prenom, adresse, email, tel, categorie};
 		modelTableClient.addRow(obj);
 	}
 	
-	public void raffraichirLigne(String nom, String prenom, String adresse, String email, String tel, String categorie)
+	public void raffraichirLigne(String id, String nom, String prenom, String adresse, String email, String tel, String categorie)
 	{
-	
 		int ligneChoisieTemp = clientChoisi;
 		if (clientChoisi != -1)
-		{			
-			modelTableClient.setValueAt(nom, tableClient.convertRowIndexToModel(ligneChoisieTemp), 0);
-			modelTableClient.setValueAt(prenom, tableClient.convertRowIndexToModel(ligneChoisieTemp), 1);
-			modelTableClient.setValueAt(adresse, tableClient.convertRowIndexToModel(ligneChoisieTemp), 2);
-			modelTableClient.setValueAt(email, tableClient.convertRowIndexToModel(ligneChoisieTemp), 3);
-			modelTableClient.setValueAt(tel, tableClient.convertRowIndexToModel(ligneChoisieTemp), 4);
-			modelTableClient.setValueAt(categorie, tableClient.convertRowIndexToModel(ligneChoisieTemp), 5);
+		{	
+			modelTableClient.setValueAt(id, tableClient.convertRowIndexToModel(ligneChoisieTemp), 0);		
+			modelTableClient.setValueAt(nom, tableClient.convertRowIndexToModel(ligneChoisieTemp), 1);
+			modelTableClient.setValueAt(prenom, tableClient.convertRowIndexToModel(ligneChoisieTemp), 2);
+			modelTableClient.setValueAt(adresse, tableClient.convertRowIndexToModel(ligneChoisieTemp), 3);
+			modelTableClient.setValueAt(email, tableClient.convertRowIndexToModel(ligneChoisieTemp), 4);
+			modelTableClient.setValueAt(tel, tableClient.convertRowIndexToModel(ligneChoisieTemp), 5);
+			modelTableClient.setValueAt(categorie, tableClient.convertRowIndexToModel(ligneChoisieTemp), 6);
 		}
 	}
-	
-	
 }
+

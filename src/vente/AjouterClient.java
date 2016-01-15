@@ -114,6 +114,12 @@ public class AjouterClient extends JDialog{
 			}
 		});
 		
+		bt_annuler.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				setVisible(false);
+			}
+		});
+		
 		bt_valider.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				String id = txt_id.getText();
@@ -124,8 +130,9 @@ public class AjouterClient extends JDialog{
 				String tel = txt_tel.getText();
 				String categorie = txt_categorie.getText();
 				
-				if(DatabaseConnection.requete("INSERT INTO VENTE_CLIENTS(idclient, nomclient, prenomclient, adresseclient, emailclient, telclient, codecategorieclient) VALUES  ('"+id+"','"+nom+"','"+prenom+"','"+adresse+"','"+email+"','"+tel+"','"+categorie+"')") == true){
+				if(DatabaseConnection.requete("INSERT INTO VENTE_CLIENTS(idclient, nomclient, prenomclient, adresseclient, emailclient, telclient, codecategorieclient) VALUES  ('"+id+"','"+nom+"','"+prenom+"','"+adresse+"','"+email+"','"+tel+"','"+categorie+"')")){
 					frame.getPanelClient().refreshListeTableClient(id, nom, prenom, adresse, email, tel, categorie);
+					setVisible(false);
 				}
 				else{
 					System.out.println("La requete ne c'est pas executer correctement.");
