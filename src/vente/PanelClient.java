@@ -6,6 +6,9 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -22,6 +25,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
+import achat.Fournisseur;
+import achat.PanelFournisseur;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 import production.AjouterProduits;
@@ -47,8 +52,9 @@ public class PanelClient extends JPanel{
 	private JButton bt_supprimer = new JButton("Supprimer");
 	
 	private JButton bt_rech= new JButton("Rechercher");
+	private JButton bt_tous= new JButton("Tous");
 	
-	private JTextField txtRecherche;
+	private static JTextField txtRecherche;
 	private JLabel lblRecherche;
 	
 	private JPanel panelGrid = new JPanel();
@@ -131,6 +137,7 @@ public class PanelClient extends JPanel{
 		panelRecherche.add(lblRecherche);
 		panelRecherche.add(txtRecherche);
 		panelRecherche.add(bt_rech);
+		panelRecherche.add(bt_tous);
 	
 		panelGrid.add(contenu);
 	}
@@ -154,6 +161,19 @@ public class PanelClient extends JPanel{
 		bt_ajouter.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 			new AjouterClient(framePrincipale);
+			}
+		});
+		
+		bt_rech.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				majTableauRecherche();
+				
+			}
+		});
+		
+		bt_tous.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				remplirtableClient();
 			}
 		});
 		
@@ -222,5 +242,13 @@ public class PanelClient extends JPanel{
 			modelTableClient.setValueAt(categorie, tableClient.convertRowIndexToModel(ligneChoisieTemp), 6);
 		}
 	}
+	
+	public static void majTableauRecherche(){
+		
+	String recherche;
+	recherche =	txtRecherche.getText();
+	modelTableClient.setDataVector(DatabaseConnection.rechercherListeClient(recherche), nomColonnes);
+	}
+	
 }
 

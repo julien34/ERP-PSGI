@@ -2,6 +2,7 @@ package jdbc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -131,6 +132,81 @@ public class DatabaseConnection
 			resultat.close();		
 			stat.close();
 			return databaseData;
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
+	
+	static public Object[][] rechercherListeClient(String Recherche)
+	{
+		int longueurTableau = 0;
+		int indexActuel = 0;
+			
+		try
+		{
+			PreparedStatement pstat;
+			pstat = con.prepareStatement("SELECT COUNT(*) FROM VENTE_CLIENTS WHERE UPPER(nomclient) LIKE  UPPER(?) OR idclient LIKE  ? ");
+			pstat.setString(1,Recherche + "%");
+			pstat.setString(2,Recherche + "%");
+			ResultSet resultat = pstat.executeQuery();
+			while(resultat.next())
+			{
+				longueurTableau = resultat.getInt("COUNT(*)");
+			}
+			
+			Object[][] databaseData = new Object[longueurTableau][7];
+			PreparedStatement pst;
+			
+			byte[] bytes = Recherche.getBytes();
+		    for (int i = 0; i < bytes.length; i++) {
+		        if (!Character.isDigit((char) bytes[i])) {
+		            
+		    
+			pst = con.prepareStatement("SELECT * FROM vente_clients WHERE UPPER(nomclient) LIKE  UPPER(?) ");
+			pst.setString(1,Recherche + "%");
+			ResultSet rs = pst.executeQuery();
+			while(rs.next())
+			{
+				databaseData[indexActuel][0] = rs.getString("idclient");
+				databaseData[indexActuel][1] = rs.getString("nomclient");
+				databaseData[indexActuel][2] = rs.getString("prenomclient");
+				databaseData[indexActuel][3] = rs.getString("adresseclient");
+				databaseData[indexActuel][4] = rs.getString("emailclient");
+				databaseData[indexActuel][5] = rs.getString("telclient");
+				databaseData[indexActuel][6] = rs.getString("codecategorieclient");
+				indexActuel++;
+			}
+			longueurTableau = 2;
+			rs.close();	
+			resultat.close();
+			stat.close();
+			 return databaseData;
+			
+		        }
+		        else{
+		        	pst = con.prepareStatement("SELECT * FROM vente_clients WHERE idclient LIKE  ? ");
+					pst.setString(1,Recherche + "%");
+					ResultSet rs = pst.executeQuery();
+					while(rs.next())
+					{
+						databaseData[indexActuel][0] = rs.getString("idclient");
+						databaseData[indexActuel][1] = rs.getString("nomclient");
+						databaseData[indexActuel][2] = rs.getString("prenomclient");
+						databaseData[indexActuel][3] = rs.getString("adresseclient");
+						databaseData[indexActuel][4] = rs.getString("emailclient");
+						databaseData[indexActuel][5] = rs.getString("telclient");
+						databaseData[indexActuel][6] = rs.getString("codecategorieclient");
+						indexActuel++;
+					}
+					rs.close();		
+					stat.close();
+					 return databaseData;
+		        }
+		    }
+		    return databaseData;
 		}
 		catch (SQLException e)
 		{
