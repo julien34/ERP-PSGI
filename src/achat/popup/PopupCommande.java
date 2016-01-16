@@ -6,8 +6,6 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -20,13 +18,12 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.SpinnerNumberModel;
 
 import jdbc.DatabaseConnection;
 
@@ -48,7 +45,7 @@ public class PopupCommande extends JDialog {
 	
 	private JLabel lblMontantTotalHt, lblMontantRemise, lblMontantTva, lblMontantTtc;
 	private static JLabel lblFournisseurCode;
-	private JTextField txtRemise;
+	private JSpinner txtRemise;
 	private JButton btnCalculerTotal, btnValider, btnAnnuler, btnRechercher, btnAjouter, btnModifier, btnSupprimer;
 	private JDateChooser jdcDateLivr, jdcDate;
 	private Choice chTauxTva, chPaiement;
@@ -97,7 +94,7 @@ public class PopupCommande extends JDialog {
 	 */
 	private void initFenetre(){
 		
-		//On donne un titre selon la provenance du clic (si cmd en paramÃ¨tre alors modification)
+		//On donne un titre selon la provenance du clic (si cmd en paramètre alors modification)
 		if(this.commande == null){
 			this.setTitle("Nouvelle commande d'achat");
 		}
@@ -191,7 +188,7 @@ public class PopupCommande extends JDialog {
 		JLabel prctTva = new JLabel("%");
 		JLabel lblRemise = new JLabel("Remise : "); 
 		JLabel lblPrCent = new JLabel("%");
-		this.txtRemise = new JTextField(10);
+		this.txtRemise = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 100.0, 0.5)); //valeur - min - max - saut;
 		JLabel lblDateLivr = new JLabel("Date de livraison : ");
 		this.jdcDateLivr = new JDateChooser();
 		JLabel lblPaiement = new JLabel("Type de paiement : ");
@@ -397,7 +394,7 @@ public class PopupCommande extends JDialog {
 		
 		//On affiche le taux remise de base
 		if(this.commande.getRemise() != null){
-			this.txtRemise.setText(String.valueOf(this.commande.getRemise()));
+			this.txtRemise.setValue((Double) this.commande.getRemise());
 		}
 		
 		//On remplit la date de livraison
@@ -423,18 +420,15 @@ public class PopupCommande extends JDialog {
 		this.lblMontantTotalHt.setText(total+"€");
 		
 		//On calcule la remise par rapport au total
-		double remise = 0;
-		try {
-		     remise = (Double.parseDouble(this.txtRemise.getText())/100)*total;
-		} catch(NumberFormatException nfe) {
-			//nfe.printStackTrace();
-			JOptionPane.showMessageDialog(null,"'"+this.txtRemise.getText()+"'"+" n'est pas une remise possible.","Erreur",JOptionPane.ERROR_MESSAGE);
-		}
+
+		 Double remise = (Double) this.txtRemise.getValue()/100;
+		 remise *= total;
+		
 		this.lblMontantRemise.setText("-"+String.valueOf(remise)+"€");
 		
 		//On calcule le montant de la TVA par rapport au taux
 		double montantTva = 0;
-		montantTva = (Double.parseDouble(this.chTauxTva.getSelectedItem())/100)*(total-remise);
+		montantTva = (Double.valueOf(this.chTauxTva.getSelectedItem())/100)*(total-remise);
 		this.lblMontantTva.setText(String.valueOf(montantTva)+"€");
 		
 		this.lblMontantTtc.setText(String.valueOf(total-remise+montantTva)+"€");
@@ -448,11 +442,6 @@ public class PopupCommande extends JDialog {
 		
 		//On vérifie si la commande est dans l'arraylist des commandes
 		if(PanelCommande.getListeCommande().contains(c)){
-			
-			//On vérifie les champs vides
-			if(this.txtRemise.getText().isEmpty()){
-				this.txtRemise.setText("0");//remise = 0 si vide
-			}
 			
 			if(this.commande.getTauxTva() == null){
 				this.chTauxTva.select("0.0");//TVA à 0 si vide
@@ -469,8 +458,9 @@ public class PopupCommande extends JDialog {
 				PreparedStatement pst = cn.prepareStatement("UPDATE CommandesFournisseur SET dateCommande = ?, refFournisseur = ?, tauxTVA = ?, remise = ?, dateLivr = ?, typepaiement = ? WHERE refCommande = ?");
 				pst.setDate(1, new Date(this.jdcDate.getDate().getTime()));
 				pst.setString(2, fournisseur.getRef());
-				pst.setFloat(3, Float.valueOf(this.chTauxTva.getSelectedItem()));
-				pst.setFloat(4, Float.valueOf(this.txtRemise.getText()));
+				pst.setDouble(3, Double.valueOf(this.chTauxTva.getSelectedItem()));
+				pst.setDouble(4, (Double) this.txtRemise.getValue());
+				//pst.setDouble(4, 14.4);
 				pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
 				pst.setString(6, this.chPaiement.getSelectedItem());
 				pst.setString(7, c.getRefCommande());
@@ -484,11 +474,6 @@ public class PopupCommande extends JDialog {
 		//Si non on la créer
 		else {
 			
-			//On vérifie les champs vides
-			if(this.txtRemise.getText().isEmpty()){
-				this.txtRemise.setText("0");//remise = 0 si vide
-			}
-			
 			this.calculerTotal();//On calcule el total de la commande
 			
 			try {
@@ -496,8 +481,8 @@ public class PopupCommande extends JDialog {
 				PreparedStatement pst = cn.prepareStatement("INSERT INTO CommandesFournisseur(refCommande, dateCommande, refFournisseur, etatCommande, tauxTVA, remise, dateLivr, typepaiement) VALUES(seqRefCommande.NEXTVAL,CURRENT_DATE,?,?,?,?,?,?)");
 				pst.setString(1, fournisseur.getRef());
 				pst.setString(2, "En cours");
-				pst.setFloat(3, Float.valueOf(this.chTauxTva.getSelectedItem()));
-				pst.setFloat(4, Float.valueOf(this.txtRemise.getText()));
+				pst.setDouble(3, Double.valueOf(this.chTauxTva.getSelectedItem()));
+				pst.setDouble(4, (Double) this.txtRemise.getValue());
 				
 				if(this.jdcDateLivr.getDate() == null){
 					Calendar cal = Calendar.getInstance(); 
