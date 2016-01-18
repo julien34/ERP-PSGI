@@ -134,6 +134,7 @@ public class Livraison extends JDialog
 		panEspece.add(Espece);
 		
 		Carte.setSelected(true);
+		Livraison.setSelected(true);
 		
 		PanelMethodeLivraison.add(new JSeparator(SwingConstants.HORIZONTAL));
 		PanelMethodeLivraison.add(panModeLivraison);
@@ -168,6 +169,19 @@ public class Livraison extends JDialog
 		  });
 
 		
+			PointRelais.addActionListener(new ActionListener() {
+			    public void actionPerformed(ActionEvent e) {
+			    	Livraison.setSelected(false);			    						
+			    }
+			  });
+
+			Livraison.addActionListener(new ActionListener() {
+			    public void actionPerformed(ActionEvent e) {
+			    	PointRelais.setSelected(false);					
+			    }
+			  });
+			
+			
 		
 		ButtonOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
