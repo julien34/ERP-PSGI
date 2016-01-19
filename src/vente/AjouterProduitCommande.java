@@ -84,15 +84,13 @@ public class AjouterProduitCommande extends JDialog
 					PreparedStatement pst = cn.prepareStatement("SELECT description FROM PRODUITVENTE");
 					ResultSet rs =  pst.executeQuery();
 					while(rs.next()){	
-						
 
 						}
-				
+				FenetreVente.remplirHorsTaxe();
 						rs.close();
 				} catch (SQLException f) {
 				f.printStackTrace();
 				}	
-				
 				
 			}
 		});
@@ -127,9 +125,9 @@ public class AjouterProduitCommande extends JDialog
  		e.printStackTrace();
  		}	
    	 }
-
-
    	 
+
+ 	 
 
    	 
 }
