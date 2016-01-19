@@ -34,6 +34,8 @@ public class Livraison extends JDialog
 	
 	JLabel AdresseLivraison = new JLabel("Adresse de livraison");
 
+	
+	JLabel ChampVide = new JLabel("");
 	JLabel CodePostal = new JLabel("CodePostal : ");
 	JTextField ChampTextCodePostal = new JTextField("");
 	JLabel Ville = new JLabel("Ville :  ");
@@ -48,7 +50,19 @@ public class Livraison extends JDialog
 	JRadioButton PointRelais = new JRadioButton("Point-Relais");
 	JRadioButton Livraison = new JRadioButton("Livraison");
 	
+	
+	JButton BouttonValider = new JButton("Valider");
+	JButton BouttonAnnuler = new JButton("Annuler");
+	
+	
+	private Dimension dimensionBouton = new Dimension(100, 30);	
 	private Dimension dimensionTextField = new Dimension (180 , 26);
+	
+	
+	int ChoixModePayement = 0;
+	int ChoixMoyenLivraison = 0;
+	int Etat = 0;
+	
 
 	public Livraison(FenetrePrincipale frame)
 	{
@@ -65,7 +79,7 @@ public class Livraison extends JDialog
 		//Paramétrage de la fenêtre
 		setName("Methode de livraison");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setSize(800,400);	
+		setSize(800,450);	
 		setLocationRelativeTo(null);
 		setResizable(false);
 	}
@@ -76,8 +90,10 @@ public class Livraison extends JDialog
 		JPanel panelHaut = new JPanel(new GridLayout(1,2));
 		JPanel adresseLivraison = new JPanel(new GridLayout(5,2));
 		JPanel ModeDePayement = new JPanel(new GridLayout(4,2));
-		JPanel PanelMethodeLivraison = new JPanel(new GridLayout(4,1));
+		JPanel PanelMethodeLivraison = new JPanel(new GridLayout(6,1));
+		JPanel PanelBoutton = new JPanel(new GridLayout(1, 2));
 		
+		JPanel panChampVide = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JPanel panAdresseLivraison = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JPanel panCodePostal = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		JPanel panVille = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -93,6 +109,11 @@ public class Livraison extends JDialog
 		JPanel panPointRelais = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		JPanel panLivraison = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		
+		JPanel panButtonValider = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		JPanel panButtonAnnuler = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		
+				
+				
 		
 		getContentPane().add(panelTable);
 		
@@ -106,7 +127,10 @@ public class Livraison extends JDialog
 		adresseLivraison.add(panVille); 
 		adresseLivraison.add(panAdresse); 
 		adresseLivraison.add(panNumeroTelephone);
+	
 		
+		
+		panAdresseLivraison.add(ChampVide);
 		panAdresseLivraison.add(AdresseLivraison);
 		panCodePostal.add(CodePostal);
 		panCodePostal.add(ChampTextCodePostal);
@@ -140,11 +164,19 @@ public class Livraison extends JDialog
 		PanelMethodeLivraison.add(panModeLivraison);
 		PanelMethodeLivraison.add(panPointRelais);
 		PanelMethodeLivraison.add(panLivraison);
+		PanelMethodeLivraison.add(PanelBoutton);
 
+		PanelBoutton.add(panButtonValider);
+		PanelBoutton.add(panButtonAnnuler);
+		
 		panModeLivraison.add(MethodeDeLivraison);
 		panPointRelais.add(PointRelais);
 		panLivraison.add(Livraison);
-
+		panButtonValider.add(BouttonValider);
+		panButtonAnnuler.add(BouttonAnnuler);
+		
+		BouttonValider.setPreferredSize(dimensionBouton);
+		BouttonAnnuler.setPreferredSize(dimensionBouton);
 		
 		Carte.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -171,13 +203,13 @@ public class Livraison extends JDialog
 		
 			PointRelais.addActionListener(new ActionListener() {
 			    public void actionPerformed(ActionEvent e) {
-			    	Livraison.setSelected(false);			    						
+			    	Livraison.setSelected(false);
 			    }
 			  });
 
 			Livraison.addActionListener(new ActionListener() {
 			    public void actionPerformed(ActionEvent e) {
-			    	PointRelais.setSelected(false);					
+			    	PointRelais.setSelected(false);	
 			    }
 			  });
 			
@@ -186,29 +218,29 @@ public class Livraison extends JDialog
 		ButtonOk.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			
+			CreerLivraison();
 				
 			}
-			
-			
-			
-			
-			
-			
+
 		});
-		
-		ButtonAnnuler.setPreferredSize(new Dimension (100,26));		
-		ButtonAnnuler.addActionListener(frame ->dispose()); // quand bouton annuler appuy� action
+		BouttonAnnuler.addActionListener(frame ->dispose()); // quand bouton annuler appuy� action
    
 		setVisible(true);
+		
 	}
 	
+
+	
+	public void CreerLivraison(){
+		//creer table avec -num_commande -num_client -adresse_livraison -moyen_livraison -methode_payement
+	}
 	
 	public void initProduit(){
-
+		
 		
 	}
 
-		
+	
    	 public void remplirProduit(){
 
    	 }

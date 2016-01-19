@@ -98,6 +98,7 @@ public class AjouterProduitCommande extends JDialog
 		ButtonAnnuler.setPreferredSize(new Dimension (100,26));		
 		ButtonAnnuler.addActionListener(frame ->dispose()); // quand bouton annuler appuy� action
    
+		
 		initProduit();		
 		setVisible(true);
 	}

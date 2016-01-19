@@ -47,15 +47,15 @@ public class FenetreVente extends JPanel{
 	JLabel InformationClient = new JLabel("Information Client");
 	JLabel ChampVide = new JLabel("");
 	JLabel ChampTextNom = new JLabel("Nom");
-	JComboBox ComboBoxClient = new JComboBox();
+	 JComboBox ComboBoxClient = new JComboBox();
 	JLabel Prenom = new JLabel("Responsable : ");
-	JTextField ChampTextPrenom = new JTextField("");
+	 JTextField ChampTextPrenom = new JTextField("");
 	JLabel Adresse = new JLabel("Adresse : ");
-	JTextField ChampTextAdresse = new JTextField("");
+	 JTextField ChampTextAdresse = new JTextField("");
 	JLabel Email = new JLabel("Email : ");
-	JTextField ChampTextEmail = new JTextField("");
+	 JTextField ChampTextEmail = new JTextField("");
 	JLabel NumeroTelephone = new JLabel("NumeroTelephone : ");
-	JTextField ChampTextNumeroTelephone = new JTextField("");  	 
+	 JTextField ChampTextNumeroTelephone = new JTextField("");  	 
 	
 	private Dimension dimensionTextField = new Dimension (180 , 26);
 
@@ -195,7 +195,7 @@ public class FenetreVente extends JPanel{
 	 
 	
 	
-	 public void remplirInfoParticulier(){
+	 public  void remplirInfoParticulier(){
 			try {
 				Connection cn = DatabaseConnection.getCon();
 				PreparedStatement pst = cn.prepareStatement("SELECT * FROM VENTE_CLIENTS WHERE codecategorieclient = '1'");
@@ -230,7 +230,7 @@ public class FenetreVente extends JPanel{
 	 }
 	 
 	 
-	 public void remplirInfoEntreprise(){
+	 public  void remplirInfoEntreprise(){
 			try {
 				Connection cn = DatabaseConnection.getCon();
 				PreparedStatement pst = cn.prepareStatement("SELECT * FROM VENTE_CLIENTS WHERE codecategorieclient = '2'");
@@ -518,7 +518,7 @@ public class FenetreVente extends JPanel{
 				
 				public void actionPerformed(ActionEvent arg0) {
 					
-					// new Livraison(frame);
+					 new Livraison(frame);
 
 				}
 			});
@@ -594,7 +594,8 @@ public class FenetreVente extends JPanel{
    	 
    	void Envoyer(){
    	}
-		
+   	
+
 	 
 }
 
