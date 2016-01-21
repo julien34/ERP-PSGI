@@ -154,7 +154,7 @@ private void initElements(){
 				
 			}
 		});
-	}
+	} 
 
 
 	
