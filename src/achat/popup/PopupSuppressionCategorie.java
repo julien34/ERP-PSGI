@@ -124,7 +124,7 @@ public class PopupSuppressionCategorie extends JDialog{
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "La catégorie est associée à un ou plusieurs fournisseur(s).", "Erreurr", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "La catégorie est associée à un ou plusieurs fournisseur(s).", "Erreur", JOptionPane.ERROR_MESSAGE);
 
 		}
 	}
