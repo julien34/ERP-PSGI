@@ -100,6 +100,7 @@ extends JPanel {
 
             @Override
             public void actionPerformed(ActionEvent e2) {
+            	ajouter_p.remplirEmplacement();
                 PanelGamme.this.panelTable.remove(PanelGamme.this.modifier_p);
                 PanelGamme.this.panelTable.add("South", PanelGamme.this.ajouter_p);
                 PanelGamme.this.revalidate();

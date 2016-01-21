@@ -341,9 +341,10 @@ public class DatabaseConnection
 			return null;
 		}
 	}
-	
+
     public static void getGamme(DefaultComboBoxModel<String> gamme){		
 		try {
+			gamme.removeAllElements();
             stat = con.createStatement();
             ResultSet resultat = stat.executeQuery("SELECT nomgamme FROM GAMME");
             while (resultat.next()) {
@@ -357,27 +358,38 @@ public class DatabaseConnection
         }
     }
     
-    public static DefaultComboBoxModel<String> getCentre(){
-    	DefaultComboBoxModel<String> modelCentre = new DefaultComboBoxModel<String>();
-    	//JComboBox<String> centreTravail = new JComboBox<String>();
-		
-		try {
-            stat = con.createStatement();
-            ResultSet resultat = stat.executeQuery("SELECT nomcentre FROM centretravail");
-            while (resultat.next()) {
-            	modelCentre.addElement(resultat.getString(1));
-                //centreTravail.addItem(resultat.getString(1));
-                //System.out.println(resultat.getString(1));
-            }
-            stat.close();
-            return modelCentre;
-        }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return modelCentre;
-        }
-    }
-	
+    public static void getCentre(DefaultComboBoxModel<String> centre){		
+ 		try {
+ 			centre.removeAllElements();
+             stat = con.createStatement();
+             ResultSet resultat = stat.executeQuery("SELECT nomcentre FROM centretravail");
+             while (resultat.next()) {
+             	centre.addElement(resultat.getString(1));
+                 System.out.println(resultat.getString(1));
+             }
+             stat.close();
+         }
+         catch (SQLException e) {
+             System.out.println(e.getMessage());
+         }
+     }
+    
+    public static void getEmplacement(DefaultComboBoxModel<String> emplacement){		
+ 		try {
+ 			emplacement.removeAllElements();
+             stat = con.createStatement();
+             ResultSet resultat = stat.executeQuery("SELECT nomemplacement FROM emplacement");
+             while (resultat.next()) {
+            	 emplacement.addElement(resultat.getString(1));
+                 System.out.println(resultat.getString(1));
+             }
+             stat.close();
+         }
+         catch (SQLException e) {
+             System.out.println(e.getMessage());
+         }
+     }
+    
     public static String getNomGamme(String value1, String value2) {
         try {
             stat = con.createStatement();

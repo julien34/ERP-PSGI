@@ -45,20 +45,20 @@ public class AjouterOperation extends JPanel {
     final JTextField nbCycles = new JTextField(10);
     JLabel nbHeuresLabel = new JLabel("nombre d'heures ");
     final JTextField nbHeures = new JTextField(10);
-    JLabel gammeLabel = new JLabel("gamme ");
-    DefaultComboBoxModel<String> modelGamme = new DefaultComboBoxModel<String>();
-    JComboBox<String> gamme = new JComboBox<String>(modelGamme);
-    JLabel centreTravailLabel = new JLabel("centre de travail ");
-    JComboBox<String> centreTravail = new JComboBox<String>();
     JLabel required = new JLabel("<html><font color='red'>* </font>champs obligatoire</html> ");
     JButton ajouter = new JButton("Ajouter");
     JLabel error = new JLabel("");
+    
+    JLabel gammeLabel = new JLabel("gamme ");
+    JLabel centreTravailLabel = new JLabel("centre de travail ");
+    DefaultComboBoxModel<String> modelGamme = new DefaultComboBoxModel<String>();
     DefaultComboBoxModel<String> modelCentre = new DefaultComboBoxModel<String>();
+    JComboBox<String> gamme = new JComboBox<String>(modelGamme);
     JComboBox<String> comboCentre = new JComboBox<String>(modelCentre);
+    
     public void remplirCentre()
     {
-    	/*modelCentre = (DatabaseConnection.getCentre());
-    	centreTravail = comboCentre;*/
+    	DatabaseConnection.getCentre(modelCentre);
     }
     
     public void remplirGamme()
@@ -78,9 +78,9 @@ public class AjouterOperation extends JPanel {
 		Dimension tailleGamme = gamme.getPreferredSize();
 		tailleGamme.width = 60;
 		gamme.setPreferredSize(tailleGamme);
-		Dimension tailleCentre = centreTravail.getPreferredSize();
+		Dimension tailleCentre = comboCentre.getPreferredSize();
 		tailleCentre.width = 60;
-		centreTravail.setPreferredSize(tailleCentre);
+		comboCentre.setPreferredSize(tailleCentre);
 		
         this.add(this.panelGrid);
         this.panelGrid.add(this.panelFlow1);
@@ -98,7 +98,7 @@ public class AjouterOperation extends JPanel {
         this.panelFlow2.add(gammeLabel);
         this.panelFlow2.add(gamme);
         this.panelFlow3.add(centreTravailLabel);
-        this.panelFlow3.add(centreTravail);
+        this.panelFlow3.add(comboCentre);
         this.panelFlow4.add(ajouter);
         this.panelFlow4.add(this.retour);
         
@@ -113,7 +113,7 @@ public class AjouterOperation extends JPanel {
                 String value3 = nbCycles.getText();
                 String value4 = nbHeures.getText();
                 String value5 = gamme.getSelectedItem().toString();
-                String value6 = centreTravail.getSelectedItem().toString();
+                String value6 = comboCentre.getSelectedItem().toString();
                 if (DatabaseConnection.requete("INSERT INTO OPERATIONS VALUES('" + value1 + "', '" + value2 + "', '" + value3 + "', '" + value4 + "', '" + value5 + "', '" + value6 + "')")) {
                     FenetrePrincipale.getPanelOperation().raffraichirListe(value1, value2, value3, value4, value5, value6);
                     JOptionPane.showMessageDialog(null, "Op\ufffdration ajout\ufffd avec succ\ufffds.", "Ajout d'op\ufffdration", 1);
