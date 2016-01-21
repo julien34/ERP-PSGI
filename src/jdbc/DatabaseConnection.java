@@ -342,22 +342,18 @@ public class DatabaseConnection
 		}
 	}
 	
-    public static JComboBox<String> getGamme(){
-    	JComboBox<String> gamme = new JComboBox<String>();
-		
+    public static void getGamme(DefaultComboBoxModel<String> gamme){		
 		try {
             stat = con.createStatement();
             ResultSet resultat = stat.executeQuery("SELECT nomgamme FROM GAMME");
             while (resultat.next()) {
-            	gamme.addItem(resultat.getString(1));
+            	gamme.addElement(resultat.getString(1));
                 System.out.println(resultat.getString(1));
             }
             stat.close();
-            return gamme;
         }
         catch (SQLException e) {
             System.out.println(e.getMessage());
-            return gamme;
         }
     }
     

@@ -46,23 +46,24 @@ public class AjouterOperation extends JPanel {
     JLabel nbHeuresLabel = new JLabel("nombre d'heures ");
     final JTextField nbHeures = new JTextField(10);
     JLabel gammeLabel = new JLabel("gamme ");
-    JComboBox<String> gamme = new JComboBox<String>();
+    DefaultComboBoxModel<String> modelGamme = new DefaultComboBoxModel<String>();
+    JComboBox<String> gamme = new JComboBox<String>(modelGamme);
     JLabel centreTravailLabel = new JLabel("centre de travail ");
     JComboBox<String> centreTravail = new JComboBox<String>();
     JLabel required = new JLabel("<html><font color='red'>* </font>champs obligatoire</html> ");
     JButton ajouter = new JButton("Ajouter");
     JLabel error = new JLabel("");
     DefaultComboBoxModel<String> modelCentre = new DefaultComboBoxModel<String>();
-    JComboBox<String> comboCentre = new JComboBox<>(modelCentre);
+    JComboBox<String> comboCentre = new JComboBox<String>(modelCentre);
     public void remplirCentre()
     {
-    	modelCentre = (DatabaseConnection.getCentre());
-    	centreTravail = comboCentre;
+    	/*modelCentre = (DatabaseConnection.getCentre());
+    	centreTravail = comboCentre;*/
     }
     
     public void remplirGamme()
     {
-    	gamme = (DatabaseConnection.getGamme());
+    	DatabaseConnection.getGamme(modelGamme);
     }
     
     public AjouterOperation() {
