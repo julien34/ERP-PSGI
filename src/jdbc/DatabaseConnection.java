@@ -191,6 +191,102 @@ public class DatabaseConnection
 		}
 	}
 	
+	static public Object[][] rechercherNomProduits(String Recherche)
+	{
+		int longueurTableau = 0;
+		int indexActuel = 0;
+			
+		try
+		{
+			PreparedStatement pstat;
+			pstat = con.prepareStatement("SELECT COUNT(*) FROM PRODUITS WHERE UPPER(description) LIKE  UPPER(?) ");
+			pstat.setString(1,Recherche + "%");
+			ResultSet resultat = pstat.executeQuery();
+			while(resultat.next())
+			{
+				longueurTableau = resultat.getInt("COUNT(*)");
+			}
+			
+			Object[][] databaseData = new Object[longueurTableau][7];
+			PreparedStatement pst;
+			
+			pst = con.prepareStatement("SELECT * FROM PRODUITS WHERE UPPER(description) LIKE  UPPER(?) ");
+			pst.setString(1,Recherche + "%");
+			ResultSet rs = pst.executeQuery();
+			while(rs.next())
+			{
+				databaseData[indexActuel][0] = rs.getString(1);
+				databaseData[indexActuel][1] = rs.getString(2);
+				databaseData[indexActuel][2] = rs.getString(3);
+				databaseData[indexActuel][3] = rs.getString(4);
+				databaseData[indexActuel][4] = rs.getString(5);
+				databaseData[indexActuel][5] = rs.getString(6);
+				databaseData[indexActuel][6] = rs.getString(7);
+				indexActuel++;
+			}
+			longueurTableau = 2;
+			rs.close();	
+			resultat.close();
+			stat.close();
+			
+			return databaseData;
+			
+		}catch (SQLException e)
+		{
+			System.out.println(e.getMessage());
+			}
+		return null;
+		
+	}
+	
+	static public Object[][] rechercherCatProduits(String Recherche)
+	{
+		int longueurTableau = 0;
+		int indexActuel = 0;
+			
+		try
+		{
+			PreparedStatement pstat;
+			pstat = con.prepareStatement("SELECT COUNT(*) FROM PRODUITS WHERE UPPER(categorie) LIKE  UPPER(?) ");
+			pstat.setString(1,Recherche + "%");
+			ResultSet resultat = pstat.executeQuery();
+			while(resultat.next())
+			{
+				longueurTableau = resultat.getInt("COUNT(*)");
+			}
+			
+			Object[][] databaseData = new Object[longueurTableau][7];
+			PreparedStatement pst;
+			
+			pst = con.prepareStatement("SELECT * FROM PRODUITS WHERE UPPER(categorie) LIKE  UPPER(?) ");
+			pst.setString(1,Recherche + "%");
+			ResultSet rs = pst.executeQuery();
+			while(rs.next())
+			{
+				databaseData[indexActuel][0] = rs.getString(1);
+				databaseData[indexActuel][1] = rs.getString(2);
+				databaseData[indexActuel][2] = rs.getString(3);
+				databaseData[indexActuel][3] = rs.getString(4);
+				databaseData[indexActuel][4] = rs.getString(5);
+				databaseData[indexActuel][5] = rs.getString(6);
+				databaseData[indexActuel][6] = rs.getString(7);
+				indexActuel++;
+			}
+			longueurTableau = 2;
+			rs.close();	
+			resultat.close();
+			stat.close();
+			
+			return databaseData;
+			
+		}catch (SQLException e)
+		{
+			System.out.println(e.getMessage());
+			}
+		return null;
+		
+	}
+	
 	static public Object[][] remplirListeClient()
 	{
 		int longueurTableau = 0;
