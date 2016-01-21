@@ -6,6 +6,8 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -18,12 +20,15 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import jdbc.DatabaseConnection;
 
@@ -68,9 +73,7 @@ public class PopupCommande extends JDialog {
 		this.initEcouteurs();
 		
 		//On grise les boutons pour ajouter/modifier/supprimer un produits
-		this.btnAjouter.setEnabled(false);
-		this.btnModifier.setEnabled(false);
-		this.btnSupprimer.setEnabled(false);
+		this.setBtnEnabled(false);
 	}
 	
 	
@@ -86,6 +89,7 @@ public class PopupCommande extends JDialog {
 		this.initEcouteurs();
 		this.getProduitsCommande();
 		this.preRemplir();
+		this.setBtnEnabled(false);
 	}
 	
 	
@@ -315,6 +319,25 @@ public class PopupCommande extends JDialog {
 			}
 		});
 		
+		//Bouton pour supprimer une ligne commande
+		btnSupprimer.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PopupCommande.this.supprimerLigne();
+			}
+		});
+		
+		
+		//Bouton pour modifier la quantité d'une ligne de commande
+		btnModifier.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PopupCommande.this.modifierLigne();
+			}
+		});
+		
 		
 		//Bouton pour fermer la page (annuler)
 		this.btnAnnuler.addActionListener(new ActionListener() {
@@ -334,6 +357,15 @@ public class PopupCommande extends JDialog {
 				PopupCommande.this.fenetreSelectFn = new PopupCommandeSelectFournisseur();
 			}
 		});
+		
+		
+		tableau.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				PopupCommande.this.setBtnEnabled(true);
+			}
+		});
+		
 	}
 	
 	
@@ -460,7 +492,6 @@ public class PopupCommande extends JDialog {
 				pst.setString(2, fournisseur.getRef());
 				pst.setDouble(3, Double.valueOf(this.chTauxTva.getSelectedItem()));
 				pst.setDouble(4, (Double) this.txtRemise.getValue());
-				//pst.setDouble(4, 14.4);
 				pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
 				pst.setString(6, this.chPaiement.getSelectedItem());
 				pst.setString(7, c.getRefCommande());
@@ -525,5 +556,68 @@ public class PopupCommande extends JDialog {
 	 */
 	public static void addArrayListLigneCommande(LignesCommande lc){
 		listeLignesCommande.add(lc);
+	}
+	
+	
+	/**
+	 * Méthode qui permet de griser les boutons modifier et suppriemr (une ligne de commande).
+	 * @param b, un booleen.
+	 */
+	public void setBtnEnabled(Boolean b){
+		btnModifier.setEnabled(b);
+		btnSupprimer.setEnabled(b);
+	}
+	
+	
+	/**
+	 * Méthode qui permet de supprimer une ligne dans la JTable mais aussi dans la base de donnée.
+	 */
+	private void supprimerLigne(){
+		
+		//On regarde la réponse de l'utilisateur
+		if(JOptionPane.showConfirmDialog(null, "Voulez-vous supprimez cette ligne ?", "Confirmer ?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+
+			try {
+				Connection cn = DatabaseConnection.getCon();
+				PreparedStatement pst = cn.prepareStatement("DELETE FROM LignesCommandeFournisseur WHERE refCommande = ? AND refProduit = ? AND quantite = ?");
+				pst.setString(1, this.commande.getRefCommande());
+				pst.setString(2, listeLignesCommande.get(tableau.getSelectedRow()).getRefProduit());
+				pst.setInt(3, listeLignesCommande.get(tableau.getSelectedRow()).getQte());
+				pst.executeQuery();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			listeLignesCommande.remove(tableau.getSelectedRow());
+			 maj();
+			 this.setBtnEnabled(false);
+		 }
+	}
+	
+	
+	/**
+	 * Méthode qui modifie la quantité d'une ligne de commande.
+	 */
+	private void modifierLigne(){
+		SpinnerNumberModel sModel = new SpinnerNumberModel(1, 1, 999, 1);
+		JSpinner spinner = new JSpinner(sModel);
+		
+		if(JOptionPane.showOptionDialog(null, spinner, "Entrez une nouvelle quantité", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null) == JOptionPane.OK_OPTION){
+			
+			try {
+				Connection cn = DatabaseConnection.getCon();
+				PreparedStatement pst = cn.prepareStatement("UPDATE LignesCommandeFournisseur SET quantite = ? WHERE refCommande = ? AND refProduit = ? AND quantite = ?");
+				pst.setInt(1, (Integer) spinner.getValue());
+				pst.setString(2, this.commande.getRefCommande());
+				pst.setString(3, listeLignesCommande.get(tableau.getSelectedRow()).getRefProduit());
+				pst.setInt(4, listeLignesCommande.get(tableau.getSelectedRow()).getQte());
+				pst.executeQuery();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			listeLignesCommande.get(tableau.getSelectedRow()).setQte((Integer) spinner.getValue());
+			maj();
+		}
 	}
 }

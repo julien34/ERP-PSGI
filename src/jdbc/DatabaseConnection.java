@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
+
 public class DatabaseConnection 
 {	
 	static private Connection con;
@@ -59,6 +62,93 @@ public class DatabaseConnection
 			return false;
 		}
 	}
+	
+	
+	  public static Object[][] remplirListeCategorie() {
+	        int longueurTableau = 0;
+	        int indexActuel = 0;
+	        try {
+	            stat = con.createStatement();
+	            ResultSet resultat = stat.executeQuery("SELECT COUNT(*) FROM CATEGORIE");
+	            while (resultat.next()) {
+	                longueurTableau = resultat.getInt("COUNT(*)");
+	            }
+	            resultat.close();
+	            Object[][] databaseData = new Object[longueurTableau][2];
+	            resultat = stat.executeQuery("SELECT * FROM CATEGORIE");
+	            while (resultat.next()) {
+	                databaseData[indexActuel][0] = resultat.getString(2);
+	                databaseData[indexActuel][1] = resultat.getString(3);
+	                ++indexActuel;
+	            }
+	            resultat.close();
+	            stat.close();
+	            return databaseData;
+	        }
+	        catch (SQLException e) {
+	            System.out.println(e.getMessage());
+	            return null;
+	        }
+	    }
+
+	    public static Object[][] remplirListeOperation() {
+	        int longueurTableau = 0;
+	        int indexActuel = 0;
+	        try {
+	            stat = con.createStatement();
+	            ResultSet resultat = stat.executeQuery("SELECT COUNT(*) FROM operations");
+	            while (resultat.next()) {
+	                longueurTableau = resultat.getInt("COUNT(*)");
+	            }
+	            resultat.close();
+	            Object[][] databaseData = new Object[longueurTableau][6];
+	            resultat = stat.executeQuery("SELECT * FROM operations");
+	            while (resultat.next()) {
+	                databaseData[indexActuel][0] = resultat.getString(1);
+	                databaseData[indexActuel][1] = resultat.getString(2);
+	                databaseData[indexActuel][2] = resultat.getString(3);
+	                databaseData[indexActuel][3] = resultat.getString(4);
+	                databaseData[indexActuel][4] = resultat.getString(5);
+	                databaseData[indexActuel][5] = resultat.getString(6);
+	                ++indexActuel;
+	            }
+	            resultat.close();
+	            stat.close();
+	            return databaseData;
+	        }
+	        catch (SQLException e) {
+	            System.out.println(e.getMessage());
+	            return null;
+	        }
+	    }
+
+	    public static Object[][] remplirListeGamme() {
+	        int longueurTableau = 0;
+	        int indexActuel = 0;
+	        try {
+	            stat = con.createStatement();
+	            ResultSet resultat = stat.executeQuery("SELECT COUNT(*) FROM GAMME");
+	            while (resultat.next()) {
+	                longueurTableau = resultat.getInt("COUNT(*)");
+	            }
+	            resultat.close();
+	            Object[][] databaseData = new Object[longueurTableau][3];
+	            resultat = stat.executeQuery("SELECT * FROM GAMME");
+	            while (resultat.next()) {
+	                databaseData[indexActuel][0] = resultat.getString(1);
+	                databaseData[indexActuel][1] = resultat.getString(2);
+	                databaseData[indexActuel][2] = resultat.getString(3);
+	                ++indexActuel;
+	            }
+	            resultat.close();
+	            stat.close();
+	            return databaseData;
+	        }
+	        catch (SQLException e) {
+	            System.out.println(e.getMessage());
+	            return null;
+	        }
+	    }
 	
 	/**
 	 * 
@@ -251,6 +341,73 @@ public class DatabaseConnection
 			return null;
 		}
 	}
+
+    public static void getGamme(DefaultComboBoxModel<String> gamme){		
+		try {
+			gamme.removeAllElements();
+            stat = con.createStatement();
+            ResultSet resultat = stat.executeQuery("SELECT nomgamme FROM GAMME");
+            while (resultat.next()) {
+            	gamme.addElement(resultat.getString(1));
+                System.out.println(resultat.getString(1));
+            }
+            stat.close();
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public static void getCentre(DefaultComboBoxModel<String> centre){		
+ 		try {
+ 			centre.removeAllElements();
+             stat = con.createStatement();
+             ResultSet resultat = stat.executeQuery("SELECT nomcentre FROM centretravail");
+             while (resultat.next()) {
+             	centre.addElement(resultat.getString(1));
+                 System.out.println(resultat.getString(1));
+             }
+             stat.close();
+         }
+         catch (SQLException e) {
+             System.out.println(e.getMessage());
+         }
+     }
+    
+    public static void getEmplacement(DefaultComboBoxModel<String> emplacement){		
+ 		try {
+ 			emplacement.removeAllElements();
+             stat = con.createStatement();
+             ResultSet resultat = stat.executeQuery("SELECT nomemplacement FROM emplacement");
+             while (resultat.next()) {
+            	 emplacement.addElement(resultat.getString(1));
+                 System.out.println(resultat.getString(1));
+             }
+             stat.close();
+         }
+         catch (SQLException e) {
+             System.out.println(e.getMessage());
+         }
+     }
+    
+    public static String getNomGamme(String value1, String value2) {
+        try {
+            stat = con.createStatement();
+            ResultSet resultat = stat.executeQuery("SELECT nomGamme FROM gamme WHERE codegamme = '" + value1 + "' AND emplacementgamme = '" + value2 + "'");
+            String nomGamme = "";
+            if (resultat.next()) {
+                nomGamme = resultat.getString(1);
+            }
+            stat.close();
+            return nomGamme;
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return "";
+        }
+    }
+
+    
 	
 	/**
 	 * Methode pour obtenir la cl� primaire de la table produits

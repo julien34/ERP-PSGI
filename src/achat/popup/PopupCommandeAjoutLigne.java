@@ -6,6 +6,10 @@ import java.awt.Dimension;
 import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -143,10 +147,28 @@ public class PopupCommandeAjoutLigne extends JDialog{
 			}
 		});
 		
+		//Tableau
 		this.jListProduit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				PopupCommandeAjoutLigne.this.btnAjouter.setEnabled(true);
+			}
+		});
+		
+		//Changement de catégorie
+		this.chCategorieRecherche.addItemListener(new ItemListener() {
+			
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				PopupCommandeAjoutLigne.this.rechercheProduit();
+			}
+		});
+		
+		//Lors d'une saisie de texte dans le nom du produit
+		txtNomProduitRecherche.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				PopupCommandeAjoutLigne.this.rechercheProduit();
 			}
 		});
 	}
@@ -251,5 +273,51 @@ public class PopupCommandeAjoutLigne extends JDialog{
 			
 		//On créer la ligne de commande
 		this.ligneCommande = new LignesCommande(refProduit, nomProduit, categorieProduit, pHT, qte, total);
+	}
+	
+	
+	/**
+	 * Méthode qui recherche dans la liste des produits en fonction des champs de la recherche.
+	 */
+	private void rechercheProduit(){
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("SELECT * FROM Produits p JOIN categorie c ON c.codeCategorie = p.categorie WHERE UPPER(c.codeCategorie) LIKE UPPER(?) AND UPPER(p.description) LIKE UPPER(?) AND p.achatVente = 'AchatVente' or p.achatVente = 'Achat' ORDER BY p.description");
+			
+			//On remet la liste à 0
+			this.listeProduits.clear();
+			this.dLMProduits.clear();
+			
+			//Si la catégorie est sur "Toutes", on initialise la catégorie à vide ("")
+			if(chCategorieRecherche.getSelectedItem().equals("Toutes")){
+				pst.setString(1, "%%");
+			}
+			
+			//Si non on récupère l'id de la catégorie depuis la liste (-1, car "Toutes" est au début)
+			else{
+				pst.setString(1, "%"+this.listeCategorie.get(chCategorieRecherche.getSelectedIndex()-1).getId()+"%");
+			}
+			pst.setString(2, "%"+this.txtNomProduitRecherche.getText()+"%");
+			ResultSet rs = pst.executeQuery();
+			
+			//On boucle sur les résultat pour remplir l'arraylist
+			while(rs.next()){
+				String codePdt = rs.getString("codeProduit");
+				String descriptionPdt = rs.getString("description");
+				Double prixAchat = rs.getDouble("prixAchat");
+				String codeCategorie = rs.getString("codeCategorie");
+				String nomCategorie = rs.getString("nomCategorie");
+				
+				this.listeProduits.add(new Produit(codePdt, descriptionPdt, prixAchat, codeCategorie, nomCategorie));
+			}
+			
+			//On ajoute tous les produits à la JList
+			for(Produit p : this.listeProduits){
+				this.dLMProduits.addElement(p.getDescription());
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }
