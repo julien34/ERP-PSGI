@@ -19,6 +19,7 @@ import jdbc.FenetreConnexion;
 import production.PanelProduits;
 import vente.FenetreVente;
 import vente.PanelClient;
+import vente.PanelCommandes;
 import vente.InterfaceDevis;
 import vente.PanelVente;
 
@@ -46,7 +47,7 @@ public class FenetrePrincipale extends JFrame
         JMenu menuVentes = new JMenu("Ventes");
        // JMenuItem menuVentesFenetreVente = new JMenuItem("Fenetre de vente");
         JMenu menuFenetreVente = new JMenu("Fenetre de vente");
-        
+        JMenuItem menuCommandes = new JMenuItem("Commandes");
         
         public static JMenuItem menuVenteEntreprise = new JMenuItem("Entreprise");
         public static JMenuItem menuVenteParticulier = new JMenuItem("Particulier");
@@ -74,6 +75,7 @@ public class FenetrePrincipale extends JFrame
    	private static PanelClient panelClient;
    	private static InterfaceDevis InterfaceDevis;
    	private static FenetreVente fenetreVente;
+   	private static PanelCommandes panelCommandes;
    	
    	//Production
    	private static PanelProduits panelProduits;
@@ -118,7 +120,7 @@ public class FenetrePrincipale extends JFrame
 				menuVentes.add(menuFenetreVente);
 				menuVentes.add(menuVentesClients);
 				menuVentes.add(menuVentesDevis);
-				
+				menuVentes.add(menuCommandes);
 	        	menuFenetreVente.add(menuVenteEntreprise);
 				menuFenetreVente.add(menuVenteParticulier);
 	        //Production
@@ -142,7 +144,7 @@ public class FenetrePrincipale extends JFrame
 	   		panelClient = new PanelClient(framePrincipale);
 	   		InterfaceDevis = new InterfaceDevis(framePrincipale);
 	   		fenetreVente = new FenetreVente(framePrincipale);
-	   		
+	   		panelCommandes = new PanelCommandes(framePrincipale);
 	   		//Production
 	   		panelProduits = new PanelProduits();
    	}
@@ -223,6 +225,14 @@ public class FenetrePrincipale extends JFrame
 	   			{
 	   				FenetreVente.remplirTabLigneCmd();
 	   				ajouterOnglet("Gestion des ventes",fenetreVente);
+	   			}
+	   		});	
+	   		
+	   		menuCommandes.addActionListener(new ActionListener()
+	   		{
+	   			public void actionPerformed(ActionEvent e)
+	   			{
+	   				ajouterOnglet("Gestion des commandes",panelCommandes);
 	   			}
 	   		});	
 	   		

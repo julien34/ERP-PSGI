@@ -1,59 +1,78 @@
 package vente;
 
+import java.sql.Date;
 
 public class Commande {
-	String description, categorie, prixVente, prixAchat,udm;
+
+	String refCommande, refClient, nomClient, montantTotal, etatCommande, typePaiement;
+	private Date date;
 	
-
-	public void setCategorie(String categorie) {
-		this.categorie = categorie;
+	public Commande(String refCommande,String refClient, String nomClient, String montantTotal, String etatCommande,String typePaiement){
+		this.refCommande = refCommande;
+		this.refClient = refClient;
+		this.nomClient = nomClient;
+		this.montantTotal = montantTotal;
+		this.etatCommande = etatCommande;
+		this.typePaiement = typePaiement;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public String getMontantTotal() {
+		return montantTotal;
 	}
 
-	public void setPrixVente(String prixVente) {
-		this.prixVente = prixVente;
-	}
-
-	public void setPrixAchat(String prixAchat) {
-		this.prixAchat = prixAchat;
-	}
-
-	public void setUdm(String udm) {
-		this.udm = udm;
+	public void setMontantTotal(String montantTotal) {
+		this.montantTotal = montantTotal;
 	}
 	
-	public String getCategorie() {
-		return categorie;
+	public String getRefCommande() {
+		return refCommande;
 	}
 	
-	public String getDescription() {
-		return description;
+	public String getNomClient() {
+		return nomClient;
 	}
 
-	public String getPrixVente() {
-		return prixVente;
+	public void setNomFourniseur(String nomClient) {
+		this.nomClient = nomClient;
 	}
 
-	public String getPrixAchat() {
-		return prixAchat;
+	public void setRefCommande(String refCommande) {
+		this.refCommande = refCommande;
 	}
 
-	public String getUdm() {
-		return udm;
+	public String getRefClient() {
+		return refClient;
 	}
 
-	public  Commande(String description,String categorie,String prixVente,String prixAchat,String udm){
-		this.description = description;
-		this.categorie = categorie;
-		this.prixVente = prixVente;
-		this.prixAchat = prixAchat;
-		this.udm = udm;
+	public void setRefClient(String refClient) {
+		this.refClient = refClient;
+	}
+	public Date getDate() {
+		return date;
+	}
 
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	
+	public String getEtatCommande(){
+		return this.etatCommande;
+	}
+
+	public String getTypePaiement() {
+		return typePaiement;
+	}
+
+	public void setTypePaiement(String typePaiement) {
+		this.typePaiement = typePaiement;
+	}
+
+
+	public void setEtatCommande(String etatCommande) {
+		this.etatCommande = etatCommande;
 	}
 	
 	
 }
+
 
