@@ -63,6 +63,9 @@ public class FenetrePrincipale extends JFrame
         //Production
         JMenu menuProduction = new JMenu("Production");
         JMenuItem menuProductionProduits = new JMenuItem("Gérer les produits");
+        JMenuItem menuProductionCategories = new JMenuItem("G\u00e9rer les categories");
+        JMenuItem menuProductionOperation = new JMenuItem("G\u00e9rer les operations");
+        JMenuItem menuProductionGamme = new JMenuItem("G\u00e9rer les gammes");
    	
     //Onglets
     private JTabbedPane onglets = new JTabbedPane();
@@ -129,7 +132,10 @@ public class FenetrePrincipale extends JFrame
 				menuFenetreVente.add(menuVenteParticulier);
 	        //Production
 				menu.add(menuProduction);
-				menuProduction.add(menuProductionProduits);   
+				menuProduction.add(menuProductionProduits);
+		        menuProduction.add(menuProductionCategories);
+		        menuProduction.add(menuProductionOperation);
+		        menuProduction.add(menuProductionGamme);
 				
    		setJMenuBar(menu);
    		menuAchats.setEnabled(false);
@@ -151,6 +157,9 @@ public class FenetrePrincipale extends JFrame
 	   		
 	   		//Production
 	   		panelProduits = new PanelProduits();
+	        //panelCategories = new PanelCategories();
+	        panelOperation = new PanelOperation();
+	        panelGamme = new PanelGamme();
    	}
    	
    	public void initHandlers()
@@ -274,6 +283,31 @@ public class FenetrePrincipale extends JFrame
 	   				panelProduits.fillTable();
 	   			}
 	   		});	
+	   		
+//	   	 this.menuProductionCategories.addActionListener(new ActionListener(){
+//
+//	            @Override
+//	            public void actionPerformed(ActionEvent e2) {
+//	                FenetrePrincipale.this.ajouterOnglet("G\u00e9rer les categories", panelCategories);
+//	                panelCategories.fillTable();
+//	            }
+//	        });
+	        this.menuProductionOperation.addActionListener(new ActionListener(){
+
+	            @Override
+	            public void actionPerformed(ActionEvent e2) {
+	                FenetrePrincipale.this.ajouterOnglet("G\u00e9rer les operations", panelOperation);
+	                panelOperation.fillTable();
+	            }
+	        });
+	        this.menuProductionGamme.addActionListener(new ActionListener(){
+
+	            @Override
+	            public void actionPerformed(ActionEvent e2) {
+	                FenetrePrincipale.this.ajouterOnglet("G\u00e9rer les gammes", panelGamme);
+	                panelGamme.fillTable();
+	            }
+	        });
    	}
    	
    	private void ajouterOnglet(String name, JPanel panel)
