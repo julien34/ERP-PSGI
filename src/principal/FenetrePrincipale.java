@@ -16,6 +16,9 @@ import achat.PanelFournisseur;
 import components.ButtonTabComponent;
 import jdbc.DatabaseConnection;
 import jdbc.FenetreConnexion;
+//import production.PanelCategories;
+import production.PanelGamme;
+import production.PanelOperation;
 import production.PanelProduits;
 import vente.FenetreVente;
 import vente.PanelClient;
@@ -77,7 +80,10 @@ public class FenetrePrincipale extends JFrame
    	
    	//Production
    	private static PanelProduits panelProduits;
-   	
+    //private static PanelCategories panelCategories;
+    private static PanelOperation panelOperation;
+    private static PanelGamme panelGamme;
+    
    	public FenetrePrincipale()
    	{
    		initFenetre();
@@ -285,6 +291,19 @@ public class FenetrePrincipale extends JFrame
    	{
    		return panelProduits;
    	}
+   	
+//    public static PanelCategories getPanelCategories() {
+//        return panelCategories;
+//    }
+
+    public static PanelOperation getPanelOperation() {
+        return panelOperation;
+    }
+
+    public static PanelGamme getPanelGamme() {
+        return panelGamme;
+    }
+
    	
    	public static PanelClient getPanelClient(){
 		return panelClient;
