@@ -27,10 +27,10 @@ public class PanelProduits extends JPanel
 	private JButton supprimer = new JButton("Supprimer");	
 	private JTable table;
 	private JScrollPane scrollPane;
-	private final String[] columnNames = {"nom","categorie","prix de vente","prix d'achat","udm"};
-	private static DefaultTableModel model = new DefaultTableModel(0,5)
+	private final String[] columnNames = {"nom","categorie","prix de vente","prix d'achat","udm","achat/vente"};
+	private static DefaultTableModel model = new DefaultTableModel(0,6)
 	{
-        Class[] types = { String.class, String.class, Float.class, Float.class, Float.class };
+        Class[] types = { String.class, String.class, Float.class, Float.class, String.class, String.class };
 
         @Override
         public Class getColumnClass(int columnIndex) 
@@ -108,7 +108,9 @@ public class PanelProduits extends JPanel
 			{ 
 				panelTable.remove(modifier_p);
 				panelTable.add("South",ajouter_p);
+				ajouter_p.remplirCategorie();
 				revalidate();
+				repaint();
 			}
 		});
 		modifier.addActionListener(new ActionListener()
@@ -120,10 +122,12 @@ public class PanelProduits extends JPanel
 				String value3 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 2));
 				String value4 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 3));
 				String value5 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 4));
+				String value6 = String.valueOf(model.getValueAt(table.convertRowIndexToModel(produitChoisi), 5));
 				panelTable.remove(ajouter_p);
-				modifier_p.setVal(value1,value2,value3,value4,value5);
+				modifier_p.setVal(value1,value2,value3,value4,value5,value6);
 				panelTable.add("South",modifier_p);
 				revalidate();
+				repaint();
 			}
 		});
 		supprimer.addActionListener(new ActionListener()
@@ -164,7 +168,7 @@ public class PanelProduits extends JPanel
 	/**
 	 * Met à jour la ligne modifiée par l'option de modification de produit
 	 */
-	public void raffraichirLigne(String value1, String value2, String value3, String value4, String value5)
+	public void raffraichirLigne(String value1, String value2, String value3, String value4, String value5, String value6)
 	{
 		float val3 = Float.parseFloat(value3);
 		float val4 = Float.parseFloat(value4);
@@ -177,18 +181,20 @@ public class PanelProduits extends JPanel
 			model.setValueAt(val3, table.convertRowIndexToModel(ligneChoisieTemp), 2);
 			model.setValueAt(val4, table.convertRowIndexToModel(ligneChoisieTemp), 3);
 			model.setValueAt(val5, table.convertRowIndexToModel(ligneChoisieTemp), 4);
+			model.setValueAt(value6, table.convertRowIndexToModel(ligneChoisieTemp), 5);
 		}
 	}
 	
 	/**
 	 * Met à jour la liste des produits dans la frame principale
 	 */
-	public void raffraichirListe(String value1, String value2, String value3, String value4, String value5)
+	public void raffraichirListe(String value1, String value2, String value3, String value4, String value5, String value6)
 	{
+		String val2 = DatabaseConnection.determinerCategorie(Integer.parseInt(value2));
 		float val3 = Float.parseFloat(value3);
 		float val4 = Float.parseFloat(value4);
-		float val5 = Float.parseFloat(value5);
-		Object[] obj = {value1,value2,val3,val4,val5};
+		int val5 = Integer.parseInt(value5);
+		Object[] obj = {value1,val2,val3,val4,val5,value6};
 		model.addRow(obj);
 	}
 }

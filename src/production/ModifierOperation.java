@@ -116,7 +116,6 @@ extends JPanel {
                 String value5 = ModifierOperation.this.gamme.getText();
                 String value6 = ModifierOperation.this.centreTravail.getText();
                 String nomOperation = ModifierOperation.this.nom.getText();
-                System.out.println("UPDATE OPERATIONS SET seqoperation = '" + value2 + "', nbcycle = '" + value3 + "', nbheures = '" + value4 + "', gammedecompose = '" + value5 + "', centretravaileffectue = '" + value6 + "' WHERE nomoperation = '" + nomOperation + "'");
                 if (DatabaseConnection.requete("UPDATE OPERATIONS SET seqoperation = '" + value2 + "', nbcycle = '" + value3 + "', nbheures = '" + value4 + "', gammedecompose = '" + value5 + "', centretravaileffectue = '" + value6 + "' WHERE nomoperation = '" + nomOperation + "'")) {
                     FenetrePrincipale.getPanelOperation().raffraichirLigne(nomOperation, value2, value3, value4, value5, value6);
                     JOptionPane.showMessageDialog(null, "Op\ufffdration modifi\ufffd avec succ\ufffds.", "Modification d'op\ufffdration", 1);

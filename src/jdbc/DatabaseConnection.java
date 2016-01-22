@@ -168,16 +168,20 @@ public class DatabaseConnection
 				longueurTableau = resultat.getInt("COUNT(*)");
 			}
 			resultat.close();
-			Object[][] databaseData = new Object[longueurTableau][5];
+			Object[][] databaseData = new Object[longueurTableau][6];
 			
 			resultat = stat.executeQuery("SELECT * FROM PRODUITS");
 			while(resultat.next())
 			{
 				databaseData[indexActuel][0] = resultat.getString(2);
-				databaseData[indexActuel][1] = resultat.getString(3);
+				
+				int categorie_id = resultat.getInt(3);
+				databaseData[indexActuel][1] = determinerCategorie(categorie_id);
+				
 				databaseData[indexActuel][2] = resultat.getFloat(4);
 				databaseData[indexActuel][3] = resultat.getFloat(5);
-				databaseData[indexActuel][4] = resultat.getFloat(6);
+				databaseData[indexActuel][4] = resultat.getString(6);
+				databaseData[indexActuel][5] = resultat.getString(7);
 				indexActuel++;
 			}
 			resultat.close();		
@@ -191,6 +195,38 @@ public class DatabaseConnection
 		}
 	}
 	
+	public static String determinerCategorie(int categorie_id)
+	{
+		try
+		{
+			Statement stat = con.createStatement();
+			ResultSet resultat = stat.executeQuery("SELECT nomcategorie FROM categorie where codecategorie = "+categorie_id);
+			resultat.next();
+			return resultat.getString(1);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return "";
+		}
+	}
+	
+	public static int determinerCodeCategorie(String categorie)
+	{
+		try
+		{
+			Statement stat = con.createStatement();
+			ResultSet resultat = stat.executeQuery("SELECT codecategorie FROM categorie where nomcategorie='"+categorie+"'");
+			resultat.next();
+			return resultat.getInt(1);
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			return -1;
+		}
+	}
+
 	static public Object[][] rechercherNomProduits(String Recherche)
 	{
 		int longueurTableau = 0;
@@ -454,6 +490,44 @@ public class DatabaseConnection
         }
     }
     
+
+    public static DefaultComboBoxModel<String> getCentre(){
+    	DefaultComboBoxModel<String> modelCentre = new DefaultComboBoxModel<String>();
+    	//JComboBox<String> centreTravail = new JComboBox<String>();
+		
+		try {
+            stat = con.createStatement();
+            ResultSet resultat = stat.executeQuery("SELECT nomcentre FROM centretravail");
+            while (resultat.next()) {
+            	modelCentre.addElement(resultat.getString(1));
+                //centreTravail.addItem(resultat.getString(1));
+                //System.out.println(resultat.getString(1));
+            }
+            stat.close();
+            return modelCentre;
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return modelCentre;
+        }
+    }
+	
+    public static void getCategorieProd(DefaultComboBoxModel<String> parent){		
+		try {
+            parent.addElement("");
+            stat = con.createStatement();
+            ResultSet resultat = stat.executeQuery("SELECT distinct nomcategorie FROM categorie");
+            while (resultat.next()) {
+            	parent.addElement(resultat.getString(1));
+                System.out.println(resultat.getString(1));
+            }
+            stat.close();
+		}
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+	
     public static void getCentre(DefaultComboBoxModel<String> centre){		
  		try {
  			centre.removeAllElements();

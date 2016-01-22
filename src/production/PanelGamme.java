@@ -130,10 +130,8 @@ extends JPanel {
                     String value1 = String.valueOf(model.getValueAt(PanelGamme.this.table.convertRowIndexToModel(PanelGamme.this.gammeChoisi), 1));
                     String value2 = String.valueOf(model.getValueAt(PanelGamme.this.table.convertRowIndexToModel(PanelGamme.this.gammeChoisi), 2));
                     String nomGamme = DatabaseConnection.getNomGamme(value1, value2);
-                    System.out.println("DELETE FROM GAMME WHERE nomGamme = '" + nomGamme + "'");
                     if (DatabaseConnection.requete("DELETE FROM GAMME WHERE nomGamme = '" + nomGamme + "'")) {
-                    	System.out.println("yatta");
-                        model.removeRow(PanelGamme.this.table.convertRowIndexToModel(PanelGamme.this.gammeChoisi));
+                    	model.removeRow(PanelGamme.this.table.convertRowIndexToModel(PanelGamme.this.gammeChoisi));
                     }
                 }
             }
