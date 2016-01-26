@@ -14,7 +14,7 @@ public class Commande {
 		this.montantTotal = montantTotal;
 		this.etatCommande = etatCommande;
 		this.typePaiement = typePaiement;
-	}
+	} 
 
 	public String getMontantTotal() {
 		return montantTotal;

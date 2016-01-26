@@ -59,8 +59,8 @@ public class FenetreVente extends JPanel{
 	
 	private Dimension dimensionTextField = new Dimension (180 , 26);
 
-	
-	
+	 
+	 
 	
 	//init des elements tableau ? ? ? 
 	
