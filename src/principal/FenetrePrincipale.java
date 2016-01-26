@@ -20,6 +20,7 @@ import jdbc.FenetreConnexion;
 import production.PanelGamme;
 import production.PanelOperation;
 import production.PanelProduits;
+import production.PanelRecherche;
 import vente.FenetreVente;
 import vente.PanelClient;
 import vente.PanelCommandes;
@@ -67,7 +68,7 @@ public class FenetrePrincipale extends JFrame
         JMenuItem menuProductionCategories = new JMenuItem("G\u00e9rer les categories");
         JMenuItem menuProductionOperation = new JMenuItem("G\u00e9rer les operations");
         JMenuItem menuProductionGamme = new JMenuItem("G\u00e9rer les gammes");
-   	
+        JMenuItem menuRechercheProduits = new JMenuItem("Rechercher produits");
     //Onglets
     private JTabbedPane onglets = new JTabbedPane();
    	
@@ -88,6 +89,7 @@ public class FenetrePrincipale extends JFrame
     //private static PanelCategories panelCategories;
     private static PanelOperation panelOperation;
     private static PanelGamme panelGamme;
+    private static  PanelRecherche panelRecherche;
     
    	public FenetrePrincipale()
    	{
@@ -138,7 +140,9 @@ public class FenetrePrincipale extends JFrame
 		        menuProduction.add(menuProductionCategories);
 		        menuProduction.add(menuProductionOperation);
 		        menuProduction.add(menuProductionGamme);
-				
+		        menuProduction.add(menuRechercheProduits);
+		        
+		        
    		setJMenuBar(menu);
    		menuAchats.setEnabled(false);
    		menuVentes.setEnabled(false);
@@ -162,6 +166,7 @@ public class FenetrePrincipale extends JFrame
 	        //panelCategories = new PanelCategories();
 	        panelOperation = new PanelOperation();
 	        panelGamme = new PanelGamme();
+	        panelRecherche = new PanelRecherche();
    	}
    	
    	public void initHandlers()
@@ -318,6 +323,14 @@ public class FenetrePrincipale extends JFrame
 	                panelGamme.fillTable();
 	            }
 	        });
+	        
+	        menuRechercheProduits.addActionListener(new ActionListener()
+				{
+				public void actionPerformed(ActionEvent e){
+					ajouterOnglet("Recherche Produits",panelRecherche);
+					panelRecherche.fillTable();
+				}
+			});
    	}
    	
    	private void ajouterOnglet(String name, JPanel panel)

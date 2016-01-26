@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -51,7 +53,7 @@ public class PanelClient extends JPanel{
 	private JButton bt_modifier = new JButton("Modifier");
 	private JButton bt_supprimer = new JButton("Supprimer");
 	
-	private JButton bt_rech= new JButton("Rechercher");
+//	private JButton bt_rech= new JButton("Rechercher");
 	private JButton bt_tous= new JButton("Tous");
 	
 	private static JTextField txtRecherche;
@@ -136,7 +138,7 @@ public class PanelClient extends JPanel{
 		
 		panelRecherche.add(lblRecherche);
 		panelRecherche.add(txtRecherche);
-		panelRecherche.add(bt_rech);
+		//panelRecherche.add(bt_rech);
 		panelRecherche.add(bt_tous);
 	
 		panelGrid.add(contenu);
@@ -164,12 +166,20 @@ public class PanelClient extends JPanel{
 			}
 		});
 		
-		bt_rech.addActionListener(new ActionListener(){
+		/*bt_rech.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				majTableauRecherche();
 				
 			}
+		});*/
+		
+		txtRecherche.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				majTableauRecherche();
+			}
 		});
+	
 		
 		bt_tous.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
