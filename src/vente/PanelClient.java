@@ -139,7 +139,7 @@ public class PanelClient extends JPanel{
 		panelRecherche.add(lblRecherche);
 		panelRecherche.add(txtRecherche);
 		//panelRecherche.add(bt_rech);
-		panelRecherche.add(bt_tous);
+		//panelRecherche.add(bt_tous);
 	
 		panelGrid.add(contenu);
 	}
@@ -180,12 +180,6 @@ public class PanelClient extends JPanel{
 			}
 		});
 	
-		
-		bt_tous.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				remplirtableClient();
-			}
-		});
 		
 		bt_modifier.addActionListener(new ActionListener()
 		{
@@ -257,6 +251,10 @@ public class PanelClient extends JPanel{
 		
 	String recherche;
 	recherche =	txtRecherche.getText();
+	
+	if(recherche.equals(""))
+		remplirtableClient();
+		else
 	modelTableClient.setDataVector(DatabaseConnection.rechercherListeClient(recherche), nomColonnes);
 	}
 	
