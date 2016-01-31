@@ -41,7 +41,7 @@ public class PanelCommandes extends JPanel{
 	private static UneditableTableModel modele = new UneditableTableModel(0,5);
 	private static JScrollPane scrollPane  = new JScrollPane(tableau);
 	
-	private static JButton btnNouveauParticulier , btnNouveauEntreprise, btnModifier, btnAnnuler;
+	private static JButton btnNouveau, btnModifier, btnAnnuler;
 	private static JTextField txtRechercheCommande, txtRechercheClient, txtRechercheMontant;
 //	private static JDateChooser jdcDate;
 //	private static String dateRecherche = "";
@@ -112,8 +112,7 @@ private void initElements(){
 		txtRechercheClient = new JTextField(10);
 
 		
-		btnNouveauParticulier = new JButton("nouveau PA");
-		btnNouveauEntreprise = new JButton("nouveau EN");
+		btnNouveau= new JButton("Nouveau");
 		btnModifier = new JButton("Modifier");
 		btnAnnuler = new JButton("Annuler");
 		
@@ -125,8 +124,7 @@ private void initElements(){
 		panelRechercheNord.add(txtRechercheClient);
 
 		panelGrille.add(scrollPane);
-		panelBouton.add(btnNouveauEntreprise);
-		panelBouton.add(btnNouveauParticulier);
+		panelBouton.add(btnNouveau);
 		panelBouton.add(btnModifier);
 		panelBouton.add(btnAnnuler);
 		
@@ -140,20 +138,14 @@ private void initElements(){
 		
 		
 		
-		btnNouveauEntreprise.addActionListener(new ActionListener() {
+		btnNouveau.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				 new FenetreVente(null);
+				 new test();
 
 			}
 		});
-		
-		btnNouveauParticulier.addActionListener(new ActionListener() {
-			
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
+
 	}  
 
 
