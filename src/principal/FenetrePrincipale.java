@@ -50,11 +50,9 @@ public class FenetrePrincipale extends JFrame
         //Ventes
         JMenu menuVentes = new JMenu("Ventes");
        // JMenuItem menuVentesFenetreVente = new JMenuItem("Fenetre de vente");
-        JMenu menuFenetreVente = new JMenu("Fenetre de vente");
         JMenuItem menuCommandes = new JMenuItem("Commandes");
         
-        public static JMenuItem menuVenteEntreprise = new JMenuItem("Entreprise");
-        public static JMenuItem menuVenteParticulier = new JMenuItem("Particulier");
+
         
         //sous menu entreprise , client
         
@@ -128,12 +126,10 @@ public class FenetrePrincipale extends JFrame
 				
 	        //Ventes
 				menu.add(menuVentes);
-				menuVentes.add(menuFenetreVente);
 				menuVentes.add(menuVentesClients);
 				menuVentes.add(menuVentesDevis);
 				menuVentes.add(menuCommandes);
-	        	menuFenetreVente.add(menuVenteEntreprise);
-				menuFenetreVente.add(menuVenteParticulier);
+
 	        //Production
 				menu.add(menuProduction);
 				menuProduction.add(menuProductionProduits);
@@ -159,7 +155,6 @@ public class FenetrePrincipale extends JFrame
 	   		//Ventes
 	   		panelClient = new PanelClient(framePrincipale);
 	   		InterfaceDevis = new InterfaceDevis(framePrincipale);
-	   		fenetreVente = new FenetreVente(framePrincipale);
 	   		panelCommandes = new PanelCommandes(framePrincipale);
 	   		//Production
 	   		panelProduits = new PanelProduits();
@@ -238,14 +233,7 @@ public class FenetrePrincipale extends JFrame
 	   				ajouterOnglet("Gestion des ventes",fenetreVente);
 	   			}
 	   		});	*/
-	   		
-	   		menuVenteEntreprise.addActionListener(new ActionListener()
-	   		{
-	   			public void actionPerformed(ActionEvent e)
-	   			{
-	   				ajouterOnglet("Gestion des ventes",fenetreVente);
-	   			}
-	   		});	
+
 	   		
 	   		menuCommandes.addActionListener(new ActionListener()
 	   		{
@@ -255,15 +243,7 @@ public class FenetrePrincipale extends JFrame
 	   			}
 	   		});	
 	   		
-	   		menuVenteParticulier.addActionListener(new ActionListener()
-	   		{
-	   			public void actionPerformed(ActionEvent e)
-	   			{
-//   				FenetreVente.remplirInfosClient();
-	   				ajouterOnglet("Gestion des ventes",fenetreVente);
-	   			}
-	   		});	
-	   		
+
 	   		
 	   		menuVentesClients.addActionListener(new ActionListener()
 	   		{

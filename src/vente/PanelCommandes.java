@@ -141,7 +141,7 @@ private void initElements(){
 		btnNouveau.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
-				 new test();
+				 new FenetreVente();
 
 			}
 		});

@@ -37,11 +37,11 @@ public class PanelVente extends JPanel
 
 	private void initHandlers() 
 	{
-		fenetreVente.addActionListener(new ActionListener()
+/*		fenetreVente.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{ new FenetreVente(framePrincipale); }
-		});
+		});*/
 		interfaceClient.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)

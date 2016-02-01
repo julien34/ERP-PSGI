@@ -86,7 +86,7 @@ public class AjouterProduitCommande extends JDialog
 					while(rs.next()){	
 
 						}
-				FenetreVente.remplirHorsTaxe();
+				//FenetreVente.remplirHorsTaxe();
 						rs.close();
 				} catch (SQLException f) {
 				f.printStackTrace();
@@ -113,7 +113,7 @@ public class AjouterProduitCommande extends JDialog
    	 public void remplirProduit(){
  		try {
  			Connection cn = DatabaseConnection.getCon();
- 			PreparedStatement pst = cn.prepareStatement("SELECT description FROM PRODUITVENTE");//PRODUITS ou PRODUITVENTE (test)
+ 			PreparedStatement pst = cn.prepareStatement("SELECT description FROM PRODUITVENTE");//PRODUITS ou PRODUITVENTE ( )
  			ResultSet rs =  pst.executeQuery();
  			while(rs.next()){	
  				

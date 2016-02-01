@@ -1,603 +1,630 @@
 package vente;
 
-import java.awt.*;
+
+import java.awt.BorderLayout;
+import java.awt.Choice;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.print.PrinterException;
-import java.beans.Statement;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.Normalizer.Form;
 import java.util.ArrayList;
+import java.util.Calendar;
 
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.event.CaretListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
-
-import achat.CommandesFournisseur;
-import achat.Fournisseur;
-
-import javax.swing.event.CaretEvent;
-
-import java.lang.*;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerNumberModel;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 
-public class FenetreVente extends JPanel{
-	
+import com.toedter.calendar.JDateChooser;
+
+import achat.CommandesFournisseur;
+import achat.Fournisseur;
+import achat.LignesCommande;
+import achat.PanelCommande;
+import achat.UneditableTableModel;
+
+
+
+
+public class FenetreVente extends JDialog {
 	
 	private static FenetrePrincipale frame;
-	
-	
-	//Init des elements information client 
-	
-	JLabel InformationClient = new JLabel("Information Client");
-	JLabel ChampVide = new JLabel("");
-	JLabel ChampTextNom = new JLabel("Nom");
-	 JComboBox ComboBoxClient = new JComboBox();
-	JLabel Prenom = new JLabel("Responsable : ");
-	 JTextField ChampTextPrenom = new JTextField("");
-	JLabel Adresse = new JLabel("Adresse : ");
-	 JTextField ChampTextAdresse = new JTextField("");
-	JLabel Email = new JLabel("Email : ");
-	 JTextField ChampTextEmail = new JTextField("");
-	JLabel NumeroTelephone = new JLabel("NumeroTelephone : ");
-	 JTextField ChampTextNumeroTelephone = new JTextField("");  	 
-	
-	private Dimension dimensionTextField = new Dimension (180 , 26);
 
-	 
-	 
 	
-	//init des elements tableau ? ? ? 
+	private static Fournisseur fournisseur = new Fournisseur();
+	private CommandesFournisseur commande;
+	private static ArrayList<LignesCommande> listeLignesCommande = new ArrayList<LignesCommande>();
+	private static Object[][] tabLignesCo;
+	private static Object[] titres = {"Code","Description","Catégorie","Prix HT","Qté","Total HT"};
 	
-	
-	private static ArrayList<Commande> liste = new ArrayList<Commande>();
-	private static String[] titres = {"Nom","PrixUnitaire","Quantité","PrixTotal"};
-	private static Object[][] tabFn;
-	
-	JScrollPane scrollPane =  new JScrollPane();
-	JTable tableCommande;
-	private static JTable tableLigne;
-	private Dimension dimensionTable = new Dimension(600, 150);
-
-	private final static  String[] nomColonnes = { "Ref","Nom","Quantite","PrixUnitaire","PrixHorsTaxe"};
-
-	private static DefaultTableModel modelTableCommande = new DefaultTableModel(0,5){
-		Class[] types = {String.class, String.class, int.class,Float.class,Float.class};
+	private JLabel lblMontantTotalHt, lblMontantRemise, lblMontantTva, lblMontantTtc;
+	private static JLabel lblFournisseurCode;
+	private JSpinner txtRemise;
+	private JButton btnCalculerTotal, btnValider, btnAnnuler, btnRechercher, btnAjouter, btnModifier, btnSupprimer;
+	private JDateChooser jdcDateLivr, jdcDate;
+	private Choice chTauxTva, chPaiement;
+	//private PopupCommandeSelectFournisseur fenetreSelectFn;
 		
-        @Override
-        public Class getColumnClass(int columnIndex) 
-        {
-            return Integer.class;
-        }
-        
-        @Override
-        public boolean isCellEditable(int row, int column)
-        {  
-            return false;  
-        }
-	};
-
+	//On créer la JTable et son modèle
+	private static UneditableTableModel modele = new UneditableTableModel(0,5);
+	private static JTable tableau = new JTable(modele);
+	private JScrollPane scrollPane;
 	
-	public static void remplirTabLigneCmd(){
+	
+	/**
+	 * Constructeur vide. Créer une nouvelle commande.
+	 */
+	public FenetreVente(){
+		listeLignesCommande.clear();
+		maj();//On mets à jour pour éviter que la table ne se remplisse avec les produits de la dernière commande
+		this.initFenetre();
+		this.initElements();
+		this.initEcouteurs();
 		
-		modelTableCommande.setDataVector(DatabaseConnection.remplirLigneCmd(), nomColonnes);
-		tableLigne.getRowSorter().toggleSortOrder(0);	
-		tableLigne.getRowSorter().toggleSortOrder(1);	
+		//On grise les boutons pour ajouter/modifier/supprimer un produits
+		this.setBtnEnabled(false);
 	}
 	
 	
+	/**
+	 * Constructeur avec en paramètre une commande de type CommandesFournisseur. Modifie une commande existante.
+	 * @param cmd, une commande de type CommandesFournisseur. Modifie la commande passée en paramètre.
+	 */
+	/*public PopupCommande(CommandesFournisseur cmd){
+		listeLignesCommande.clear();
+		this.commande = cmd;
+		this.initFenetre();
+		this.initElements();
+		this.initEcouteurs();
+		this.getProduitsCommande();
+		this.preRemplir();
+		this.setBtnEnabled(false);
+	}
+	*/
 	
-	
-	//Init des elements comptables
-	
-	
-	int TotalHorsTaxe = 0;
-	
-	JLabel TotalHT = new JLabel("Total HT : ");
-	int valeurHT = TotalHorsTaxe;
-	JTextField ChampTotalHT = new JTextField(""+valeurHT);	
-	
-	JLabel TVA = new JLabel("TVA : ");
-	double valeurTVA;
-	JTextField ChampTVA = new JTextField(""+valeurTVA);	 
-	
-	JLabel TotalTTC = new JLabel("Total TCC : ");
-	double valeurTTC; 
-	JTextField ChampTotalTTC = new JTextField(""+valeurTTC);
-	
-	
-	
-	//init boutons
-	
-	
-	
-	
-
-	JButton AjouterProduit = new JButton("Ajouter");
-	JButton ModifierProduit = new JButton("Modifier");
-	JButton SupprimerProduit = new JButton("Supprimer");
-	JButton Valider = new JButton("Valider");	  
-	JButton Annuler = new JButton("Annuler");
-	
-
-	private Dimension dimensionBouton = new Dimension(100, 30);
-
-	
-	
-	
-	int Etat = 0;//1 pour Particulier   2 pour Entreprise
-	
-
-	
-	public FenetreVente(FenetrePrincipale frame) {
-	this.frame = frame;
-	initElements();
-
-	
+	/**
+	 * Méthode qui initie la fenetre popup.
+	 */
+	private void initFenetre(){
+		
+		//On donne un titre selon la provenance du clic (si cmd en paramètre alors modification)
+		if(this.commande == null){
+			this.setTitle("Nouvelle commande de vente");
+		}
+		else {
+			this.setTitle("Modification de la commande de vente n°"+this.commande.getRefCommande()+" du "+this.commande.getDate());
+		}
+		
+		this.setSize(850, 650);
+		Dimension dim = new Dimension(850,650);
+		this.setMinimumSize(dim);
+		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		this.setVisible(true);
 	}
 	
 	
-	public void remplirtableCommande(){
-		modelTableCommande.setDataVector(DatabaseConnection.remplirListeClient(), nomColonnes);
-		tableCommande.getRowSorter().toggleSortOrder(0);
+	/**
+	 * Méthode qui initialise l'ensemble de tous les panels et composants de la fenetre.
+	 */
+	private void initElements(){
+		
+		//On défini le fournisseur s'il est présent dans la commande si non vide
+		if(this.commande == null || this.commande.getRefFournisseur() == null){
+			fournisseur = new Fournisseur();
+		}
+		else{
+			fournisseur = new Fournisseur(this.commande.getRefFournisseur(), this.commande.getNomFourniseur());
+		}
+		
+		//On créer les différents panels du haut
+		this.setLayout(new GridLayout(2, 1));//On défini la popup avec un layout en grid
+
+		JPanel panelGrille = new JPanel(new BorderLayout());//Panel du haut
+		JPanel panelGrilleNord = new JPanel();
+		JPanel panelGrilleCentre = new JPanel();
+		JPanel panelGrilleSud = new JPanel();
+		
+		//On créer et ajoute les composants du panelGrilleNord
+		JLabel lblClient = new JLabel("Client (code) : ");
+		lblFournisseurCode = new JLabel("Aucun client sélectionné");
+		this.btnRechercher = new JButton("Rechercher");
+		JLabel lblDate = new JLabel("Date : ");
+		this.jdcDate = new JDateChooser();
+		this.jdcDate.setEnabled(false);
+		
+		panelGrilleNord.add(lblClient);
+		panelGrilleNord.add(lblFournisseurCode);
+		panelGrilleNord.add(btnRechercher);
+		panelGrilleNord.add(lblDate);
+		panelGrilleNord.add(jdcDate);
+		
+		//On créer et on ajoute les composants du panelGrilleCentre
+		modele.setDataVector(tabLignesCo,titres);
+		tableau = new JTable(modele);
+		tableau.setAutoCreateRowSorter(false);
+		tableau.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tableau.setPreferredScrollableViewportSize(new Dimension(800, 200));
+		this.scrollPane = new JScrollPane(tableau);
+		panelGrilleCentre.add(scrollPane);
+		
+		//On créer et on ajout les composants du panelGrilleSud
+		this.btnAjouter = new JButton("Ajouter");
+		this.btnModifier = new JButton("Modifier");
+		this.btnSupprimer = new JButton("Supprimer");
+		this.btnCalculerTotal = new JButton("Calculer Total");
+		
+		panelGrilleSud.add(this.btnAjouter);
+		panelGrilleSud.add(this.btnModifier);
+		panelGrilleSud.add(this.btnSupprimer);
+		panelGrilleSud.add(this.btnCalculerTotal);
+		
+		
+		//On créer les différents panels du bas
+		JPanel panelParametrage = new JPanel(new GridLayout(2,1));//panel du bas
+		JPanel panelParametrageCentre = new JPanel(new GridLayout(1,2));
+		JPanel panelParametrageCentreGauche = new JPanel(new GridLayout(4,1));
+		JPanel gauche1 = new JPanel();
+		JPanel gauche2 = new JPanel();
+		JPanel gauche3 = new JPanel();
+		JPanel gauche4 = new JPanel();
+		JPanel panelParametrageCentreDroite = new JPanel(new GridLayout(4,2));
+		JPanel panelParametrageSud = new JPanel();
+		
+		//panelParametrageCentreGauche
+		JLabel lblTauxTva = new JLabel("Taux TVA : "); 
+		this.chTauxTva = new Choice();
+		this.chTauxTva.add("0.0");
+		this.chTauxTva.add("5.5");
+		this.chTauxTva.add("10.0");
+		this.chTauxTva.add("20.0");
+		JLabel prctTva = new JLabel("%");
+		JLabel lblRemise = new JLabel("Remise : "); 
+		JLabel lblPrCent = new JLabel("%");
+		this.txtRemise = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 100.0, 0.5)); //valeur - min - max - saut;
+		JLabel lblDateLivr = new JLabel("Date de livraison : ");
+		this.jdcDateLivr = new JDateChooser();
+		JLabel lblPaiement = new JLabel("Type de paiement : ");
+		this.chPaiement = new Choice();
+		chPaiement.add("Chèque");
+		chPaiement.add("Espèces");
+		chPaiement.add("Virement");
+		chPaiement.add("Autre");
+
+		gauche1.add(lblTauxTva);
+		gauche1.add(chTauxTva);
+		gauche1.add(prctTva);
+		gauche2.add(lblRemise);
+		gauche2.add(txtRemise);
+		gauche2.add(lblPrCent);
+		gauche3.add(lblDateLivr);
+		gauche3.add(this.jdcDateLivr);
+		gauche4.add(lblPaiement);
+		gauche4.add(chPaiement);
+		
+		panelParametrageCentreGauche.add(gauche1);
+		panelParametrageCentreGauche.add(gauche2);
+		panelParametrageCentreGauche.add(gauche3);
+		panelParametrageCentreGauche.add(gauche4);
+		
+		panelParametrageCentreGauche.setBorder(BorderFactory.createTitledBorder("Parametrage"));
+		panelParametrageCentre.add(panelParametrageCentreGauche);
+		
+		
+		//panelParametragecentreDroite
+		JLabel lblTotalHt = new JLabel("Total HT : "); 
+		this.lblMontantTotalHt = new JLabel();
+		JLabel lblRemise2 = new JLabel("Remise : ");
+		this.lblMontantRemise = new JLabel();
+		JLabel lblTva = new JLabel("TVA : ");
+		this.lblMontantTva = new JLabel();
+		JLabel lblTotalTtc = new JLabel("Total TTC : ");
+		this.lblMontantTtc = new JLabel();
+		
+		
+		panelParametrageCentreDroite.add(lblTotalHt);
+		panelParametrageCentreDroite.add(lblMontantTotalHt);
+		panelParametrageCentreDroite.add(lblRemise2);
+		panelParametrageCentreDroite.add(lblMontantRemise);
+		panelParametrageCentreDroite.add(lblTva);
+		panelParametrageCentreDroite.add(lblMontantTva);
+		panelParametrageCentreDroite.add(lblTotalTtc);
+		panelParametrageCentreDroite.add(lblMontantTtc);
+		
+		panelParametrageCentreDroite.setBorder(BorderFactory.createTitledBorder("Total"));
+		panelParametrageCentre.add(panelParametrageCentreDroite);
+		
+		
+		//On créer et ajoute les composants du panelParametrageSud
+		this.btnValider = new JButton("Valider");
+		this.btnAnnuler = new JButton("Annuler");
+		panelParametrageSud.add(btnValider);
+		panelParametrageSud.add(btnAnnuler);
+		
+		//On ajoute les composants à  leur panel respectifs
+		panelGrille.add(panelGrilleNord, BorderLayout.NORTH);
+		panelGrille.add(panelGrilleCentre, BorderLayout.CENTER);
+		panelGrille.add(panelGrilleSud, BorderLayout.SOUTH);
+		
+		panelParametrage.add(panelParametrageCentre);
+		panelParametrage.add(panelParametrageSud);
+		
+		//On ajoute les panels à la fenêtre
+		this.add(panelGrille);
+		this.add(panelParametrage);
 	}
-
 	
-	 public  void remplirNomParticulier(){
-		try {
-			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT nomclient FROM VENTE_CLIENTS WHERE codecategorieclient = '1'");
-			ResultSet rs =  pst.executeQuery();
-			while(rs.next()){	
-				
-		     	ComboBoxClient.addItem(rs.getString(1));			
-
-				}
+	
+	/**
+	 * Méthode qui remplit le tableau avec les données présentes dans l'arrayList.
+	 */
+	public static void maj(){
+		int nouvelleLongueur = listeLignesCommande.size();
+		tabLignesCo = new Object[nouvelleLongueur][6];
 		
-				rs.close();
-		} catch (SQLException e) {
-		e.printStackTrace();
-		}	
-	}
-	 
-	 public  void remplirNomEntreprise(){
-		try {
-			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT nomclient FROM VENTE_CLIENTS WHERE codecategorieclient = '2'");
-			ResultSet rs =  pst.executeQuery();
-			while(rs.next()){	
-				
-
-		     	ComboBoxClient.addItem(rs.getString(1));			
-
-				}
+		for(LignesCommande lc : listeLignesCommande){
+			tabLignesCo[listeLignesCommande.indexOf(lc)][0] = lc.getRefProduit();
+			tabLignesCo[listeLignesCommande.indexOf(lc)][1] = lc.getNomproduit();
+			tabLignesCo[listeLignesCommande.indexOf(lc)][2] = lc.getCategorieProduit();
+			tabLignesCo[listeLignesCommande.indexOf(lc)][3] = lc.getpHT()+"€";
+			tabLignesCo[listeLignesCommande.indexOf(lc)][4] = lc.getQte();
+			tabLignesCo[listeLignesCommande.indexOf(lc)][5] = lc.getTotal()+"€";
+		}
 		
-				rs.close();
-		} catch (SQLException e) {
-		e.printStackTrace();
-		}	
-	}
-	 
-	
-	
-	 public  void remplirInfoParticulier(){
-			try {
-				Connection cn = DatabaseConnection.getCon();
-				PreparedStatement pst = cn.prepareStatement("SELECT * FROM VENTE_CLIENTS WHERE codecategorieclient = '1'");
-				ResultSet rs =  pst.executeQuery();
-				while(rs.next()){	
-					
-					int numeroclientrequete = rs.getRow();
-					int numeroclientcombo = ComboBoxClient.getSelectedIndex();
-					
-					String idclient = rs.getString(1);
-					String nomclient = rs.getString(2);
-					String prenomclient = rs.getString(3);
-					String adresseclient = rs.getString(4);
-					String mail = rs.getString(5);
-					String telclient = rs.getString(6);
-					String categorie = rs.getString(7);
-
-					if(numeroclientrequete-1 == numeroclientcombo)
-					{
-							ChampTextEmail.setText(mail);
-							ChampTextAdresse.setText(adresseclient);
-							ChampTextNumeroTelephone.setText(telclient);
-							ChampTextPrenom.setText(prenomclient);
-						
-					}
-					
-				}
-					rs.close();
-			} catch (SQLException e) {
-			e.printStackTrace();
-			}	
-	 }
-	 
-	 
-	 public  void remplirInfoEntreprise(){
-			try {
-				Connection cn = DatabaseConnection.getCon();
-				PreparedStatement pst = cn.prepareStatement("SELECT * FROM VENTE_CLIENTS WHERE codecategorieclient = '2'");
-				ResultSet rs =  pst.executeQuery();
-				while(rs.next()){	
-					
-					int numeroclientrequete = rs.getRow();
-					int numeroclientcombo = ComboBoxClient.getSelectedIndex();
-					
-					String idclient = rs.getString(1);
-					String nomclient = rs.getString(2);
-					String prenomclient = rs.getString(3);
-					String adresseclient = rs.getString(4);
-					String mail = rs.getString(5);
-					String telclient = rs.getString(6);
-					String categorie = rs.getString(7);
-
-					if(numeroclientrequete-1 == numeroclientcombo)
-					{
-							ChampTextEmail.setText(mail);
-							ChampTextAdresse.setText(adresseclient);
-							ChampTextNumeroTelephone.setText(telclient);
-							ChampTextPrenom.setText(prenomclient);
-						
-					}
-					
-				}
-					rs.close();
-			} catch (SQLException e) {
-			e.printStackTrace();
-			}	
-	 }
-
-   	 public static int remplirHorsTaxe(){
-  		 int PrixHorsTaxe = 0;
-  		try {
- 			Connection cn = DatabaseConnection.getCon();
- 			PreparedStatement pst = cn.prepareStatement("SELECT prixtotal FROM lignecmd");
- 			ResultSet rs =  pst.executeQuery();
- 			while(rs.next()){	
- 				PrixHorsTaxe = rs.getInt(1) + PrixHorsTaxe;
- 				}
- 			
- 				rs.close();
- 				
- 		} catch (SQLException e) {
- 		e.printStackTrace();
- 		
- 		
- 		}
-		return PrixHorsTaxe;	 
-   	 }
-	
-	
-	 
-	public void initElementParticulier(){
-		InformationClient.setText("Information du particulier");
-		Prenom.setText("Prenom : ");
-		ComboBoxClient.removeAllItems();
-		remplirNomParticulier();
-		
-	}
-	
-	public void initElementEntreprise(){
-	    InformationClient.setText("Information de l'entreprise");
-		Prenom.setText("Responsable : ");;
-		ComboBoxClient.removeAllItems();
-		remplirNomEntreprise();
+		modele.setDataVector(tabLignesCo, titres);
 	}
 	
 	
+	/**
+	 * Méthode qui initialise les écouteurs.
+	 */
 	
-	public void initElements()
-	{
+	
+	
+	
+	private void initEcouteurs(){
 		
-   		FenetrePrincipale.menuVenteEntreprise.addActionListener(new ActionListener()
-   		{
-   			public void actionPerformed(ActionEvent e)
-   			{
-				initElementEntreprise();
-   				validate();
-   				Etat = 2;
-   			}
-   		});
-		
-   		
-   		FenetrePrincipale.menuVenteParticulier.addActionListener(new ActionListener()
-   		{
-   			public void actionPerformed(ActionEvent e)
-   			{
-   				initElementParticulier();
-   				validate();
-   				Etat = 1;
-   			}
-   		});	
-		
-		
-		
-   		tableLigne = new JTable(modelTableCommande);
-   		tableLigne.setAutoCreateRowSorter(true); //permet de trier les colonnes
-   		tableLigne.getRowSorter().toggleSortOrder(0);
-   		tableLigne.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		scrollPane = new JScrollPane(tableLigne);
-		tableLigne.setPreferredScrollableViewportSize(dimensionTable);
-		
-		
-
-		JPanel panelTable = new JPanel(new GridLayout(4,1));
-		JPanel panelHaut = new JPanel(new GridLayout(6,2));
-		JPanel panelTableau = new JPanel(new GridLayout(1,1));
-		JPanel panelMilieu = new JPanel(new GridLayout(3,2));
-		JPanel panelBas = new JPanel(new GridLayout(2,1));
-		
-		JPanel panelBoutonCommande = new JPanel(new GridLayout(1,3));
-		JPanel panelBoutonValiderAnnuler = new JPanel(new GridLayout(1,2));
-		
-		
-		
-		JPanel panInformationClient = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		JPanel panChampVide = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		JPanel panComboNom = new JPanel(new  FlowLayout(FlowLayout.LEFT));
-		JPanel panChampNom = new JPanel(new  FlowLayout(FlowLayout.RIGHT));
-		JPanel panChampResponsable = new JPanel(new  FlowLayout(FlowLayout.LEFT));
-		JPanel panResponsable = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		JPanel panChampAdresse = new JPanel(new  FlowLayout(FlowLayout.LEFT));
-		JPanel panAdresse = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		JPanel panChampEmail = new JPanel(new  FlowLayout(FlowLayout.LEFT));
-		JPanel panEmail = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		JPanel panChampTelephone = new JPanel(new  FlowLayout(FlowLayout.LEFT));
-		JPanel panNumeroTelephone = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		//Bouton pour calculer le total de la commande
+		this.btnCalculerTotal.addActionListener(new ActionListener() {
 			
-		
-		JPanel panTableau = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		
-		JPanel panChampHT = new JPanel(new  FlowLayout(FlowLayout.LEFT));
-		JPanel panHT = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		JPanel panChampTVA = new JPanel(new  FlowLayout(FlowLayout.LEFT));
-		JPanel panTVA = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		JPanel panChampTTC = new JPanel(new  FlowLayout(FlowLayout.LEFT));
-		JPanel panTTC = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		
-		JPanel panBoutonAjouter = new JPanel(new  FlowLayout(FlowLayout.RIGHT));
-		JPanel panBoutonModifier = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		JPanel panBoutonSupprimer = new JPanel(new  FlowLayout(FlowLayout.LEFT));
-		JPanel panBoutonValider = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		JPanel panBoutonAnnuler = new JPanel(new  FlowLayout(FlowLayout.LEFT));
-		
-		
-		
-		
-		add(panelTable);
-		
-		//Fenetre Principal
-		panelTable.add(panelHaut);
-		panelTable.add(panelTableau);
-		panelTable.add(panelMilieu);
-		panelTable.add(panelBas);
-		
-		//Partie Haute info client
-		panelHaut.add(panInformationClient);
-		panelHaut.add(panChampVide);
-		panelHaut.add(panChampNom);
-		panelHaut.add(panComboNom);
-		panelHaut.add(panResponsable); 
-		panelHaut.add(panChampResponsable); 
-		panelHaut.add(panAdresse); 
-		panelHaut.add(panChampAdresse); 
-		panelHaut.add(panEmail);
-		panelHaut.add(panChampEmail);
-		panelHaut.add(panNumeroTelephone);
-		panelHaut.add(panChampTelephone);
-
-		//Tableau
-		panelTableau.add(panTableau);
-
-		
-		//Partie milieu compta
-		panelMilieu.add(panHT);
-		panelMilieu.add(panChampHT);
-		panelMilieu.add(panTVA);
-		panelMilieu.add(panChampTVA);
-		panelMilieu.add(panTTC);
-		panelMilieu.add(panChampTTC);
-		
-		//separation en 2 parties pannel bouton 
-		panelBas.add(panelBoutonCommande);
-		panelBas.add(panelBoutonValiderAnnuler);
-	
-		//1er partie coommande
-		panelBoutonCommande.add(panBoutonAjouter);
-		panelBoutonCommande.add(panBoutonModifier);		
-		panelBoutonCommande.add(panBoutonSupprimer);
-	
-		//2eme partie valider quitter
-		panelBoutonValiderAnnuler.add(panBoutonValider);
-		panelBoutonValiderAnnuler.add(panBoutonAnnuler);		
-		
-		// Insertion elements
-		panInformationClient.add(InformationClient);
-		panChampVide.add(ChampVide);
-		panChampNom.add(ChampTextNom);
-		panComboNom.add(ComboBoxClient);
-		panChampResponsable.add(ChampTextPrenom);
-		panResponsable.add(Prenom);
-		panChampAdresse.add(ChampTextAdresse);
-		panAdresse.add(Adresse);
-		panChampEmail.add(ChampTextEmail);
-		panEmail.add(Email);
-		panChampTelephone.add(ChampTextNumeroTelephone);
-		panNumeroTelephone.add(NumeroTelephone);
-				
-		//changement taille des textfield
-		InformationClient.setPreferredSize(dimensionTextField);
-		ChampTextPrenom.setPreferredSize(dimensionTextField);
-		ChampTextAdresse.setPreferredSize(dimensionTextField);
-		ChampTextEmail.setPreferredSize(dimensionTextField);
-		ChampTextNumeroTelephone.setPreferredSize(dimensionTextField);
-
-		
-		panTableau.add(scrollPane);
-		
-		panChampHT.add(ChampTotalHT);
-		panHT.add(TotalHT);
-		panChampTVA.add(ChampTVA);
-		panTVA.add(TVA);
-		panChampTTC.add(ChampTotalTTC);
-		panTTC.add(TotalTTC);
-		
-		ChampTotalHT.setPreferredSize(dimensionTextField);
-		ChampTVA.setPreferredSize(dimensionTextField);
-		ChampTotalTTC.setPreferredSize(dimensionTextField);
-		
-		panBoutonAjouter.add(AjouterProduit);
-		panBoutonModifier.add(ModifierProduit);		
-		panBoutonSupprimer.add(SupprimerProduit);
-		panBoutonValider.add(Valider);
-		panBoutonAnnuler.add(Annuler);
-		
-		AjouterProduit.setPreferredSize(dimensionBouton);
-		ModifierProduit.setPreferredSize(dimensionBouton);
-		SupprimerProduit.setPreferredSize(dimensionBouton);
-		Valider.setPreferredSize(dimensionBouton);
-		Annuler.setPreferredSize(dimensionBouton);
-		
-		listener();
-		
-		careupdatenew.equals(true);
-		careupdatenew.equals(true);
-		
-		setVisible(true);
-	}
-	
-	
-	public void initProduit(){
-
-		
-	}
-
-		
-   	 public void remplirProduit(){
-
-   	 }
-   	 
-		CaretListener careupdatenew = new CaretListener() {
-			public void caretUpdate(javax.swing.event.CaretEvent e) {
-				
-				/*JTextField text = (JTextField)e.getSource();
-				System.out.println(text.getText());*/
-				String aString = ChampTotalHT.getText();
-				valeurHT = TotalHorsTaxe;
-
-				valeurTVA = valeurHT * 0.196;
-				ChampTVA.setText("" + valeurTVA);
-				valeurTTC = valeurTVA+valeurHT;
-				ChampTotalTTC.setText(""+ valeurTTC);
-
+			@Override
+			public void actionPerformed(ActionEvent e) {
 			}
-		};
+		});
+		
+		//Bouton Ajouter
+		this.btnAjouter.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				 new AjouterProduitCommande(frame);
+			}
+		});
 
 		
-   	 public void listener()
-   	 {
+		
+		//Bouton pour valider une commande
+		this.btnValider.addActionListener(new ActionListener() {
 			
-			Valider.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		
+		//Bouton pour supprimer une ligne commande
+		btnSupprimer.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		
+		
+		//Bouton pour modifier la quantité d'une ligne de commande
+		btnModifier.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		
+		
+		//Bouton pour fermer la page (annuler)
+		this.btnAnnuler.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+		
+		
+		//Bouton de recherche de fournisseur
+		this.btnRechercher.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		
+		
+		tableau.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
+		
+	}
+	
+	
+	/**
+	 * Méthode qui récupère l'ensemble des produits qui sont dans la commande.
+	 */
+	private void getProduitsCommande(){
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("SELECT * FROM LignesCommandeFournisseur lc JOIN Produits p ON p.codeproduit = lc.refProduit JOIN Categorie c ON c.codeCategorie = p.categorie WHERE refCommande = ?");
+			pst.setString(1, FenetreVente.this.commande.getRefCommande());
+			ResultSet rs = pst.executeQuery();
+			
+			while(rs.next()){
+				String refProduit = rs.getString("refProduit");
+				String nomProduit = rs.getString("description");
+				String categorieProduit = rs.getString("nomCategorie");
+				double pHT = rs.getDouble("prixAchat");
+				int qte = rs.getInt("quantite");
+				double total = pHT*qte;
 				
-				public void actionPerformed(ActionEvent arg0) {
-					
-					 new Livraison(frame);
+				FenetreVente.listeLignesCommande.add(new LignesCommande(refProduit, nomProduit, categorieProduit, pHT, qte, total));
+			}
+			
+			maj();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/**
+	 * Méthode qui remplit les différents label avec les caractéristiques de la commande.
+	 */
+	private void preRemplir(){
+		
+		//On remplit le nom du fournisseur
+		if(fournisseur.getRef().equals("")){
+			lblFournisseurCode.setText("Sélectionner un founisseur");
+		}
+		else{
+			lblFournisseurCode.setText(fournisseur.getNom()+" ("+fournisseur.getRef()+")");
+		}
+		
+		//On remplit la date
+		this.jdcDate.setDate(this.commande.getDate());
+		
+		//On selectionne de base le montant de TVA approprié à la commande (si non 0%)
+		if(this.commande.getTauxTva() != null){
+			this.chTauxTva.select(String.valueOf(this.commande.getTauxTva()));
+		}
+		
+		//On selectionne de base le type de paiement
+		if(this.commande.getTypePaiement() != null){
+			this.chPaiement.select(this.commande.getTypePaiement());
+		}
+		
+		//On affiche le taux remise de base
+		if(this.commande.getRemise() != null){
+			this.txtRemise.setValue((Double) this.commande.getRemise());
+		}
+		
+		//On remplit la date de livraison
+		if(this.commande.getDateLivr() != null){
+			this.jdcDateLivr.setDate(this.commande.getDateLivr());
+		}
+		
+		//On effectue les calculs
+		this.calculerTotal();
+	}
+	
+	
+	/**
+	 * Méthode qui calcule le total de la commande.
+	 */
+	private void calculerTotal(){
+		
+		//On calcule le total
+		double total = 0;
+		for(LignesCommande lc : listeLignesCommande){
+			total += lc.getTotal();
+		}
+		this.lblMontantTotalHt.setText(total+"€");
+		
+		//On calcule la remise par rapport au total
 
+		 Double remise = (Double) this.txtRemise.getValue()/100;
+		 remise *= total;
+		
+		this.lblMontantRemise.setText("-"+String.valueOf(remise)+"€");
+		
+		//On calcule le montant de la TVA par rapport au taux
+		double montantTva = 0;
+		montantTva = (Double.valueOf(this.chTauxTva.getSelectedItem())/100)*(total-remise);
+		this.lblMontantTva.setText(String.valueOf(montantTva)+"€");
+		
+		this.lblMontantTtc.setText(String.valueOf(total-remise+montantTva)+"€");
+	}
+	
+	
+	/**
+	 * Méthode qui ajoute dans la base de donnée une nouvelle commande (vide).
+	 */
+	private void ajouterCommande(CommandesFournisseur c){
+		
+		//On vérifie si la commande est dans l'arraylist des commandes
+		if(PanelCommande.getListeCommande().contains(c)){
+			
+			if(this.commande.getTauxTva() == null){
+				this.chTauxTva.select("0.0");//TVA à 0 si vide
+			}
+			
+			if(this.jdcDateLivr.getDate() == null || this.jdcDateLivr.getDate().before(this.jdcDate.getDate())){
+				this.jdcDateLivr.setDate(this.commande.getDate());//Date de livraison = date de création si vide ou antérieur à la création
+			}
+			
+			this.calculerTotal();//On calcule el total de la commande
+			
+			try {
+				Connection cn = DatabaseConnection.getCon();
+				PreparedStatement pst = cn.prepareStatement("UPDATE CommandesFournisseur SET dateCommande = ?, refFournisseur = ?, tauxTVA = ?, remise = ?, dateLivr = ?, typepaiement = ? WHERE refCommande = ?");
+				pst.setDate(1, new Date(this.jdcDate.getDate().getTime()));
+				pst.setString(2, fournisseur.getRef());
+				pst.setDouble(3, Double.valueOf(this.chTauxTva.getSelectedItem()));
+				pst.setDouble(4, (Double) this.txtRemise.getValue());
+				pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
+				pst.setString(6, this.chPaiement.getSelectedItem());
+				pst.setString(7, c.getRefCommande());
+				pst.executeQuery();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		//Si non on la créer
+		else {
+			
+			this.calculerTotal();//On calcule el total de la commande
+			
+			try {
+				Connection cn = DatabaseConnection.getCon();
+				PreparedStatement pst = cn.prepareStatement("INSERT INTO CommandesFournisseur(refCommande, dateCommande, refFournisseur, etatCommande, tauxTVA, remise, dateLivr, typepaiement) VALUES(seqRefCommande.NEXTVAL,CURRENT_DATE,?,?,?,?,?,?)");
+				pst.setString(1, fournisseur.getRef());
+				pst.setString(2, "En cours");
+				pst.setDouble(3, Double.valueOf(this.chTauxTva.getSelectedItem()));
+				pst.setDouble(4, (Double) this.txtRemise.getValue());
+				
+				if(this.jdcDateLivr.getDate() == null){
+					Calendar cal = Calendar.getInstance(); 
+					Date date = new Date(cal.getTimeInMillis());
+					pst.setDate(5, date);
 				}
-			});
+				else{
+					pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
+				}
+				
+				pst.setString(6, this.chPaiement.getSelectedItem());
+				pst.executeQuery();
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		PanelCommande.getCommande();
+		PanelCommande.maj();
+		PanelCommande.setBtn(false);
+		setFournisseur(new Fournisseur());
+		dispose();
+	}
+	
+	
+	/**
+	 * Méthode qui change le fournisseur avec celui sélectionné dans la liste.
+	 * @param f, le Fournisseur à changer.
+	 */
+	public static void setFournisseur(Fournisseur f){
+		lblFournisseurCode.setText(f.getNom()+" ("+f.getRef()+")");
+		fournisseur = f;
+	}
+	
+	
+	/**
+	 * Métode qui rajoute à la commande un produit avec une quantité.
+	 * @param lc, une ligne de commande à ajouter à la ommande.
+	 */
+	public static void addArrayListLigneCommande(LignesCommande lc){
+		listeLignesCommande.add(lc);
+	}
+	
+	
+	/**
+	 * Méthode qui permet de griser les boutons modifier et suppriemr (une ligne de commande).
+	 * @param b, un booleen.
+	 */
+	public void setBtnEnabled(Boolean b){
+		btnModifier.setEnabled(b);
+		btnSupprimer.setEnabled(b);
+	}
+	
+	
+	/**
+	 * Méthode qui permet de supprimer une ligne dans la JTable mais aussi dans la base de donnée.
+	 */
+	private void supprimerLigne(){
+		
+		//On regarde la réponse de l'utilisateur
+		if(JOptionPane.showConfirmDialog(null, "Voulez-vous supprimez cette ligne ?", "Confirmer ?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
+
+			try {
+				Connection cn = DatabaseConnection.getCon();
+				PreparedStatement pst = cn.prepareStatement("DELETE FROM LignesCommandeFournisseur WHERE refCommande = ? AND refProduit = ? AND quantite = ?");
+				pst.setString(1, this.commande.getRefCommande());
+				pst.setString(2, listeLignesCommande.get(tableau.getSelectedRow()).getRefProduit());
+				pst.setInt(3, listeLignesCommande.get(tableau.getSelectedRow()).getQte());
+				pst.executeQuery();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			
-
-
-				ComboBoxClient.addActionListener(new ActionListener() {			
-				public void actionPerformed(ActionEvent e) {
-						if(Etat == 1)
-							{
-							
-							remplirInfoParticulier();
-							}
-						if(Etat == 2)
-						{
-							remplirInfoEntreprise();
-						}
-					}
-				});
-				
-				AjouterProduit.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						
-						 new AjouterProduitCommande(frame);
-					}
-				});
-				
-				
-				ModifierProduit.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						valeurHT =remplirHorsTaxe();
-						
-						ChampTotalHT.setText(""+valeurHT);
-						valeurTVA = valeurHT * 0.196;
-						ChampTVA.setText("" + valeurTVA);
-						valeurTTC = valeurTVA+valeurHT;
-						ChampTotalTTC.setText(""+ valeurTTC);
-
-
-					}
-				});
-				
-				SupprimerProduit.addActionListener(new ActionListener() {
-					
-					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
-
-						new test();
-					}
-				});
-				
-				CaretListener careupdatenew = new CaretListener() {
-					public void caretUpdate(javax.swing.event.CaretEvent e) {
-						
-						/*JTextField text = (JTextField)e.getSource();
-						System.out.println(text.getText());*/
-						String aString = ChampTotalHT.getText();
-						valeurHT = Integer.parseInt(aString);
-
-						valeurTVA = valeurHT * 0.196;
-						ChampTVA.setText("" + valeurTVA);
-						valeurTTC = valeurTVA+valeurHT;
-						ChampTotalTTC.setText(""+ valeurTTC);
-
-					}
-				};
-				
-
-				ChampTotalHT.addCaretListener(careupdatenew);
-				Annuler.addActionListener(frame -> System.exit(0)); // quand bouton annuler appuy� action
-			    Valider.addActionListener(frame -> Envoyer()); // quand bouton envoy� action
-
-   	 }
-   	 
-   	void Envoyer(){
-   	}
-   	
-
-	 
+			listeLignesCommande.remove(tableau.getSelectedRow());
+			 maj();
+			 this.setBtnEnabled(false);
+		 }
+	}
+	
+	
+	/**
+	 * Méthode qui modifie la quantité d'une ligne de commande.
+	 */
+	private void modifierLigne(){
+		SpinnerNumberModel sModel = new SpinnerNumberModel(1, 1, 999, 1);
+		JSpinner spinner = new JSpinner(sModel);
+		
+		if(JOptionPane.showOptionDialog(null, spinner, "Entrez une nouvelle quantité", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null) == JOptionPane.OK_OPTION){
+			
+			try {
+				Connection cn = DatabaseConnection.getCon();
+				PreparedStatement pst = cn.prepareStatement("UPDATE LignesCommandeFournisseur SET quantite = ? WHERE refCommande = ? AND refProduit = ? AND quantite = ?");
+				pst.setInt(1, (Integer) spinner.getValue());
+				pst.setString(2, this.commande.getRefCommande());
+				pst.setString(3, listeLignesCommande.get(tableau.getSelectedRow()).getRefProduit());
+				pst.setInt(4, listeLignesCommande.get(tableau.getSelectedRow()).getQte());
+				pst.executeQuery();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			listeLignesCommande.get(tableau.getSelectedRow()).setQte((Integer) spinner.getValue());
+			maj();
+		}
+	}
 }
-
-
