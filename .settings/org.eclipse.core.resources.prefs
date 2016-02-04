@@ -2,6 +2,7 @@ eclipse.preferences.version=1
 encoding//src/achat/modeles/Fournisseur.java=UTF-8
 encoding//src/achat/modeles/UneditableTableModel.java=UTF-8
 encoding//src/achat/vues/PanelFournisseur.java=UTF-8
+encoding//src/achat/vues/PanelCommande.java=UTF-8
 encoding//src/achat/vues/popup/PopupAjoutFournisseur.java=UTF-8
 encoding//src/achat/vues/popup/PopupCommande.java=UTF-8
 encoding//src/achat/vues/popup/PopupModifFournisseur.java=UTF-8
