@@ -31,8 +31,6 @@ import achat.modeles.Fournisseur;
 import achat.vues.PanelFournisseur;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
-import production.AjouterProduits;
-import production.ModifierProduits;
 import vente.ModifierClients;
 
 public class PanelClient extends JPanel{
@@ -135,7 +133,7 @@ public class PanelClient extends JPanel{
 		        ListSelectionModel selection = (ListSelectionModel) e.getSource();
 		        clientChoisi = selection.getMinSelectionIndex();
 		        
-		        //Désactiver certains boutons si on ne selectionne aucune ligne
+		        //Dï¿½sactiver certains boutons si on ne selectionne aucune ligne
 		        bt_modifier.setEnabled(!selection.isSelectionEmpty());
 		        bt_supprimer.setEnabled(!selection.isSelectionEmpty());
 		    }
@@ -194,7 +192,7 @@ public class PanelClient extends JPanel{
 						Integer idClient = Integer.parseInt(id);
 						if (DatabaseConnection.requete("DELETE FROM vente_clients WHERE IDCLIENT = '"+idClient+"'")){
 							modelTableClient.removeRow(tableClient.convertRowIndexToModel(clientChoisi));
-							JOptionPane.showMessageDialog(null, "Client supprimer avec succès.", "Suppression de client", JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(null, "Client supprimer avec succï¿½s.", "Suppression de client", JOptionPane.INFORMATION_MESSAGE);
 						}
 						else{
 							System.out.println("Suppression du client interrompu");
@@ -207,7 +205,7 @@ public class PanelClient extends JPanel{
 		
 	}
 	
-	//replit le tablea client avec la base de données vente_clients
+	//replit le tablea client avec la base de donnï¿½es vente_clients
 	public static void remplirtableClient(){
 		modelTableClient.setDataVector(DatabaseConnection.remplirListeClient(), nomColonnes);
 		tableClient.getRowSorter().toggleSortOrder(0);

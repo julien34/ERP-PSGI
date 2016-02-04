@@ -10,17 +10,21 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
+import production.vue.PanelCategorieProduit;
+import production.vue.PanelCentreDeTravail;
+import production.vue.PanelComposition;
+import production.vue.PanelEmplacement;
+import production.vue.PanelGamme;
+import production.vue.PanelNomenclature;
+import production.vue.PanelOperation;
+import production.vue.PanelProduit;
+import production.vue.PanelUniteDeMesure;
 import achat.vues.PanelCategorie;
 import achat.vues.PanelCommande;
 import achat.vues.PanelFournisseur;
 import components.ButtonTabComponent;
 import jdbc.DatabaseConnection;
 import jdbc.FenetreConnexion;
-//import production.PanelCategories;
-import production.PanelGamme;
-import production.PanelOperation;
-import production.PanelProduits;
-import production.PanelRecherche;
 import vente.FenetreVente;
 import vente.PanelClient;
 import vente.PanelCommandes;
@@ -37,38 +41,43 @@ public class FenetrePrincipale extends JFrame
     //Boutons de menu
     	//Base de données
         JMenu menuBdd = new JMenu("Base de données");
-        JMenuItem menuBddConnexion = new JMenuItem("Connexion");
-        JMenuItem menuBddDeconnexion = new JMenuItem("Deconnexion");
+        static JMenuItem menuBddConnexion = new JMenuItem("Connexion");
+        static JMenuItem menuBddDeconnexion = new JMenuItem("Deconnexion");
     
         //Achats
-        JMenu menuAchats = new JMenu("Achats");//Menu achat de la barre
+        static JMenu menuAchats = new JMenu("Achats");//Menu achat de la barre
         JMenu menuAchatFournisseur = new JMenu("Fournisseurs");//Sous menu fournisseurs
-        JMenuItem menuAchatAjoutFournisseur = new JMenuItem("Fournisseurs");//Item ajouter un fournisseur
-        JMenuItem menuAchatAjoutCategorie = new JMenuItem("Catégories");//Item ajouter une catégorie de fournisseurs
-        JMenuItem menuAchatCommande = new JMenuItem("Commandes");//Item commande
+        static JMenuItem menuAchatAjoutFournisseur = new JMenuItem("Fournisseurs");//Item ajouter un fournisseur
+        static JMenuItem menuAchatAjoutCategorie = new JMenuItem("Catégories");//Item ajouter une catégorie de fournisseurs
+        static JMenuItem menuAchatCommande = new JMenuItem("Commandes");//Item commande
         
-        //Ventes
-        JMenu menuVentes = new JMenu("Ventes");
+         //Ventes
+        static JMenu menuVentes = new JMenu("Ventes");
        // JMenuItem menuVentesFenetreVente = new JMenuItem("Fenetre de vente");
-        JMenuItem menuCommandes = new JMenuItem("Commandes");
+        static JMenuItem menuCommandes = new JMenuItem("Commandes");
         
 
         
         //sous menu entreprise , client
         
         
-        JMenuItem menuVentesClients = new JMenuItem("Interface de clients");
-        JMenuItem menuVentesDevis = new JMenuItem("Interface de devis");
+        static JMenuItem menuVentesClients = new JMenuItem("Interface de clients");
+        static JMenuItem menuVentesDevis = new JMenuItem("Interface de devis");
         	        
         //Production
-        JMenu menuProduction = new JMenu("Production");
-        JMenuItem menuProductionProduits = new JMenuItem("Gérer les produits");
-        JMenuItem menuProductionCategories = new JMenuItem("G\u00e9rer les categories");
-        JMenuItem menuProductionOperation = new JMenuItem("G\u00e9rer les operations");
-        JMenuItem menuProductionGamme = new JMenuItem("G\u00e9rer les gammes");
-        JMenuItem menuRechercheProduits = new JMenuItem("Rechercher produits");
+        private static JMenu menu_production = new JMenu("Production");
+        private JMenuItem menu_production_produit = new JMenuItem("Gérer les produits");
+        private JMenuItem menu_production_categorie = new JMenuItem("Gérer les categories");
+        private JMenuItem menu_production_operation = new JMenuItem("Gérer les operations");
+        private JMenuItem menu_production_gamme = new JMenuItem("Gérer les gammes");
+        private JMenuItem menu_production_centre_de_travail = new JMenuItem("Gérer les centres");
+        private JMenuItem menu_production_composition = new JMenuItem("Gérer les compositions");
+        private JMenuItem menu_production_emplacement = new JMenuItem("Gérer les emplacements");
+        private JMenuItem menu_production_nomenclature = new JMenuItem("Gérer les nomenclatures");
+        private JMenuItem menu_production_unite_de_mesure = new JMenuItem("Gérer les unite de mesure");
+        
     //Onglets
-    private JTabbedPane onglets = new JTabbedPane();
+    private static JTabbedPane onglets = new JTabbedPane();
    	
    	//Achat
    	private static PanelFournisseur panelFournisseur = null;
@@ -83,11 +92,15 @@ public class FenetrePrincipale extends JFrame
    	private static PanelCommandes panelCommandes;
    	
    	//Production
-   	private static PanelProduits panelProduits;
-    //private static PanelCategories panelCategories;
-    private static PanelOperation panelOperation;
-    private static PanelGamme panelGamme;
-    private static  PanelRecherche panelRecherche;
+   	private PanelProduit panel_produit = new PanelProduit();
+    private static PanelCategorieProduit panel_categorie_produit = new PanelCategorieProduit();
+    private static PanelOperation panel_operation = new PanelOperation();
+    private static PanelGamme panel_gamme = new PanelGamme();
+    private static PanelCentreDeTravail panel_centre_de_travail = new PanelCentreDeTravail();
+    private static PanelComposition panel_composition = new PanelComposition();
+    private static PanelEmplacement panel_emplacement = new PanelEmplacement();
+    private static PanelNomenclature panel_nomenclature = new PanelNomenclature();
+    private static PanelUniteDeMesure panel_unite_de_mesure = new PanelUniteDeMesure();
     
    	public FenetrePrincipale()
    	{
@@ -131,18 +144,22 @@ public class FenetrePrincipale extends JFrame
 				menuVentes.add(menuCommandes);
 
 	        //Production
-				menu.add(menuProduction);
-				menuProduction.add(menuProductionProduits);
-		        menuProduction.add(menuProductionCategories);
-		        menuProduction.add(menuProductionOperation);
-		        menuProduction.add(menuProductionGamme);
-		        menuProduction.add(menuRechercheProduits);
+				menu.add(menu_production);
+				menu_production.add(menu_production_produit);
+		        menu_production.add(menu_production_categorie);
+		        menu_production.add(menu_production_operation);
+		        menu_production.add(menu_production_gamme);
+		        menu_production.add(menu_production_centre_de_travail);
+		        menu_production.add(menu_production_composition);
+		        menu_production.add(menu_production_emplacement);
+		        menu_production.add(menu_production_nomenclature);
+		        menu_production.add(menu_production_unite_de_mesure);
 		        
 		        
    		setJMenuBar(menu);
    		menuAchats.setEnabled(false);
    		menuVentes.setEnabled(false);
-   		menuProduction.setEnabled(false);
+   		menu_production.setEnabled(false);
    		menuBddDeconnexion.setEnabled(false);
    		
    		//Ajouter les onglets
@@ -156,12 +173,6 @@ public class FenetrePrincipale extends JFrame
 	   		panelClient = new PanelClient(framePrincipale);
 	   		InterfaceDevis = new InterfaceDevis(framePrincipale);
 	   		panelCommandes = new PanelCommandes(framePrincipale);
-	   		//Production
-	   		panelProduits = new PanelProduits();
-	        //panelCategories = new PanelCategories();
-	        panelOperation = new PanelOperation();
-	        panelGamme = new PanelGamme();
-	        panelRecherche = new PanelRecherche();
    	}
    	
    	public void initHandlers()
@@ -268,47 +279,79 @@ public class FenetrePrincipale extends JFrame
 	   		
 	   		
 	   		//Production
-	   		menuProductionProduits.addActionListener(new ActionListener()
+	   	//Production
+	   		menu_production_produit.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
-	   				ajouterOnglet("Gérer les produits",panelProduits);
-	   				panelProduits.fillTable();
+	   				ajouterOnglet("Gérer les produits",panel_produit);
+	   				panel_produit.raffraichirTable();
+	   			}
+	   		});
+	   		menu_production_categorie.addActionListener(new ActionListener()
+	   		{
+	   			public void actionPerformed(ActionEvent e)
+	   			{
+	   				ajouterOnglet("Gérer les categories", panel_categorie_produit);
+	   				panel_categorie_produit.raffraichirTable();
 	   			}
 	   		});	
-	   		
-//	   	 this.menuProductionCategories.addActionListener(new ActionListener(){
-//
-//	            @Override
-//	            public void actionPerformed(ActionEvent e2) {
-//	                FenetrePrincipale.this.ajouterOnglet("G\u00e9rer les categories", panelCategories);
-//	                panelCategories.fillTable();
-//	            }
-//	        });
-	        this.menuProductionOperation.addActionListener(new ActionListener(){
-
-	            @Override
-	            public void actionPerformed(ActionEvent e2) {
-	                FenetrePrincipale.this.ajouterOnglet("G\u00e9rer les operations", panelOperation);
-	                panelOperation.fillTable();
+	        menu_production_operation.addActionListener(new ActionListener()
+	        {
+	            public void actionPerformed(ActionEvent e) 
+	            {
+	   				ajouterOnglet("Gérer les opérations", panel_operation);
+	   				panel_operation.raffraichirTable();
 	            }
 	        });
-	        this.menuProductionGamme.addActionListener(new ActionListener(){
-
-	            @Override
-	            public void actionPerformed(ActionEvent e2) {
-	                FenetrePrincipale.this.ajouterOnglet("G\u00e9rer les gammes", panelGamme);
-	                panelGamme.fillTable();
+	        menu_production_gamme.addActionListener(new ActionListener()
+	        {
+	            public void actionPerformed(ActionEvent e) 
+	            {
+	   				ajouterOnglet("Gérer les gammes", panel_gamme);
+	   				panel_gamme.raffraichirTable();
 	            }
 	        });
-	        
-	        menuRechercheProduits.addActionListener(new ActionListener()
-				{
-				public void actionPerformed(ActionEvent e){
-					ajouterOnglet("Recherche Produits",panelRecherche);
-					panelRecherche.fillTable();
-				}
-			});
+	        menu_production_centre_de_travail.addActionListener(new ActionListener()
+	        {
+	            public void actionPerformed(ActionEvent e) 
+	            {
+	            	ajouterOnglet("Gérer les centres de travail", panel_centre_de_travail);
+	                panel_centre_de_travail.raffraichirTable();
+	            }
+	        });
+	        menu_production_composition.addActionListener(new ActionListener()
+	        {
+	            public void actionPerformed(ActionEvent e) 
+	            {
+	            	ajouterOnglet("Gérer les compositions", panel_composition);
+	                panel_composition.raffraichirTable();
+	            }
+	        });
+	        menu_production_emplacement.addActionListener(new ActionListener()
+	        {
+	            public void actionPerformed(ActionEvent e) 
+	            {
+	                ajouterOnglet("Gérer les emplacements", panel_emplacement);
+	                panel_emplacement.raffraichirTable();
+	            }
+	        });
+	        menu_production_nomenclature.addActionListener(new ActionListener()
+	        {
+	            public void actionPerformed(ActionEvent e) 
+	            {
+	                ajouterOnglet("Gérer les nomenclatures", panel_nomenclature);
+	                panel_nomenclature.raffraichirTable();
+	            }
+	        });
+	        menu_production_unite_de_mesure.addActionListener(new ActionListener()
+	        {
+	            public void actionPerformed(ActionEvent e) 
+	            {
+	            	ajouterOnglet("Gérer les unites de mesure", panel_unite_de_mesure);
+	                panel_unite_de_mesure.raffraichirTable();
+	            }
+	        });
    	}
    	
    	private void ajouterOnglet(String name, JPanel panel)
@@ -321,24 +364,6 @@ public class FenetrePrincipale extends JFrame
 	   	    onglets.setSelectedIndex(i);
 		}
 	}
-   	
-   	public static PanelProduits getPanelProduits()
-   	{
-   		return panelProduits;
-   	}
-   	
-//    public static PanelCategories getPanelCategories() {
-//        return panelCategories;
-//    }
-
-    public static PanelOperation getPanelOperation() {
-        return panelOperation;
-    }
-
-    public static PanelGamme getPanelGamme() {
-        return panelGamme;
-    }
-
    	
    	public static PanelClient getPanelClient(){
 		return panelClient;
@@ -355,16 +380,16 @@ public class FenetrePrincipale extends JFrame
 		menuBddConnexion.setEnabled(false);
    		menuAchats.setEnabled(true);
    		menuVentes.setEnabled(true);
-   		menuProduction.setEnabled(true);
+   		menu_production.setEnabled(true);
    		menuBddDeconnexion.setEnabled(true);
 	}
 
-	public void connexionClosed()
+	public static void connexionClosed()
 	{
 		menuBddConnexion.setEnabled(true);
    		menuAchats.setEnabled(false);
    		menuVentes.setEnabled(false);
-   		menuProduction.setEnabled(false);
+   		menu_production.setEnabled(false);
    		menuBddDeconnexion.setEnabled(false);
    		onglets.removeAll();
 	}
