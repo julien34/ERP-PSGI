@@ -3,6 +3,7 @@ encoding//src/achat/modeles/Fournisseur.java=UTF-8
 encoding//src/achat/modeles/UneditableTableModel.java=UTF-8
 encoding//src/achat/vues/PanelFournisseur.java=UTF-8
 encoding//src/achat/vues/popup/PopupAjoutFournisseur.java=UTF-8
+encoding//src/achat/vues/popup/PopupCommande.java=UTF-8
 encoding//src/achat/vues/popup/PopupModifFournisseur.java=UTF-8
 encoding//src/components/ButtonTabComponent.java=UTF-8
 encoding//src/jdbc/DatabaseConnection.java=UTF-8
