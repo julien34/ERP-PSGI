@@ -27,8 +27,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 
 import jdbc.DatabaseConnection;
 
