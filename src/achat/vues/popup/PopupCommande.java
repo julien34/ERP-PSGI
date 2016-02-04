@@ -46,7 +46,7 @@ public class PopupCommande extends JDialog {
 	private CommandesFournisseur commande;
 	private static ArrayList<LignesCommande> listeLignesCommande = new ArrayList<LignesCommande>();
 	private static Object[][] tabLignesCo;
-	private static Object[] titres = {"Code","Description","Catégorie","Prix HT","Qté","Total HT"};
+	private static Object[] titres = {"Code","Description","Catï¿½gorie","Prix HT","Qtï¿½","Total HT"};
 	
 	private JLabel lblMontantTotalHt, lblMontantRemise, lblMontantTva, lblMontantTtc;
 	private static JLabel lblFournisseurCode;
@@ -56,18 +56,18 @@ public class PopupCommande extends JDialog {
 	private Choice chTauxTva, chPaiement;
 	private PopupCommandeSelectFournisseur fenetreSelectFn;
 		
-	//On créer la JTable et son modèle
+	//On crï¿½er la JTable et son modï¿½le
 	private static UneditableTableModel modele = new UneditableTableModel(0,5);
 	private static JTable tableau = new JTable(modele);
 	private JScrollPane scrollPane;
 	
 	
 	/**
-	 * Constructeur vide. Créer une nouvelle commande.
+	 * Constructeur vide. Crï¿½er une nouvelle commande.
 	 */
 	public PopupCommande(){
 		listeLignesCommande.clear();
-		maj();//On mets à jour pour éviter que la table ne se remplisse avec les produits de la dernière commande
+		maj();//On mets ï¿½ jour pour ï¿½viter que la table ne se remplisse avec les produits de la derniï¿½re commande
 		this.initFenetre();
 		this.initElements();
 		this.initEcouteurs();
@@ -78,8 +78,8 @@ public class PopupCommande extends JDialog {
 	
 	
 	/**
-	 * Constructeur avec en paramètre une commande de type CommandesFournisseur. Modifie une commande existante.
-	 * @param cmd, une commande de type CommandesFournisseur. Modifie la commande passée en paramètre.
+	 * Constructeur avec en paramï¿½tre une commande de type CommandesFournisseur. Modifie une commande existante.
+	 * @param cmd, une commande de type CommandesFournisseur. Modifie la commande passï¿½e en paramï¿½tre.
 	 */
 	public PopupCommande(CommandesFournisseur cmd){
 		listeLignesCommande.clear();
@@ -94,16 +94,16 @@ public class PopupCommande extends JDialog {
 	
 	
 	/**
-	 * Méthode qui initie la fenetre popup.
+	 * Mï¿½thode qui initie la fenetre popup.
 	 */
 	private void initFenetre(){
 		
-		//On donne un titre selon la provenance du clic (si cmd en paramètre alors modification)
+		//On donne un titre selon la provenance du clic (si cmd en paramï¿½tre alors modification)
 		if(this.commande == null){
 			this.setTitle("Nouvelle commande d'achat");
 		}
 		else {
-			this.setTitle("Modification de la commande d'achat n°"+this.commande.getRefCommande()+" du "+this.commande.getDate());
+			this.setTitle("Modification de la commande d'achat nï¿½"+this.commande.getRefCommande()+" du "+this.commande.getDate());
 		}
 		
 		this.setSize(850, 650);
@@ -116,11 +116,11 @@ public class PopupCommande extends JDialog {
 	
 	
 	/**
-	 * Méthode qui initialise l'ensemble de tous les panels et composants de la fenetre.
+	 * Mï¿½thode qui initialise l'ensemble de tous les panels et composants de la fenetre.
 	 */
 	private void initElements(){
 		
-		//On défini le fournisseur s'il est présent dans la commande si non vide
+		//On dï¿½fini le fournisseur s'il est prï¿½sent dans la commande si non vide
 		if(this.commande == null || this.commande.getRefFournisseur() == null){
 			fournisseur = new Fournisseur();
 		}
@@ -128,17 +128,17 @@ public class PopupCommande extends JDialog {
 			fournisseur = new Fournisseur(this.commande.getRefFournisseur(), this.commande.getNomFourniseur());
 		}
 		
-		//On créer les différents panels du haut
-		this.setLayout(new GridLayout(2, 1));//On défini la popup avec un layout en grid
+		//On crï¿½er les diffï¿½rents panels du haut
+		this.setLayout(new GridLayout(2, 1));//On dï¿½fini la popup avec un layout en grid
 
 		JPanel panelGrille = new JPanel(new BorderLayout());//Panel du haut
 		JPanel panelGrilleNord = new JPanel();
 		JPanel panelGrilleCentre = new JPanel();
 		JPanel panelGrilleSud = new JPanel();
 		
-		//On créer et ajoute les composants du panelGrilleNord
+		//On crï¿½er et ajoute les composants du panelGrilleNord
 		JLabel lblFournisseur = new JLabel("Fournisseur (code) : ");
-		lblFournisseurCode = new JLabel("Aucun fournisseur sélectionné");
+		lblFournisseurCode = new JLabel("Aucun fournisseur sï¿½lectionnï¿½");
 		this.btnRechercher = new JButton("Rechercher");
 		JLabel lblDate = new JLabel("Date : ");
 		this.jdcDate = new JDateChooser();
@@ -150,7 +150,7 @@ public class PopupCommande extends JDialog {
 		panelGrilleNord.add(lblDate);
 		panelGrilleNord.add(jdcDate);
 		
-		//On créer et on ajoute les composants du panelGrilleCentre
+		//On crï¿½er et on ajoute les composants du panelGrilleCentre
 		modele.setDataVector(tabLignesCo,titres);
 		tableau = new JTable(modele);
 		tableau.setAutoCreateRowSorter(false);
@@ -159,7 +159,7 @@ public class PopupCommande extends JDialog {
 		this.scrollPane = new JScrollPane(tableau);
 		panelGrilleCentre.add(scrollPane);
 		
-		//On créer et on ajout les composants du panelGrilleSud
+		//On crï¿½er et on ajout les composants du panelGrilleSud
 		this.btnAjouter = new JButton("Ajouter");
 		this.btnModifier = new JButton("Modifier");
 		this.btnSupprimer = new JButton("Supprimer");
@@ -171,7 +171,7 @@ public class PopupCommande extends JDialog {
 		panelGrilleSud.add(this.btnCalculerTotal);
 		
 		
-		//On créer les différents panels du bas
+		//On crï¿½er les diffï¿½rents panels du bas
 		JPanel panelParametrage = new JPanel(new GridLayout(2,1));//panel du bas
 		JPanel panelParametrageCentre = new JPanel(new GridLayout(1,2));
 		JPanel panelParametrageCentreGauche = new JPanel(new GridLayout(4,1));
@@ -197,8 +197,8 @@ public class PopupCommande extends JDialog {
 		this.jdcDateLivr = new JDateChooser();
 		JLabel lblPaiement = new JLabel("Type de paiement : ");
 		this.chPaiement = new Choice();
-		chPaiement.add("Chèque");
-		chPaiement.add("Espèces");
+		chPaiement.add("Chï¿½que");
+		chPaiement.add("Espï¿½ces");
 		chPaiement.add("Virement");
 		
 		gauche1.add(lblTauxTva);
@@ -245,13 +245,13 @@ public class PopupCommande extends JDialog {
 		panelParametrageCentre.add(panelParametrageCentreDroite);
 		
 		
-		//On créer et ajoute les composants du panelParametrageSud
+		//On crï¿½er et ajoute les composants du panelParametrageSud
 		this.btnValider = new JButton("Valider");
 		this.btnAnnuler = new JButton("Annuler");
 		panelParametrageSud.add(btnValider);
 		panelParametrageSud.add(btnAnnuler);
 		
-		//On ajoute les composants à  leur panel respectifs
+		//On ajoute les composants ï¿½ leur panel respectifs
 		panelGrille.add(panelGrilleNord, BorderLayout.NORTH);
 		panelGrille.add(panelGrilleCentre, BorderLayout.CENTER);
 		panelGrille.add(panelGrilleSud, BorderLayout.SOUTH);
@@ -259,14 +259,14 @@ public class PopupCommande extends JDialog {
 		panelParametrage.add(panelParametrageCentre);
 		panelParametrage.add(panelParametrageSud);
 		
-		//On ajoute les panels à la fenêtre
+		//On ajoute les panels ï¿½ la fenï¿½tre
 		this.add(panelGrille);
 		this.add(panelParametrage);
 	}
 	
 	
 	/**
-	 * Méthode qui remplit le tableau avec les données présentes dans l'arrayList.
+	 * Mï¿½thode qui remplit le tableau avec les donnï¿½es prï¿½sentes dans l'arrayList.
 	 */
 	public static void maj(){
 		int nouvelleLongueur = listeLignesCommande.size();
@@ -276,9 +276,9 @@ public class PopupCommande extends JDialog {
 			tabLignesCo[listeLignesCommande.indexOf(lc)][0] = lc.getRefProduit();
 			tabLignesCo[listeLignesCommande.indexOf(lc)][1] = lc.getNomproduit();
 			tabLignesCo[listeLignesCommande.indexOf(lc)][2] = lc.getCategorieProduit();
-			tabLignesCo[listeLignesCommande.indexOf(lc)][3] = lc.getpHT()+"€";
+			tabLignesCo[listeLignesCommande.indexOf(lc)][3] = lc.getpHT()+"ï¿½";
 			tabLignesCo[listeLignesCommande.indexOf(lc)][4] = lc.getQte();
-			tabLignesCo[listeLignesCommande.indexOf(lc)][5] = lc.getTotal()+"€";
+			tabLignesCo[listeLignesCommande.indexOf(lc)][5] = lc.getTotal()+"ï¿½";
 		}
 		
 		modele.setDataVector(tabLignesCo, titres);
@@ -286,7 +286,7 @@ public class PopupCommande extends JDialog {
 	
 	
 	/**
-	 * Méthode qui initialise les écouteurs.
+	 * Mï¿½thode qui initialise les ï¿½couteurs.
 	 */
 	private void initEcouteurs(){
 		
@@ -329,7 +329,7 @@ public class PopupCommande extends JDialog {
 		});
 		
 		
-		//Bouton pour modifier la quantité d'une ligne de commande
+		//Bouton pour modifier la quantitï¿½ d'une ligne de commande
 		btnModifier.addActionListener(new ActionListener() {
 			
 			@Override
@@ -370,19 +370,19 @@ public class PopupCommande extends JDialog {
 	
 	
 	/**
-	 * Méthode qui récupère l'ensemble des produits qui sont dans la commande.
+	 * Mï¿½thode qui rï¿½cupï¿½re l'ensemble des produits qui sont dans la commande.
 	 */
 	private void getProduitsCommande(){
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT * FROM LignesCommandeFournisseur lc JOIN Produit p ON p.code = lc.refProduit JOIN Categorie c ON c.code = p.categorie WHERE refCommande = ?");
+			PreparedStatement pst = cn.prepareStatement("SELECT p.code, p.nom, c.nom AS nomCategorie, p.prixAchat, lc.quantite FROM LignesCommandeFournisseur lc JOIN Produit p ON p.code = lc.refProduit JOIN Categorie c ON c.code = p.categorie WHERE refCommande = ?");
 			pst.setString(1, PopupCommande.this.commande.getRefCommande());
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
-				String refProduit = rs.getString("refProduit");
-				String nomProduit = rs.getString("produit.nom");
-				String categorieProduit = rs.getString("Categorie.nom");
+				String refProduit = rs.getString("code");
+				String nomProduit = rs.getString("nom");
+				String categorieProduit = rs.getString("nomCategorie");
 				double pHT = rs.getDouble("prixAchat");
 				int qte = rs.getInt("quantite");
 				double total = pHT*qte;
@@ -399,13 +399,13 @@ public class PopupCommande extends JDialog {
 	
 	
 	/**
-	 * Méthode qui remplit les différents label avec les caractéristiques de la commande.
+	 * Mï¿½thode qui remplit les diffï¿½rents label avec les caractï¿½ristiques de la commande.
 	 */
 	private void preRemplir(){
 		
 		//On remplit le nom du fournisseur
 		if(fournisseur.getRef().equals("")){
-			lblFournisseurCode.setText("Sélectionner un founisseur");
+			lblFournisseurCode.setText("Sï¿½lectionner un founisseur");
 		}
 		else{
 			lblFournisseurCode.setText(fournisseur.getNom()+" ("+fournisseur.getRef()+")");
@@ -414,7 +414,7 @@ public class PopupCommande extends JDialog {
 		//On remplit la date
 		this.jdcDate.setDate(this.commande.getDate());
 		
-		//On selectionne de base le montant de TVA approprié à la commande (si non 0%)
+		//On selectionne de base le montant de TVA appropriï¿½ ï¿½ la commande (si non 0%)
 		if(this.commande.getTauxTva() != null){
 			this.chTauxTva.select(String.valueOf(this.commande.getTauxTva()));
 		}
@@ -440,7 +440,7 @@ public class PopupCommande extends JDialog {
 	
 	
 	/**
-	 * Méthode qui calcule le total de la commande.
+	 * Mï¿½thode qui calcule le total de la commande.
 	 */
 	private void calculerTotal(){
 		
@@ -449,38 +449,38 @@ public class PopupCommande extends JDialog {
 		for(LignesCommande lc : listeLignesCommande){
 			total += lc.getTotal();
 		}
-		this.lblMontantTotalHt.setText(total+"€");
+		this.lblMontantTotalHt.setText(total+"ï¿½");
 		
 		//On calcule la remise par rapport au total
 
 		 Double remise = (Double) this.txtRemise.getValue()/100;
 		 remise *= total;
 		
-		this.lblMontantRemise.setText("-"+String.valueOf(remise)+"€");
+		this.lblMontantRemise.setText("-"+String.valueOf(remise)+"ï¿½");
 		
 		//On calcule le montant de la TVA par rapport au taux
 		double montantTva = 0;
 		montantTva = (Double.valueOf(this.chTauxTva.getSelectedItem())/100)*(total-remise);
-		this.lblMontantTva.setText(String.valueOf(montantTva)+"€");
+		this.lblMontantTva.setText(String.valueOf(montantTva)+"ï¿½");
 		
-		this.lblMontantTtc.setText(String.valueOf(total-remise+montantTva)+"€");
+		this.lblMontantTtc.setText(String.valueOf(total-remise+montantTva)+"ï¿½");
 	}
 	
 	
 	/**
-	 * Méthode qui ajoute dans la base de donnée une nouvelle commande (vide).
+	 * Mï¿½thode qui ajoute dans la base de donnï¿½e une nouvelle commande (vide).
 	 */
 	private void ajouterCommande(CommandesFournisseur c){
 		
-		//On vérifie si la commande est dans l'arraylist des commandes
+		//On vï¿½rifie si la commande est dans l'arraylist des commandes
 		if(PanelCommande.getListeCommande().contains(c)){
 			
 			if(this.commande.getTauxTva() == null){
-				this.chTauxTva.select("0.0");//TVA à 0 si vide
+				this.chTauxTva.select("0.0");//TVA ï¿½ 0 si vide
 			}
 			
 			if(this.jdcDateLivr.getDate() == null || this.jdcDateLivr.getDate().before(this.jdcDate.getDate())){
-				this.jdcDateLivr.setDate(this.commande.getDate());//Date de livraison = date de création si vide ou antérieur à la création
+				this.jdcDateLivr.setDate(this.commande.getDate());//Date de livraison = date de crï¿½ation si vide ou antï¿½rieur ï¿½ la crï¿½ation
 			}
 			
 			this.calculerTotal();//On calcule el total de la commande
@@ -502,7 +502,7 @@ public class PopupCommande extends JDialog {
 			}
 		}
 		
-		//Si non on la créer
+		//Si non on la crï¿½er
 		else {
 			
 			this.calculerTotal();//On calcule el total de la commande
@@ -541,8 +541,8 @@ public class PopupCommande extends JDialog {
 	
 	
 	/**
-	 * Méthode qui change le fournisseur avec celui sélectionné dans la liste.
-	 * @param f, le Fournisseur à changer.
+	 * Mï¿½thode qui change le fournisseur avec celui sï¿½lectionnï¿½ dans la liste.
+	 * @param f, le Fournisseur ï¿½ changer.
 	 */
 	public static void setFournisseur(Fournisseur f){
 		lblFournisseurCode.setText(f.getNom()+" ("+f.getRef()+")");
@@ -551,8 +551,8 @@ public class PopupCommande extends JDialog {
 	
 	
 	/**
-	 * Métode qui rajoute à la commande un produit avec une quantité.
-	 * @param lc, une ligne de commande à ajouter à la ommande.
+	 * Mï¿½tode qui rajoute ï¿½ la commande un produit avec une quantitï¿½.
+	 * @param lc, une ligne de commande ï¿½ ajouter ï¿½ la ommande.
 	 */
 	public static void addArrayListLigneCommande(LignesCommande lc){
 		listeLignesCommande.add(lc);
@@ -560,7 +560,7 @@ public class PopupCommande extends JDialog {
 	
 	
 	/**
-	 * Méthode qui permet de griser les boutons modifier et suppriemr (une ligne de commande).
+	 * Mï¿½thode qui permet de griser les boutons modifier et suppriemr (une ligne de commande).
 	 * @param b, un booleen.
 	 */
 	public void setBtnEnabled(Boolean b){
@@ -570,11 +570,11 @@ public class PopupCommande extends JDialog {
 	
 	
 	/**
-	 * Méthode qui permet de supprimer une ligne dans la JTable mais aussi dans la base de donnée.
+	 * Mï¿½thode qui permet de supprimer une ligne dans la JTable mais aussi dans la base de donnï¿½e.
 	 */
 	private void supprimerLigne(){
 		
-		//On regarde la réponse de l'utilisateur
+		//On regarde la rï¿½ponse de l'utilisateur
 		if(JOptionPane.showConfirmDialog(null, "Voulez-vous supprimez cette ligne ?", "Confirmer ?", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
 
 			try {
@@ -596,13 +596,13 @@ public class PopupCommande extends JDialog {
 	
 	
 	/**
-	 * Méthode qui modifie la quantité d'une ligne de commande.
+	 * Mï¿½thode qui modifie la quantitï¿½ d'une ligne de commande.
 	 */
 	private void modifierLigne(){
 		SpinnerNumberModel sModel = new SpinnerNumberModel(1, 1, 999, 1);
 		JSpinner spinner = new JSpinner(sModel);
 		
-		if(JOptionPane.showOptionDialog(null, spinner, "Entrez une nouvelle quantité", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null) == JOptionPane.OK_OPTION){
+		if(JOptionPane.showOptionDialog(null, spinner, "Entrez une nouvelle quantitï¿½", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null) == JOptionPane.OK_OPTION){
 			
 			try {
 				Connection cn = DatabaseConnection.getCon();
