@@ -12,7 +12,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -24,7 +23,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -181,14 +179,14 @@ public class PopupCommandeAjoutLigne extends JDialog{
 		
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT * FROM Produits p JOIN categorie c ON c.codeCategorie = p.categorie WHERE p.achatVente = 'AchatVente' or p.achatVente = 'Achat' ORDER BY p.description");
+			PreparedStatement pst = cn.prepareStatement("SELECT p.code, p.nom, p.prixAchat, p.categorie, c.nom AS nomCategorie FROM Produit p JOIN categorie c ON c.code = p.categorie WHERE p.disponibilite = 'Achat' ORDER BY p.nom");
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
-				String codePdt = rs.getString("codeProduit");
-				String descriptionPdt = rs.getString("description");
+				String codePdt = rs.getString("code");
+				String descriptionPdt = rs.getString("nom");
 				Double prixAchat = rs.getDouble("prixAchat");
-				String codeCategorie = rs.getString("codeCategorie");
+				String codeCategorie = rs.getString("categorie");
 				String nomCategorie = rs.getString("nomCategorie");
 				
 				this.listeProduits.add(new Produit(codePdt, descriptionPdt, prixAchat, codeCategorie, nomCategorie));
@@ -212,12 +210,12 @@ public class PopupCommandeAjoutLigne extends JDialog{
 		
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT * FROM Categorie c ORDER BY c.nomCategorie");
+			PreparedStatement pst = cn.prepareStatement("SELECT * FROM Categorie c ORDER BY c.nom");
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
-				String codeCat = rs.getString("codeCategorie");
-				String nomCat = rs.getString("nomCategorie");
+				String codeCat = rs.getString("code");
+				String nomCat = rs.getString("nom");
 				
 				this.listeCategorie.add(new Categorie(codeCat, nomCat));
 			}
@@ -268,7 +266,7 @@ public class PopupCommandeAjoutLigne extends JDialog{
 		String nomProduit = this.listeProduits.get(this.jListProduit.getSelectedIndex()).getDescription();
 		String categorieProduit = this.listeProduits.get(this.jListProduit.getSelectedIndex()).getNomCat();
 		Double pHT = this.listeProduits.get(this.jListProduit.getSelectedIndex()).getPrix();
-		int qte = this.txtQte.getComponentCount();
+		int qte = (Integer) this.txtQte.getValue();
 		Double total = qte*pHT;
 			
 		//On créer la ligne de commande
@@ -282,7 +280,7 @@ public class PopupCommandeAjoutLigne extends JDialog{
 	private void rechercheProduit(){
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT * FROM Produits p JOIN categorie c ON c.codeCategorie = p.categorie WHERE UPPER(c.codeCategorie) LIKE UPPER(?) AND UPPER(p.description) LIKE UPPER(?) AND p.achatVente = 'AchatVente' or p.achatVente = 'Achat' ORDER BY p.description");
+			PreparedStatement pst = cn.prepareStatement("SELECT p.code, p.nom, p.prixAchat, p.categorie, c.nom AS nomCategorie FROM Produit p JOIN categorie c ON c.code = p.categorie WHERE UPPER(c.code) LIKE UPPER(?) AND UPPER(p.nom) LIKE UPPER(?) AND p.disponibilite = 'Achat' ORDER BY p.nom");
 			
 			//On remet la liste à 0
 			this.listeProduits.clear();
@@ -302,10 +300,10 @@ public class PopupCommandeAjoutLigne extends JDialog{
 			
 			//On boucle sur les résultat pour remplir l'arraylist
 			while(rs.next()){
-				String codePdt = rs.getString("codeProduit");
-				String descriptionPdt = rs.getString("description");
+				String codePdt = rs.getString("code");
+				String descriptionPdt = rs.getString("nom");
 				Double prixAchat = rs.getDouble("prixAchat");
-				String codeCategorie = rs.getString("codeCategorie");
+				String codeCategorie = rs.getString("categorie");
 				String nomCategorie = rs.getString("nomCategorie");
 				
 				this.listeProduits.add(new Produit(codePdt, descriptionPdt, prixAchat, codeCategorie, nomCategorie));

@@ -375,14 +375,14 @@ public class PopupCommande extends JDialog {
 	private void getProduitsCommande(){
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT * FROM LignesCommandeFournisseur lc JOIN Produits p ON p.codeproduit = lc.refProduit JOIN Categorie c ON c.codeCategorie = p.categorie WHERE refCommande = ?");
+			PreparedStatement pst = cn.prepareStatement("SELECT * FROM LignesCommandeFournisseur lc JOIN Produit p ON p.code = lc.refProduit JOIN Categorie c ON c.code = p.categorie WHERE refCommande = ?");
 			pst.setString(1, PopupCommande.this.commande.getRefCommande());
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
 				String refProduit = rs.getString("refProduit");
-				String nomProduit = rs.getString("description");
-				String categorieProduit = rs.getString("nomCategorie");
+				String nomProduit = rs.getString("produit.nom");
+				String categorieProduit = rs.getString("Categorie.nom");
 				double pHT = rs.getDouble("prixAchat");
 				int qte = rs.getInt("quantite");
 				double total = pHT*qte;
