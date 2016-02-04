@@ -298,16 +298,16 @@ public class FenetreVente extends JDialog {
 	 * Méthode qui initialise les écouteurs.
 	 */
 	
-	
-	
+
 	
 	private void initEcouteurs(){
 		
 		//Bouton pour calculer le total de la commande
 		this.btnCalculerTotal.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				
+				calculerTotal();
 			}
 		});
 		
@@ -316,7 +316,7 @@ public class FenetreVente extends JDialog {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				 new AjouterProduitCommande(frame);
+				 new AjouterProduitCommande(null);
 			}
 		});
 
@@ -363,6 +363,8 @@ public class FenetreVente extends JDialog {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				 new VenteSelectionClient();
+
 			}
 		});
 		
