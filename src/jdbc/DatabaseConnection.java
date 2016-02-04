@@ -61,98 +61,10 @@ public class DatabaseConnection
 			System.out.println(e.getMessage());
 			return false;
 		}
-	}
-	
-	
-	  public static Object[][] remplirListeCategorie() {
-	        int longueurTableau = 0;
-	        int indexActuel = 0;
-	        try {
-	            stat = con.createStatement();
-	            ResultSet resultat = stat.executeQuery("SELECT COUNT(*) FROM CATEGORIE");
-	            while (resultat.next()) {
-	                longueurTableau = resultat.getInt("COUNT(*)");
-	            }
-	            resultat.close();
-	            Object[][] databaseData = new Object[longueurTableau][2];
-	            resultat = stat.executeQuery("SELECT * FROM CATEGORIE");
-	            while (resultat.next()) {
-	                databaseData[indexActuel][0] = resultat.getString(2);
-	                databaseData[indexActuel][1] = resultat.getString(3);
-	                ++indexActuel;
-	            }
-	            resultat.close();
-	            stat.close();
-	            return databaseData;
-	        }
-	        catch (SQLException e) {
-	            System.out.println(e.getMessage());
-	            return null;
-	        }
-	    }
-
-	    public static Object[][] remplirListeOperation() {
-	        int longueurTableau = 0;
-	        int indexActuel = 0;
-	        try {
-	            stat = con.createStatement();
-	            ResultSet resultat = stat.executeQuery("SELECT COUNT(*) FROM operations");
-	            while (resultat.next()) {
-	                longueurTableau = resultat.getInt("COUNT(*)");
-	            }
-	            resultat.close();
-	            Object[][] databaseData = new Object[longueurTableau][6];
-	            resultat = stat.executeQuery("SELECT * FROM operations");
-	            while (resultat.next()) {
-	                databaseData[indexActuel][0] = resultat.getString(1);
-	                databaseData[indexActuel][1] = resultat.getString(2);
-	                databaseData[indexActuel][2] = resultat.getString(3);
-	                databaseData[indexActuel][3] = resultat.getString(4);
-	                databaseData[indexActuel][4] = resultat.getString(5);
-	                databaseData[indexActuel][5] = resultat.getString(6);
-	                ++indexActuel;
-	            }
-	            resultat.close();
-	            stat.close();
-	            return databaseData;
-	        }
-	        catch (SQLException e) {
-	            System.out.println(e.getMessage());
-	            return null;
-	        }
-	    }
-
-	    public static Object[][] remplirListeGamme() {
-	        int longueurTableau = 0;
-	        int indexActuel = 0;
-	        try {
-	            stat = con.createStatement();
-	            ResultSet resultat = stat.executeQuery("SELECT COUNT(*) FROM GAMME");
-	            while (resultat.next()) {
-	                longueurTableau = resultat.getInt("COUNT(*)");
-	            }
-	            resultat.close();
-	            Object[][] databaseData = new Object[longueurTableau][3];
-	            resultat = stat.executeQuery("SELECT * FROM GAMME");
-	            while (resultat.next()) {
-	                databaseData[indexActuel][0] = resultat.getString(1);
-	                databaseData[indexActuel][1] = resultat.getString(2);
-	                databaseData[indexActuel][2] = resultat.getString(3);
-	                ++indexActuel;
-	            }
-	            resultat.close();
-	            stat.close();
-	            return databaseData;
-	        }
-	        catch (SQLException e) {
-	            System.out.println(e.getMessage());
-	            return null;
-	        }
-	    }
+	}	
 	
 	/**
-	 * 
-	 * @return Object [][]
+	 * (OBSOLETE) Remplissage de la liste des produits
 	 */
 	static public Object[][] remplirListeProduits()
 	{
@@ -195,6 +107,9 @@ public class DatabaseConnection
 		}
 	}
 	
+	/**
+	 * (OBSOLETE) Determine le code categorie
+	 */
 	public static String determinerCategorie(int categorie_id)
 	{
 		try
@@ -209,118 +124,6 @@ public class DatabaseConnection
 			e.printStackTrace();
 			return "";
 		}
-	}
-	
-	public static int determinerCodeCategorie(String categorie)
-	{
-		try
-		{
-			Statement stat = con.createStatement();
-			ResultSet resultat = stat.executeQuery("SELECT codecategorie FROM categorie where nomcategorie='"+categorie+"'");
-			resultat.next();
-			return resultat.getInt(1);
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-			return -1;
-		}
-	}
-
-	static public Object[][] rechercherNomProduits(String Recherche)
-	{
-		int longueurTableau = 0;
-		int indexActuel = 0;
-			
-		try
-		{
-			PreparedStatement pstat;
-			pstat = con.prepareStatement("SELECT COUNT(*) FROM PRODUITS WHERE UPPER(description) LIKE  UPPER(?) ");
-			pstat.setString(1,Recherche + "%");
-			ResultSet resultat = pstat.executeQuery();
-			while(resultat.next())
-			{
-				longueurTableau = resultat.getInt("COUNT(*)");
-			}
-			
-			Object[][] databaseData = new Object[longueurTableau][7];
-			PreparedStatement pst;
-			
-			pst = con.prepareStatement("SELECT * FROM PRODUITS WHERE UPPER(description) LIKE  UPPER(?) ");
-			pst.setString(1,Recherche + "%");
-			ResultSet rs = pst.executeQuery();
-			while(rs.next())
-			{
-				databaseData[indexActuel][0] = rs.getString(1);
-				databaseData[indexActuel][1] = rs.getString(2);
-				databaseData[indexActuel][2] = rs.getString(3);
-				databaseData[indexActuel][3] = rs.getString(4);
-				databaseData[indexActuel][4] = rs.getString(5);
-				databaseData[indexActuel][5] = rs.getString(6);
-				databaseData[indexActuel][6] = rs.getString(7);
-				indexActuel++;
-			}
-			longueurTableau = 2;
-			rs.close();	
-			resultat.close();
-			stat.close();
-			
-			return databaseData;
-			
-		}catch (SQLException e)
-		{
-			System.out.println(e.getMessage());
-			}
-		return null;
-		
-	}
-	
-	static public Object[][] rechercherCatProduits(String Recherche)
-	{
-		int longueurTableau = 0;
-		int indexActuel = 0;
-			
-		try
-		{
-			PreparedStatement pstat;
-			pstat = con.prepareStatement("SELECT COUNT(*) FROM PRODUITS WHERE UPPER(categorie) LIKE  UPPER(?) ");
-			pstat.setString(1,Recherche + "%");
-			ResultSet resultat = pstat.executeQuery();
-			while(resultat.next())
-			{
-				longueurTableau = resultat.getInt("COUNT(*)");
-			}
-			
-			Object[][] databaseData = new Object[longueurTableau][7];
-			PreparedStatement pst;
-			
-			pst = con.prepareStatement("SELECT * FROM PRODUITS WHERE UPPER(categorie) LIKE  UPPER(?) ");
-			pst.setString(1,Recherche + "%");
-			ResultSet rs = pst.executeQuery();
-			while(rs.next())
-			{
-				databaseData[indexActuel][0] = rs.getString(1);
-				databaseData[indexActuel][1] = rs.getString(2);
-				databaseData[indexActuel][2] = rs.getString(3);
-				databaseData[indexActuel][3] = rs.getString(4);
-				databaseData[indexActuel][4] = rs.getString(5);
-				databaseData[indexActuel][5] = rs.getString(6);
-				databaseData[indexActuel][6] = rs.getString(7);
-				indexActuel++;
-			}
-			longueurTableau = 2;
-			rs.close();	
-			resultat.close();
-			stat.close();
-			
-			return databaseData;
-			
-		}catch (SQLException e)
-		{
-			System.out.println(e.getMessage());
-			}
-		return null;
-		
 	}
 	
 	static public Object[][] remplirListeClient()
@@ -473,160 +276,6 @@ public class DatabaseConnection
 			return null;
 		}
 	}
-
-    public static void getGamme(DefaultComboBoxModel<String> gamme){		
-		try {
-			gamme.removeAllElements();
-            stat = con.createStatement();
-            ResultSet resultat = stat.executeQuery("SELECT nomgamme FROM GAMME");
-            while (resultat.next()) {
-            	gamme.addElement(resultat.getString(1));
-                System.out.println(resultat.getString(1));
-            }
-            stat.close();
-        }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-    
-
-    public static DefaultComboBoxModel<String> getCentre(){
-    	DefaultComboBoxModel<String> modelCentre = new DefaultComboBoxModel<String>();
-    	//JComboBox<String> centreTravail = new JComboBox<String>();
-		
-		try {
-            stat = con.createStatement();
-            ResultSet resultat = stat.executeQuery("SELECT nomcentre FROM centretravail");
-            while (resultat.next()) {
-            	modelCentre.addElement(resultat.getString(1));
-                //centreTravail.addItem(resultat.getString(1));
-                //System.out.println(resultat.getString(1));
-            }
-            stat.close();
-            return modelCentre;
-        }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return modelCentre;
-        }
-    }
-	
-    public static void getCategorieProd(DefaultComboBoxModel<String> parent){		
-		try {
-            parent.addElement("");
-            stat = con.createStatement();
-            ResultSet resultat = stat.executeQuery("SELECT distinct nomcategorie FROM categorie");
-            while (resultat.next()) {
-            	parent.addElement(resultat.getString(1));
-                System.out.println(resultat.getString(1));
-            }
-            stat.close();
-		}
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-	
-    public static void getCentre(DefaultComboBoxModel<String> centre){		
- 		try {
- 			centre.removeAllElements();
-             stat = con.createStatement();
-             ResultSet resultat = stat.executeQuery("SELECT nomcentre FROM centretravail");
-             while (resultat.next()) {
-             	centre.addElement(resultat.getString(1));
-                 System.out.println(resultat.getString(1));
-             }
-             stat.close();
-         }
-         catch (SQLException e) {
-             System.out.println(e.getMessage());
-         }
-     }
-    
-    public static void getEmplacement(DefaultComboBoxModel<String> emplacement){		
- 		try {
- 			emplacement.removeAllElements();
-             stat = con.createStatement();
-             ResultSet resultat = stat.executeQuery("SELECT nomemplacement FROM emplacement");
-             while (resultat.next()) {
-            	 emplacement.addElement(resultat.getString(1));
-                 System.out.println(resultat.getString(1));
-             }
-             stat.close();
-         }
-         catch (SQLException e) {
-             System.out.println(e.getMessage());
-         }
-     }
-    
-    public static String getNomGamme(String value1, String value2) {
-        try {
-            stat = con.createStatement();
-            ResultSet resultat = stat.executeQuery("SELECT nomGamme FROM gamme WHERE codegamme = '" + value1 + "' AND emplacementgamme = '" + value2 + "'");
-            String nomGamme = "";
-            if (resultat.next()) {
-                nomGamme = resultat.getString(1);
-            }
-            stat.close();
-            return nomGamme;
-        }
-        catch (SQLException e) {
-            System.out.println(e.getMessage());
-            return "";
-        }
-    }
-
-    
-	
-	/**
-	 * Methode pour obtenir la cl� primaire de la table produits
-	 */
-	static public int getCodeProduit(String value1,String value2,String value3,String value4,String value5)
-	{
-		try
-		{
-			stat = con.createStatement();
-			ResultSet resultat = stat.executeQuery("SELECT codeProduit FROM produits WHERE description = '"+value1+"' AND categorie = '"+value2+"' AND prixVente = "+Float.parseFloat(value3)+" AND prixAchat = "+Float.parseFloat(value4)+" AND udm = "+Float.parseFloat(value5));
-			
-			int codeProduit = -1;
-			
-			if(resultat.next())
-			codeProduit = resultat.getInt(1);
-			
-			stat.close();
-			
-			return codeProduit;			
-		}
-		catch (SQLException e)
-		{
-			System.out.println(e.getMessage());
-			return -1;
-		}
-	}
-	
-	static public String getCodeClient(String value1,String value2,String value3,String value4,String value5, String value6)
-	{
-		try
-		{
-			stat = con.createStatement();
-			ResultSet resultat = stat.executeQuery("SELECT IDCLIENT FROM vente_clients WHERE NOMCLIENT = '"+value1+"' AND PRENOMCLIENT = '"+value2+"' AND ADRESSECLIENT = "+(value3)+" AND EMAILCLIENT = "+(value4)+" AND TELCLIENT = "+(value5)+"AND CODECATEG = " +(value6));
-			
-			String codeClient = null;
-			
-			if(resultat.next())
-				codeClient = resultat.getString(1);
-			
-			stat.close();
-			
-			return codeClient;			
-		}
-		catch (SQLException e)
-		{
-			System.out.println(e.getMessage());
-			return null;
-		}
-	}
 	
 	/**
 	 * recupere une arraylist pour la comboBox
@@ -654,8 +303,7 @@ public class DatabaseConnection
             System.out.println("Erreur de requ�te : " + queryE);
         } 
         return Array; 
-    }
-	
+    }	
 	
 	/**
 	 * Méthode qui retourne la connection à la base de donnée.
@@ -663,8 +311,7 @@ public class DatabaseConnection
 	 */
 	static public Connection getCon(){
 		return con;
-	}
-	
+	}	
 	
 	/**
 	 * Ferme la connexion au serveur SQL.
