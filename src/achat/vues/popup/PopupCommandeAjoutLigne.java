@@ -1,4 +1,4 @@
-package achat.popup;
+package achat.vues.popup;
 
 import java.awt.BorderLayout;
 import java.awt.Choice;
@@ -29,9 +29,9 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import jdbc.DatabaseConnection;
-import achat.Categorie;
-import achat.LignesCommande;
-import achat.Produit;
+import achat.modeles.Categorie;
+import achat.modeles.LignesCommande;
+import achat.modeles.Produit;
 
 public class PopupCommandeAjoutLigne extends JDialog{
 	private ArrayList<Produit> listeProduits = new ArrayList<Produit>();

@@ -1,4 +1,4 @@
-package achat;
+package achat.modeles;
 
 public class Categorie {
 	private String id, nom, idParent;

@@ -1,4 +1,4 @@
-package achat;
+package achat.modeles;
 
 import java.sql.Date;
 

@@ -1,4 +1,4 @@
-package achat.popup;
+package achat.vues.popup;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -20,7 +20,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 
 import jdbc.DatabaseConnection;
-import achat.Fournisseur;
+import achat.modeles.Fournisseur;
 
 public class PopupCommandeSelectFournisseur extends JFrame{
 	private static Fournisseur fn;

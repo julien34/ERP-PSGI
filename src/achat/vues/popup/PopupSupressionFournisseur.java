@@ -1,4 +1,4 @@
-package achat.popup;
+package achat.vues.popup;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -14,8 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import jdbc.DatabaseConnection;
-import achat.Fournisseur;
-import achat.PanelFournisseur;
+import achat.modeles.Fournisseur;
+import achat.vues.PanelFournisseur;
 
 public class PopupSupressionFournisseur extends JDialog{
 

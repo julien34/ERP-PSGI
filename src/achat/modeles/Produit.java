@@ -1,4 +1,4 @@
-package achat;
+package achat.modeles;
 
 public class Produit {
 	private String code, description, codeCat, nomCat;

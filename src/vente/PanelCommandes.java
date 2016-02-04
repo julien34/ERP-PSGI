@@ -25,9 +25,9 @@ import javax.swing.table.DefaultTableModel;
 
 import com.toedter.calendar.JDateChooser;
 
-import achat.CommandesFournisseur;
-import achat.UneditableTableModel;
-import achat.popup.PopupCommande;
+import achat.modeles.CommandesFournisseur;
+import achat.modeles.UneditableTableModel;
+import achat.vues.popup.PopupCommande;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 

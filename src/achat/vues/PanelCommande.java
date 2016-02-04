@@ -1,16 +1,10 @@
-package achat;
+package achat.vues;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.InputMethodListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -22,7 +16,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
@@ -35,14 +28,11 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-import achat.popup.PopupCommande;
-
-import com.toedter.calendar.JCalendar;
-import com.toedter.calendar.JCalendarBeanInfo;
 import com.toedter.calendar.JDateChooser;
-import com.toedter.calendar.JDayChooser;
-import com.toedter.plaf.JCalendarTheme;
 
+import achat.modeles.CommandesFournisseur;
+import achat.modeles.UneditableTableModel;
+import achat.vues.popup.PopupCommande;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 

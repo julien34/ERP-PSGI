@@ -1,4 +1,4 @@
-package achat;
+package achat.modeles;
 
 public class Fournisseur {
 	String ref, nom, siret, tel, adresse, categorie;

@@ -1,4 +1,4 @@
-package achat;
+package achat.modeles;
 
 public class LignesCommande {
 	private String refProduit, nomproduit, categorieProduit;

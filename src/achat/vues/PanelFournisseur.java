@@ -1,4 +1,4 @@
-package achat;
+package achat.vues;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
@@ -28,9 +27,11 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-import achat.popup.PopupAjoutFournisseur;
-import achat.popup.PopupModifFournisseur;
-import achat.popup.PopupSupressionFournisseur;
+import achat.modeles.Fournisseur;
+import achat.modeles.UneditableTableModel;
+import achat.vues.popup.PopupAjoutFournisseur;
+import achat.vues.popup.PopupModifFournisseur;
+import achat.vues.popup.PopupSupressionFournisseur;
 import principal.FenetrePrincipale;
 import jdbc.DatabaseConnection;
 
@@ -265,9 +266,9 @@ public class PanelFournisseur extends JPanel{
 		//On remplit le tableau d'objet avec les fn de l'arraylist
 		for(Fournisseur fn : liste){
 			tabFn[liste.indexOf(fn)][0] = fn.getNom();
-			tabFn[liste.indexOf(fn)][1] = fn.siret;
-			tabFn[liste.indexOf(fn)][2] = fn.adresse;
-			tabFn[liste.indexOf(fn)][3] = fn.tel;
+			tabFn[liste.indexOf(fn)][1] = fn.getSiret();
+			tabFn[liste.indexOf(fn)][2] = fn.getAdresse();
+			tabFn[liste.indexOf(fn)][3] = fn.getTel();
 			tabFn[liste.indexOf(fn)][4] = fn.getCategorie();
 		}
 		
@@ -293,11 +294,11 @@ public class PanelFournisseur extends JPanel{
 		liste.remove(indice);
 		liste.add(indice,f);
 		
-		tabFn[indice][0] = f.nom;
-		tabFn[indice][1] = f.siret;
-		tabFn[indice][2] = f.tel;
-		tabFn[indice][3] = f.adresse;
-		tabFn[indice][4] = f.categorie;
+		tabFn[indice][0] = f.getNom();
+		tabFn[indice][1] = f.getSiret();
+		tabFn[indice][2] = f.getTel();
+		tabFn[indice][3] = f.getAdresse();
+		tabFn[indice][4] = f.getCategorie();
 		
 		modele.setDataVector(tabFn,titres);
 	}
@@ -315,11 +316,11 @@ public class PanelFournisseur extends JPanel{
 		tabFn = new Object[nouvelleLongueur][5];
 		
 		for(Fournisseur fn : liste){
-			tabFn[liste.indexOf(fn)][0] = fn.nom;
-			tabFn[liste.indexOf(fn)][1] = fn.siret;
-			tabFn[liste.indexOf(fn)][2] = fn.adresse;
-			tabFn[liste.indexOf(fn)][3] = fn.tel;
-			tabFn[liste.indexOf(fn)][4] = fn.categorie;
+			tabFn[liste.indexOf(fn)][0] = fn.getNom();
+			tabFn[liste.indexOf(fn)][1] = fn.getSiret();
+			tabFn[liste.indexOf(fn)][2] = fn.getAdresse();
+			tabFn[liste.indexOf(fn)][3] = fn.getTel();
+			tabFn[liste.indexOf(fn)][4] = fn.getCategorie();
 		}
 		
 		modele.setDataVector(tabFn,titres);
@@ -338,11 +339,11 @@ public class PanelFournisseur extends JPanel{
 		tabFn = new Object[nouvelleLongueur][5];
 		
 		for(Fournisseur fn : liste){
-			tabFn[liste.indexOf(fn)][0] = fn.nom;
-			tabFn[liste.indexOf(fn)][1] = fn.siret;
-			tabFn[liste.indexOf(fn)][2] = fn.adresse;
-			tabFn[liste.indexOf(fn)][3] = fn.tel;
-			tabFn[liste.indexOf(fn)][4] = fn.categorie;
+			tabFn[liste.indexOf(fn)][0] = fn.getNom();
+			tabFn[liste.indexOf(fn)][1] = fn.getSiret();
+			tabFn[liste.indexOf(fn)][2] = fn.getAdresse();
+			tabFn[liste.indexOf(fn)][3] = fn.getTel();
+			tabFn[liste.indexOf(fn)][4] = fn.getCategorie();
 		}
 		
 		modele.setDataVector(tabFn,titres);
@@ -390,11 +391,11 @@ public class PanelFournisseur extends JPanel{
 			tabFn = new Object[liste.size()][5];
 
 			for(Fournisseur fn : liste){
-				tabFn[liste.indexOf(fn)][0] = fn.nom;
-				tabFn[liste.indexOf(fn)][1] = fn.siret;
-				tabFn[liste.indexOf(fn)][2] = fn.adresse;
-				tabFn[liste.indexOf(fn)][3] = fn.tel;
-				tabFn[liste.indexOf(fn)][4] = fn.categorie;
+				tabFn[liste.indexOf(fn)][0] = fn.getNom();
+				tabFn[liste.indexOf(fn)][1] = fn.getSiret();
+				tabFn[liste.indexOf(fn)][2] = fn.getAdresse();
+				tabFn[liste.indexOf(fn)][3] = fn.getTel();
+				tabFn[liste.indexOf(fn)][4] = fn.getCategorie();
 			}
 
 			modele.setDataVector(tabFn,titres);

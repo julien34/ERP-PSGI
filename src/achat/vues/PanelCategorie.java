@@ -1,4 +1,4 @@
-package achat;
+package achat.vues;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -23,9 +23,11 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
-import achat.popup.PopupAjoutCategorie;
-import achat.popup.PopupModifCategorie;
-import achat.popup.PopupSuppressionCategorie;
+import achat.modeles.Categorie;
+import achat.modeles.UneditableTableModel;
+import achat.vues.popup.PopupAjoutCategorie;
+import achat.vues.popup.PopupModifCategorie;
+import achat.vues.popup.PopupSuppressionCategorie;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 

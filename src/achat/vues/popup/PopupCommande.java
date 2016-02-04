@@ -1,4 +1,4 @@
-package achat.popup;
+package achat.vues.popup;
 
 import java.awt.BorderLayout;
 import java.awt.Choice;
@@ -34,11 +34,11 @@ import jdbc.DatabaseConnection;
 
 import com.toedter.calendar.JDateChooser;
 
-import achat.CommandesFournisseur;
-import achat.Fournisseur;
-import achat.LignesCommande;
-import achat.PanelCommande;
-import achat.UneditableTableModel;
+import achat.modeles.CommandesFournisseur;
+import achat.modeles.Fournisseur;
+import achat.modeles.LignesCommande;
+import achat.modeles.UneditableTableModel;
+import achat.vues.PanelCommande;
 
 public class PopupCommande extends JDialog {
 	

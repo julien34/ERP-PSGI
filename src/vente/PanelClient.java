@@ -27,8 +27,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-import achat.Fournisseur;
-import achat.PanelFournisseur;
+import achat.modeles.Fournisseur;
+import achat.vues.PanelFournisseur;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 import production.AjouterProduits;

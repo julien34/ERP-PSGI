@@ -26,7 +26,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import achat.Categorie;
+import achat.modeles.Categorie;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 

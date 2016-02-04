@@ -1,4 +1,4 @@
-package achat;
+package achat.modeles;
 
 import javax.swing.table.DefaultTableModel;
 

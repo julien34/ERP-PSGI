@@ -10,9 +10,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import achat.PanelCategorie;
-import achat.PanelCommande;
-import achat.PanelFournisseur;
+import achat.vues.PanelCategorie;
+import achat.vues.PanelCommande;
+import achat.vues.PanelFournisseur;
 import components.ButtonTabComponent;
 import jdbc.DatabaseConnection;
 import jdbc.FenetreConnexion;

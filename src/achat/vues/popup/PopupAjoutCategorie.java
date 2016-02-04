@@ -1,4 +1,4 @@
-package achat.popup;
+package achat.vues.popup;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -16,8 +16,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import achat.Categorie;
-import achat.PanelCategorie;
+import achat.modeles.Categorie;
+import achat.vues.PanelCategorie;
 import jdbc.DatabaseConnection;
 
 public class PopupAjoutCategorie extends JDialog{
