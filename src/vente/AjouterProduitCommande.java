@@ -31,7 +31,7 @@ import javax.swing.SpinnerNumberModel;
 import jdbc.DatabaseConnection;
 import achat.modeles.Categorie;
 import achat.modeles.LignesCommande;
-import achat.modeles.Produit;
+import achat.modeles.Produit; 
 
 public class AjouterProduitCommande extends JDialog{
 	private ArrayList<Produit> listeProduits = new ArrayList<Produit>();

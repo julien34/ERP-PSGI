@@ -308,7 +308,7 @@ public class FenetreVente extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				
 				calculerTotal();
-			}
+			} 
 		});
 		
 		//Bouton Ajouter

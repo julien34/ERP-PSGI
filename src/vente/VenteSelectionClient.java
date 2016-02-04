@@ -116,7 +116,7 @@ public class VenteSelectionClient extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 			//	VenteSelectionClient.selectClient(VenteSelectionClient.this.liste.get(VenteSelectionClient.this.jList.getSelectedIndex()));
-				dispose();
+				dispose(); 
 			}
 		});
 		
