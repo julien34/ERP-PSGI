@@ -25,14 +25,14 @@ public class PopupSupressionFournisseur extends JDialog{
 	public PopupSupressionFournisseur(Fournisseur f){
 		this.fournisseur = f;
 		
-		this.initElement();//On initie les éléments sur les JPanels
-		this.initFenetre();//On créer la fenetre
-		this.initEcouteurs();//On ajoute les écouteurs
+		this.initElement();//On initie les Ã©lÃ©ments sur les JPanels
+		this.initFenetre();//On crÃ©er la fenetre
+		this.initEcouteurs();//On ajoute les Ã©couteurs
 		
 	}
 
 	/**
-	 * Méthode qui initialise la fenetre
+	 * MÃ©thode qui initialise la fenetre
 	 */
 	private void initFenetre() {
 		this.setTitle("Suprression d'un fournisseur");
@@ -44,17 +44,17 @@ public class PopupSupressionFournisseur extends JDialog{
 	}
 
 	/**
-	 * Méthode qui initialise les élément sur les JPanels
+	 * MÃ©thode qui initialise les Ã©lÃ©ment sur les JPanels
 	 */
 	private void initElement() {
 		
-		//On créer les panels
+		//On crÃ©er les panels
 		JPanel panelSupressionFournisseur = new JPanel(new GridLayout(3,1));
 		JPanel panelEspaceHaut = new JPanel();
 		JPanel panelTitre = new JPanel();
 		JPanel panelBoutons = new JPanel();
 		
-		//On créer les composants 
+		//On crÃ©er les composants 
 		JLabel lblTitre = new JLabel("Voulez-vous supprimer le fournisseur "+this.fournisseur.getNom()+" ?");
 		 this.btnOui = new JButton("Oui");
 		 this.btnNon = new JButton("Non");
@@ -70,13 +70,13 @@ public class PopupSupressionFournisseur extends JDialog{
 		panelSupressionFournisseur.add(panelBoutons);
 		
 		
-		//On ajoute le panelSupression à la frame principale (de type JDialog)
+		//On ajoute le panelSupression Ã  la frame principale (de type JDialog)
 		this.add(panelSupressionFournisseur);
 	}
 	
 	
 	/**
-	 * Méthode qui initialise les écouteurs 
+	 * MÃ©thode qui initialise les Ã©couteurs 
 	 */
 	public void initEcouteurs(){
 		
@@ -92,11 +92,11 @@ public class PopupSupressionFournisseur extends JDialog{
 					pst.setString(1, PopupSupressionFournisseur.this.fournisseur.getRef());
 					pst.executeQuery();
 					PanelFournisseur.majTableauSuppr(PopupSupressionFournisseur.this.fournisseur);
-					PopupSupressionFournisseur.this.dispose();//On ferme la fenêtre
-					JOptionPane.showMessageDialog(null, "Fournisseur supprim� avec succ�s","Vous venez de supprimer le fournisseur "+PopupSupressionFournisseur.this.fournisseur.getRef()+".",JOptionPane.INFORMATION_MESSAGE);
+					PopupSupressionFournisseur.this.dispose();//On ferme la fenÃªtre
+					JOptionPane.showMessageDialog(null, "Fournisseur supprimé avec succès","Vous venez de supprimer le fournisseur "+PopupSupressionFournisseur.this.fournisseur.getRef()+".",JOptionPane.INFORMATION_MESSAGE);
 				} catch (SQLException e1) {
 					e1.printStackTrace();
-					JOptionPane.showMessageDialog(null,"Ce fournisseur est assign� � une ou plusieurs commande(s).","Erreur",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null,"Ce fournisseur est assigné à une ou plusieurs commande(s).","Erreur",JOptionPane.ERROR_MESSAGE);
 
 					
 				}

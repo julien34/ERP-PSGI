@@ -40,14 +40,14 @@ public class PanelCommande extends JPanel{
 	
 	public static ArrayList<CommandesFournisseur> listeCommandes = new ArrayList<CommandesFournisseur>();
 	private static Object[][] tabCo;
-	private static Object[] titres = {"N° Commande","Fournisseur","Date", "Montant", "Etat"};
+	private static Object[] titres = {"NÂ° Commande","Fournisseur","Date", "Montant", "Etat"};
 	
-	//On créer la JTable et son modèle
+	//On crÃ©er la JTable et son modÃ¨le
 	private static JTable tableau = new JTable(new DefaultTableModel());
 	private static UneditableTableModel modele = new UneditableTableModel(0,5);
 	private static JScrollPane scrollPane  = new JScrollPane(tableau);
 	
-	//On créer les composants que 'on va se servir dans plusieurs méthodes :
+	//On crÃ©er les composants que 'on va se servir dans plusieurs mÃ©thodes :
 	private static JButton btnNouveau, btnModifier, btnAnnuler;
 	private static JTextField txtRechercheCommande, txtRechercheFournisseur, txtRechercheMontant;
 	private static JDateChooser jdcDate;
@@ -55,7 +55,7 @@ public class PanelCommande extends JPanel{
 
 	public PanelCommande(FenetrePrincipale f){
 		
-		//On récupère l'ensemble des founisseurs présents dans la BDD
+		//On rÃ©cupÃ¨re l'ensemble des founisseurs prÃ©sents dans la BDD
 		getCommande();
 		
 		//On remplit la JTable
@@ -64,7 +64,7 @@ public class PanelCommande extends JPanel{
 		//On initialise l'ensemble des composants sur le JPanel
 		this.initElements();
 				
-		//On initialise l'ensemble des écouteurs
+		//On initialise l'ensemble des Ã©couteurs
 		this.initEcouteurs();
 	}
 	
@@ -79,10 +79,10 @@ public class PanelCommande extends JPanel{
 	
 	
 	/**
-	 * Méthode qui récupère l'ensemble des commandes de la base de données et les ajoute dans une ArrayList.
+	 * MÃ©thode qui rÃ©cupÃ¨re l'ensemble des commandes de la base de donnÃ©es et les ajoute dans une ArrayList.
 	 */
 	public static void getCommande(){
-		listeCommandes.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
+		listeCommandes.clear();//On efface l'arraylist pour Ã©viter d'ajouter une deuxiÃ¨me fois les Ã©lÃ©ments
 		try {
 			Connection cn = DatabaseConnection.getCon();
 			PreparedStatement pst = cn.prepareStatement("SELECT c.refCommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.dateLivr, c.typePaiement, f.refFournisseur, f.nomFournisseur, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM CommandesFournisseur c LEFT JOIN Fournisseurs f ON f.refFournisseur = c.refFournisseur LEFT JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande LEFT JOIN Produit p ON p.code = lc.refProduit GROUP BY c.refCommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.dateLivr, c.typePaiement, f.refFournisseur, f.nomFournisseur ORDER BY c.dateCommande DESC");
@@ -109,7 +109,7 @@ public class PanelCommande extends JPanel{
 					montantTotal = "Pas de produits";
 				}
 				else {
-					montantTotal = rs.getString("montantTotal")+" €";
+					montantTotal = rs.getString("montantTotal")+" â‚¬";
 				}
 
 				listeCommandes.add(new CommandesFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal, etatCommande, tauxTva, remise, dateLivr, typePaiement));
@@ -123,10 +123,10 @@ public class PanelCommande extends JPanel{
 	
 	
 	/**
-	 * Méthode qui récupère l'ensemble des commandes de la base de données selon la recherche des champs et les ajoute dans une ArrayList.
+	 * MÃ©thode qui rÃ©cupÃ¨re l'ensemble des commandes de la base de donnÃ©es selon la recherche des champs et les ajoute dans une ArrayList.
 	 */
 	public static void getCommandeRecherche(){
-		listeCommandes.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
+		listeCommandes.clear();//On efface l'arraylist pour Ã©viter d'ajouter une deuxiÃ¨me fois les Ã©lÃ©ments
 		
 		try {
 			Connection cn = DatabaseConnection.getCon();
@@ -158,7 +158,7 @@ public class PanelCommande extends JPanel{
 					montantTotal = "Pas de produits";
 				}
 				else {
-					montantTotal = rs.getString("montantTotal")+" €";
+					montantTotal = rs.getString("montantTotal")+" â‚¬";
 				}
 
 				listeCommandes.add(new CommandesFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal, etatCommande, tauxTva, remise, dateLivr, typePaiement));
@@ -171,13 +171,13 @@ public class PanelCommande extends JPanel{
 	
 	
 	/**
-	 * Méthode qui met à jour le tableau de commandes.
+	 * MÃ©thode qui met Ã  jour le tableau de commandes.
 	 */
 	public static void maj(){
-		int nbDeCo = listeCommandes.size();//On calcule la taille de l'arrylist pour créer un tableau adéquat
-		tabCo = new Object[nbDeCo][5];//On créer le tableau de la taille récupérée 
+		int nbDeCo = listeCommandes.size();//On calcule la taille de l'arrylist pour crÃ©er un tableau adÃ©quat
+		tabCo = new Object[nbDeCo][5];//On crÃ©er le tableau de la taille rÃ©cupÃ©rÃ©e 
 		
-		//On remplit ce dernier avec les CommandesFournisseur récupérées
+		//On remplit ce dernier avec les CommandesFournisseur rÃ©cupÃ©rÃ©es
 		for(CommandesFournisseur cf : listeCommandes){
 			tabCo[listeCommandes.indexOf(cf)][0] = cf.getRefCommande();
 			tabCo[listeCommandes.indexOf(cf)][1] = cf.getNomFourniseur();
@@ -191,7 +191,7 @@ public class PanelCommande extends JPanel{
 	
 	
 	/**
-	 * Méthode qui remplit le tableau avec les valeurs de l'arraylist, mais aussi la JTable.
+	 * MÃ©thode qui remplit le tableau avec les valeurs de l'arraylist, mais aussi la JTable.
 	 */
 	public static void remplirTableau(){
 		
@@ -207,14 +207,14 @@ public class PanelCommande extends JPanel{
 	
 	
 	/**
-	 * Méthode qui initialise les éléments de toute la page.
+	 * MÃ©thode qui initialise les Ã©lÃ©ments de toute la page.
 	 */
 	private void initElements(){
 		
-		//on défini le layout du JPanel principal
+		//on dÃ©fini le layout du JPanel principal
 		this.setLayout(new BorderLayout());
 		
-		//On créer les panels
+		//On crÃ©er les panels
 		JPanel panelRechercheNord = new JPanel();
 		
 		JPanel panelGrilleCentre = new JPanel(new GridLayout(2,1));
@@ -222,8 +222,8 @@ public class PanelCommande extends JPanel{
 		JPanel panelBouton = new JPanel();
 		
 		
-		//On créer les composants
-		JLabel lblRechercheCommande = new JLabel("N° Commande : ");
+		//On crÃ©er les composants
+		JLabel lblRechercheCommande = new JLabel("NÂ° Commande : ");
 		txtRechercheCommande = new JTextField(10);
 		JLabel lblRechercheFournisseur = new JLabel("Fournisseur : ");
 		txtRechercheFournisseur = new JTextField(10);
@@ -236,7 +236,7 @@ public class PanelCommande extends JPanel{
 		btnModifier = new JButton("Modifier");
 		btnAnnuler = new JButton("Annuler");
 		
-		//On grise l'accès aux boutons modifier et annuler tant qu'une ligne n'est pas sélectionnée
+		//On grise l'accÃ¨s aux boutons modifier et annuler tant qu'une ligne n'est pas sÃ©lectionnÃ©e
 		setBtn(false);
 		
 		
@@ -266,7 +266,7 @@ public class PanelCommande extends JPanel{
 	
 	
 	/**
-	 * Méthode qui initialise les écouteurs.
+	 * MÃ©thode qui initialise les Ã©couteurs.
 	 */
 	public void initEcouteurs(){
 		
@@ -275,7 +275,7 @@ public class PanelCommande extends JPanel{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				
-				//On active la possibilité de cliquer sur les boutons annuler et modifier
+				//On active la possibilitÃ© de cliquer sur les boutons annuler et modifier
 				setBtn(true);
 				
 				if (e.getClickCount()%2 == 0){
@@ -308,7 +308,7 @@ public class PanelCommande extends JPanel{
 		/*ECOUTEURS DE LA RECHERCHE*/
 		/*-------------------------*/
 		
-		//Txt numéro de la commande
+		//Txt numÃ©ro de la commande
 		txtRechercheCommande.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -354,8 +354,8 @@ public class PanelCommande extends JPanel{
 	
 	
 	/**
-	 * Change la possibilité d'appuyer sur le bouton modifier et annuler selon son paramètre.
-	 * @param b, un booléen.
+	 * Change la possibilitÃ© d'appuyer sur le bouton modifier et annuler selon son paramÃ¨tre.
+	 * @param b, un boolÃ©en.
 	 */
 	public static void setBtn(boolean b){
 		btnModifier.setEnabled(b);
@@ -364,7 +364,7 @@ public class PanelCommande extends JPanel{
 	
 	
 	/**
-	 * Méthode qui change la date si elle est vide ou l'attribut avec son contenue si elle est remplie.
+	 * MÃ©thode qui change la date si elle est vide ou l'attribut avec son contenue si elle est remplie.
 	 */
 	private void initDate(){
 		

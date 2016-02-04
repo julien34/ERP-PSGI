@@ -25,8 +25,8 @@ public class PopupSuppressionCategorie extends JDialog{
 	private JLabel lblNomCategorie;
 	
 	/**
-	 * Constructeur avec une catégorie à supprimer en paramètre.
-	 * @param c, une catégorie à modifier.
+	 * Constructeur avec une catÃ©gorie Ã  supprimer en paramÃ¨tre.
+	 * @param c, une catÃ©gorie Ã  modifier.
 	 */
 	public PopupSuppressionCategorie(Categorie c, int indice){
 		this.code = c.getId();
@@ -40,10 +40,10 @@ public class PopupSuppressionCategorie extends JDialog{
 
 	
 	/**
-	 * Méthode qui initialise la frame de suppression d'une catégorie fournisseurs.
+	 * MÃ©thode qui initialise la frame de suppression d'une catÃ©gorie fournisseurs.
 	 */
 	private void initFenetre() {
-		this.setTitle("Supprimer une catégorie de fournisseur");
+		this.setTitle("Supprimer une catÃ©gorie de fournisseur");
 		this.setResizable(false);
 		this.setSize(500, 200);
 		this.setLocationRelativeTo(null);
@@ -53,23 +53,23 @@ public class PopupSuppressionCategorie extends JDialog{
 	
 	
 	/**
-	 * Méthode qui initialise les éléments du panel.
+	 * MÃ©thode qui initialise les Ã©lÃ©ments du panel.
 	 */
 	private void initElements() {
 
-		//On défini le layout de la fenêtre
+		//On dÃ©fini le layout de la fenÃªtre
 		this.setLayout(new GridLayout(2,1));
 		
 		
-		//On créer les éléments
+		//On crÃ©er les Ã©lÃ©ments
 		JPanel panelTxt = new JPanel();
 		JPanel panelBtn = new JPanel();
 		
 		this.btnAnnuler = new JButton("Annuler");
 		this.btnValider = new JButton("Valider");
-		this.lblNomCategorie = new JLabel("Voulez-vous vraiment supprimer cette catégorie ?");
+		this.lblNomCategorie = new JLabel("Voulez-vous vraiment supprimer cette catÃ©gorie ?");
 		
-		//On dispose les éléments sur la fenêtre
+		//On dispose les Ã©lÃ©ments sur la fenÃªtre
 		panelTxt.add(this.lblNomCategorie);
 		panelBtn.add(this.btnValider);
 		panelBtn.add(this.btnAnnuler);
@@ -80,7 +80,7 @@ public class PopupSuppressionCategorie extends JDialog{
 	
 	
 	/**
-	 * Méthode qui initialise les écouteurs des boutons.
+	 * MÃ©thode qui initialise les Ã©couteurs des boutons.
 	 */
 	private void initEcouteurs() {
 		
@@ -107,7 +107,7 @@ public class PopupSuppressionCategorie extends JDialog{
 	
 	
 	/**
-	 * Méthode qui exécute la requete (modification de ligne dans la table).
+	 * MÃ©thode qui exÃ©cute la requete (modification de ligne dans la table).
 	 */
 	private void envoierequete(){
 
@@ -117,14 +117,14 @@ public class PopupSuppressionCategorie extends JDialog{
 			pst.setString(1, this.code);
 			pst.executeQuery();
 			
-			//On retire la catégorie du tableau, et on grise les deux bouton "modifier" et "supprimer"
+			//On retire la catÃ©gorie du tableau, et on grise les deux bouton "modifier" et "supprimer"
 			PanelCategorie.majTableauSuppr(new Categorie(PopupSuppressionCategorie.this.code, PopupSuppressionCategorie.this.nom), PopupSuppressionCategorie.this.indice);
 			PanelCategorie.getBtonSupprimer().setEnabled(false);
 			PanelCategorie.getBtonModifier().setEnabled(false);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(null, "La catégorie est associée à un ou plusieurs fournisseur(s).", "Erreur", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "La catÃ©gorie est associÃ©e Ã  un ou plusieurs fournisseur(s).", "Erreur", JOptionPane.ERROR_MESSAGE);
 
 		}
 	}

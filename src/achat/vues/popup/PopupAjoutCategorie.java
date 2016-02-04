@@ -38,10 +38,10 @@ public class PopupAjoutCategorie extends JDialog{
 	}
 	
 	/**
-	 * Méthode qui créer une nouvelle fenetre avec des caractéristiques.
+	 * MÃ©thode qui crÃ©er une nouvelle fenetre avec des caractÃ©ristiques.
 	 */
 	private void initFenetre(){
-		this.setTitle("Ajouter une catégorie de Fournisseur");
+		this.setTitle("Ajouter une catÃ©gorie de Fournisseur");
 		this.setResizable(false);
 		this.setSize(500, 175);
 		this.setLocationRelativeTo(null);
@@ -51,7 +51,7 @@ public class PopupAjoutCategorie extends JDialog{
 	
 	
 	/**
-	 * Méthode qui initialise les composants sur les JPanels
+	 * MÃ©thode qui initialise les composants sur les JPanels
 	 */
 	private void initElement(){
 		
@@ -59,7 +59,7 @@ public class PopupAjoutCategorie extends JDialog{
 		this.btnValider = new JButton("Valider");
 		this.btnAnnuler = new JButton("Annuler");
 		this.txtNomCategorie = new JTextField(15);
-		this.lblNomcategorie = new JLabel("Nom de la catégorie : ");
+		this.lblNomcategorie = new JLabel("Nom de la catÃ©gorie : ");
 		this.panelBtn = new JPanel();
 		this.panelTxt = new JPanel();
 		this.panelPrincipal = new JPanel(new GridLayout(2,2));
@@ -80,7 +80,7 @@ public class PopupAjoutCategorie extends JDialog{
 	
 	
 	/**
-	 * Méthode qui initialise les écouteurs des boutons.
+	 * MÃ©thode qui initialise les Ã©couteurs des boutons.
 	 */
 	private void initEcouteurs(){
 		
@@ -107,17 +107,17 @@ public class PopupAjoutCategorie extends JDialog{
 					dispose();
 					
 					
-					//On cherche le code attribué lors de l'ajout
+					//On cherche le code attribuÃ© lors de l'ajout
 					Statement stat = DatabaseConnection.getCon().createStatement();
 					ResultSet result = stat.executeQuery("SELECT last_number FROM user_sequences WHERE sequence_name = 'SEQREFCATEGORIEFOURNISSEUR'");
 					result.next();
 					String seqCodePersonne = result.getString("LAST_NUMBER");
 					
-					//On ajoute la catégorie à l'arraylist
+					//On ajoute la catÃ©gorie Ã  l'arraylist
 					PanelCategorie.majTableau(new Categorie(seqCodePersonne, PopupAjoutCategorie.this.txtNomCategorie.getText()));
 					
 					//On affiche un message de validation
-					JOptionPane.showMessageDialog(null, "Catégorie de fournisseur ajouté avec succès","Vous venez d'ajouter la catégorie fournisseur "+txtNomCategorie.getText()+".",JOptionPane.INFORMATION_MESSAGE);
+					JOptionPane.showMessageDialog(null, "CatÃ©gorie de fournisseur ajoutÃ© avec succÃ¨s","Vous venez d'ajouter la catÃ©gorie fournisseur "+txtNomCategorie.getText()+".",JOptionPane.INFORMATION_MESSAGE);
 
 					
 				} catch (SQLException e1) {

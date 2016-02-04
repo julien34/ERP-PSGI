@@ -31,10 +31,10 @@ public class PopupCommandeSelectFournisseur extends JFrame{
 	private JList<String> jList = new JList<String>(this.dLM);
 	
 	/**
-	 * Constructeur sans paramètre de la classe.
+	 * Constructeur sans paramÃ¨tre de la classe.
 	 */
 	public PopupCommandeSelectFournisseur(){
-		this.getFournisseur();//On récupère les fournisseurs sur la base de données
+		this.getFournisseur();//On rÃ©cupÃ¨re les fournisseurs sur la base de donnÃ©es
 		this.initFenetre();//On initie la fenetre
 		this.initComposants();//On initie les composants de la fenetre
 		this.initEcouteurs();
@@ -42,14 +42,14 @@ public class PopupCommandeSelectFournisseur extends JFrame{
 	
 	
 	/**
-	 * Méthode qui initialise la fenetre d'ajout de fournisseur à une commande.
+	 * MÃ©thode qui initialise la fenetre d'ajout de fournisseur Ã  une commande.
 	 */
 	private void initFenetre(){
-		this.setTitle("Sélectionner un fournisseur à affecter à la commande");//Titre de la fenetre
+		this.setTitle("SÃ©lectionner un fournisseur Ã  affecter Ã  la commande");//Titre de la fenetre
 		this.setSize(450, 200);//Taille de la fenetre
 		
 		Dimension dim = new Dimension(450,250);//Dimension pour dimension minimale
-		this.setMinimumSize(dim);//On défini la taille minimale de la fenetre
+		this.setMinimumSize(dim);//On dÃ©fini la taille minimale de la fenetre
 		this.setLocationRelativeTo(null);//On centre la fenetre
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);//fermeture lors du clic sur la croix rouge
 		this.setVisible(true);//rendre la fenetre visible
@@ -57,11 +57,11 @@ public class PopupCommandeSelectFournisseur extends JFrame{
 	
 	
 	/**
-	 * Méthode qui initialise l'ensemble des composants.
+	 * MÃ©thode qui initialise l'ensemble des composants.
 	 */
 	private void initComposants(){
 		
-		//Initialisation des différents panels
+		//Initialisation des diffÃ©rents panels
 		JPanel panelPrincipal = new JPanel(new BorderLayout());//Principal
 		JPanel panelListe = new JPanel();//Celui qui accueillera la liste
 		JPanel panelBtn = new JPanel();//Celui qui accueillera les boutons
@@ -73,13 +73,13 @@ public class PopupCommandeSelectFournisseur extends JFrame{
 		this.scrollPane = new ScrollPane();
 		this.scrollPane.setSize(450, 180);
 		
-		//Ajouts des composants aux différents panels
+		//Ajouts des composants aux diffÃ©rents panels
 		this.scrollPane.add(this.jList);
 		panelListe.add(scrollPane);
 		panelBtn.add(this.btnValider);
 		panelBtn.add(this.btnAnnuler);
 		
-		//On ajoute l'ensemble des panels à la frame
+		//On ajoute l'ensemble des panels Ã  la frame
 		panelPrincipal.add(panelListe, BorderLayout.CENTER);
 		panelPrincipal.add(panelBtn, BorderLayout.SOUTH);
 		this.add(panelPrincipal);
@@ -87,7 +87,7 @@ public class PopupCommandeSelectFournisseur extends JFrame{
 	
 	
 	/**
-	 * Méthode qui récupère l'ensemble des fournisseurs de la base de données et les ajoute dans l'arrayList.
+	 * MÃ©thode qui rÃ©cupÃ¨re l'ensemble des fournisseurs de la base de donnÃ©es et les ajoute dans l'arrayList.
 	 */
 	private void getFournisseur() {
 		try{
@@ -113,9 +113,9 @@ public class PopupCommandeSelectFournisseur extends JFrame{
 	
 	
 	/**
-	 * Méthode qui assigne le fournisseur sélectionné au fournisseur courant.
+	 * MÃ©thode qui assigne le fournisseur sÃ©lectionnÃ© au fournisseur courant.
 	 * @param f, un fournisseur.
-	 * @return le fournisseur selectionné.
+	 * @return le fournisseur selectionnÃ©.
 	 */
 	private static void selectFournisseur(Fournisseur f){
 		fn = f;
@@ -124,7 +124,7 @@ public class PopupCommandeSelectFournisseur extends JFrame{
 	
 	
 	/**
-	 * Méthode qui initialise les écouteurs.
+	 * MÃ©thode qui initialise les Ã©couteurs.
 	 */
 	private void initEcouteurs(){
 		

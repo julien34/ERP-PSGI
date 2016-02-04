@@ -25,8 +25,8 @@ public class PopupModifCategorie extends JDialog{
 	private JLabel lblNomCategorie;
 	
 	/**
-	 * Constructeur avec une catégorie à modifier en paramètre.
-	 * @param c, une catégorie à modifier.
+	 * Constructeur avec une catÃ©gorie Ã  modifier en paramÃ¨tre.
+	 * @param c, une catÃ©gorie Ã  modifier.
 	 */
 	public PopupModifCategorie(Categorie c, int indice){
 		this.code = c.getId();
@@ -40,10 +40,10 @@ public class PopupModifCategorie extends JDialog{
 	
 	
 	/**
-	 * Méthode qui créer une nouvelle fenetre avec des caractéristiques.
+	 * MÃ©thode qui crÃ©er une nouvelle fenetre avec des caractÃ©ristiques.
 	 */
 	private void initFenetre(){
-		this.setTitle("Modifier une catégorie de fournisseur");
+		this.setTitle("Modifier une catÃ©gorie de fournisseur");
 		this.setResizable(false);
 		this.setSize(500, 200);
 		this.setLocationRelativeTo(null);
@@ -53,25 +53,25 @@ public class PopupModifCategorie extends JDialog{
 	
 	
 	/**
-	 * Méthode qui initialise les composants sur les JPanels
+	 * MÃ©thode qui initialise les composants sur les JPanels
 	 */
 	private void initElements(){
 		
-		//On défini le layout de la fenêtre
+		//On dÃ©fini le layout de la fenÃªtre
 		this.setLayout(new GridLayout(2,1));
 		
 		
-		//On créer les éléments
+		//On crÃ©er les Ã©lÃ©ments
 		JPanel panelTxt = new JPanel();
 		JPanel panelBtn = new JPanel();
 		
 		this.btnAnnuler = new JButton("Annuler");
 		this.btnValider = new JButton("Valider");
-		this.lblNomCategorie = new JLabel("Nom de la catégorie : ");
+		this.lblNomCategorie = new JLabel("Nom de la catÃ©gorie : ");
 		this.txtNomCategorie = new JTextField(15);
 		this.txtNomCategorie.setText(this.nom);
 		
-		//On dispose les éléments sur la fenêtre
+		//On dispose les Ã©lÃ©ments sur la fenÃªtre
 		panelTxt.add(this.lblNomCategorie);
 		panelTxt.add(this.txtNomCategorie);
 		panelBtn.add(this.btnValider);
@@ -83,7 +83,7 @@ public class PopupModifCategorie extends JDialog{
 	
 	
 	/**
-	 * Méthode qui initialise les écouteurs des boutons.
+	 * MÃ©thode qui initialise les Ã©couteurs des boutons.
 	 */
 	private void initEcouteurs(){
 		
@@ -112,7 +112,7 @@ public class PopupModifCategorie extends JDialog{
 	
 	
 	/**
-	 * Méthode qui exécute la requete (modification de ligne dans la table)
+	 * MÃ©thode qui exÃ©cute la requete (modification de ligne dans la table)
 	 */
 	private void envoierequete(){
 		this.nom = this.txtNomCategorie.getText();

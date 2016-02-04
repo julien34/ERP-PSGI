@@ -33,12 +33,12 @@ import principal.FenetrePrincipale;
 
 public class PanelCategorie extends JPanel{
 	
-	//On instancie les éléments de la page
+	//On instancie les Ã©lÃ©ments de la page
 	private static JTextField txtRecherche;
 	private JLabel lblrecherche;
 	private static JButton btnAjouter, btnModifier, btnSupprimer;
 	private JPanel panelNord, panelCentre, panelGrille, panelBoutons;
-	private static String[] tabTitres = {"Code","Catégorie"};
+	private static String[] tabTitres = {"Code","CatÃ©gorie"};
 	private static Object[][] tabCategories;
 	private static UneditableTableModel tableCategorie;
 	private static ArrayList<Categorie> listeCategorie = new ArrayList<Categorie>();
@@ -48,23 +48,23 @@ public class PanelCategorie extends JPanel{
 	
 	
 	/**
-	 * Constructeur avec une FenetrePrincipale en paramètre
+	 * Constructeur avec une FenetrePrincipale en paramÃ¨tre
 	 * @param f, la fenetrePrincipale
 	 */
 	public PanelCategorie(FenetrePrincipale f){
-		initTab();//On initie le tableau des catégories
+		initTab();//On initie le tableau des catÃ©gories
 		
-		this.initPanel();//On créer les différents panels
-		this.initElements();//On instancie les différents composants du panel
-		this.initEcouteurs();//On créer les écouteurs de tous les boutons
+		this.initPanel();//On crÃ©er les diffÃ©rents panels
+		this.initElements();//On instancie les diffÃ©rents composants du panel
+		this.initEcouteurs();//On crÃ©er les Ã©couteurs de tous les boutons
 		
 		this.setVisible(true);//On rend visible le panel
 	}
 	
 	
 	/**
-	 * Méthode qui retourne la liste des catégories.
-	 * @return la liste des catégories
+	 * MÃ©thode qui retourne la liste des catÃ©gories.
+	 * @return la liste des catÃ©gories
 	 */
 	public static ArrayList<Categorie> getListeCategorie() {
 		return listeCategorie;
@@ -72,25 +72,25 @@ public class PanelCategorie extends JPanel{
 	
 	
 	/**
-	 * Méthode qui initialise le panel de gestion des catégories fournisseurs
+	 * MÃ©thode qui initialise le panel de gestion des catÃ©gories fournisseurs
 	 */
 	private void initPanel(){
 		this.setLayout(new BorderLayout());//Le panel sera en Borderlayout
-		this.panelNord = new JPanel();//Panel de recherche dans les catégories de fournisseurs
+		this.panelNord = new JPanel();//Panel de recherche dans les catÃ©gories de fournisseurs
 		this.panelCentre = new JPanel(new BorderLayout());//Panel qui recevra la grid + les boutons
-		this.panelGrille = new JPanel();//On créer un panel qui va recevoir la grille
-		this.panelBoutons = new JPanel();//On créer le panel qui va recevoir les boutons
+		this.panelGrille = new JPanel();//On crÃ©er un panel qui va recevoir la grille
+		this.panelBoutons = new JPanel();//On crÃ©er le panel qui va recevoir les boutons
 	}
 	
 	
 	/**
-	 * Méthode qui initialise les éléments du panel
+	 * MÃ©thode qui initialise les Ã©lÃ©ments du panel
 	 */
 	private void initElements(){
 		
 		/*PANEL NORD*/
-		//On créer lee champs et le label recherche
-		this.lblrecherche = new JLabel("Catégorie : ");
+		//On crÃ©er lee champs et le label recherche
+		this.lblrecherche = new JLabel("CatÃ©gorie : ");
 		txtRecherche = new JTextField(10);
 		
 		//On ajoute
@@ -99,12 +99,12 @@ public class PanelCategorie extends JPanel{
 		
 		
 		/*PANEL CENTRE*/
-		//On créer les boutons (pas de suppression)
+		//On crÃ©er les boutons (pas de suppression)
 		btnAjouter = new JButton("Ajouter");
 		btnModifier = new JButton("Modifier");
 		btnSupprimer = new JButton("Supprimer");
 		
-		//On grise le bouton modifier (car aucune ligne n'est sélectionnée au départ)
+		//On grise le bouton modifier (car aucune ligne n'est sÃ©lectionnÃ©e au dÃ©part)
 		btnModifier.setEnabled(false);
 		btnSupprimer.setEnabled(false);
 		
@@ -127,7 +127,7 @@ public class PanelCategorie extends JPanel{
 	
 	
 	/**
-	 * Méthode qui récupère les catégories et les ajoute dans l'arrayList.
+	 * MÃ©thode qui rÃ©cupÃ¨re les catÃ©gories et les ajoute dans l'arrayList.
 	 */
 	private static void initTab(){
 		
@@ -150,11 +150,11 @@ public class PanelCategorie extends JPanel{
 	
 	
 	/**
-	 * Méthode qui remplit le tableau 
+	 * MÃ©thode qui remplit le tableau 
 	 */
 	private static void remplirTableau(){
 		
-		//On calcule la longueur de l'arrayList et on créer un nouvceau tableau de cette taille
+		//On calcule la longueur de l'arrayList et on crÃ©er un nouvceau tableau de cette taille
 		int longueurTab = listeCategorie.size();
 		tabCategories = new Object[longueurTab][2];
 		
@@ -164,7 +164,7 @@ public class PanelCategorie extends JPanel{
 			tabCategories[listeCategorie.indexOf(cat)][1] = cat.getNom();
 		}
 		
-		//On créer une table modele et un JTable. On assigne le modele à la JTable
+		//On crÃ©er une table modele et un JTable. On assigne le modele Ã  la JTable
 		tableCategorie = new UneditableTableModel(0,2);
 		tableCategorie.setDataVector(tabCategories, tabTitres);
 		
@@ -178,7 +178,7 @@ public class PanelCategorie extends JPanel{
 	
 	
 	/**
-	 * Méthode qui initialise les écouteurs du panel
+	 * MÃ©thode qui initialise les Ã©couteurs du panel
 	 */
 	private void initEcouteurs(){
 		
@@ -215,7 +215,7 @@ public class PanelCategorie extends JPanel{
 			@Override
 			public void keyReleased(KeyEvent e) {
 				
-				//On désactive le clic sur le bouton modifier
+				//On dÃ©sactive le clic sur le bouton modifier
 				PanelCategorie.btnModifier.setEnabled(false);
 				PanelCategorie.btnSupprimer.setEnabled(false);
 				
@@ -241,7 +241,7 @@ public class PanelCategorie extends JPanel{
 	}
 
 	/**
-	 * Méthode qui met à jour le tableau en fonction de l'arraylist courante (à réutiliser dans les autres méthodes).
+	 * MÃ©thode qui met Ã  jour le tableau en fonction de l'arraylist courante (Ã  rÃ©utiliser dans les autres mÃ©thodes).
 	 */
 	private static void maj(){
 		int nouvelleLongueur = listeCategorie.size();
@@ -257,7 +257,7 @@ public class PanelCategorie extends JPanel{
 	
 	
 	/**
-	 * Méthode qui ajoute la catégorie créée au tableau
+	 * MÃ©thode qui ajoute la catÃ©gorie crÃ©Ã©e au tableau
 	 */
 	public static void majTableau(Categorie c){
 		listeCategorie.add(c);
@@ -266,9 +266,9 @@ public class PanelCategorie extends JPanel{
 	
 	
 	/**
-	 * Méthode qui modifie une catégorie et met à jour le tableau.
-	 * @param c, la catégorie modifiée.
-	 * @param indice, l'indice dans l'arraylist de la catégorie modifiée.
+	 * MÃ©thode qui modifie une catÃ©gorie et met Ã  jour le tableau.
+	 * @param c, la catÃ©gorie modifiÃ©e.
+	 * @param indice, l'indice dans l'arraylist de la catÃ©gorie modifiÃ©e.
 	 */
 	public static void majTableauModif(Categorie c, int indice){
 		listeCategorie.remove(indice);
@@ -278,9 +278,9 @@ public class PanelCategorie extends JPanel{
 	
 	
 	/**
-	 * Méthode qui supprimer une catégorie et met à jour le tableau.
-	 * @param c, la catégorie supprimée.
-	 * @param indice, l'indice dans l'arraylist de la catégorie supprimée.
+	 * MÃ©thode qui supprimer une catÃ©gorie et met Ã  jour le tableau.
+	 * @param c, la catÃ©gorie supprimÃ©e.
+	 * @param indice, l'indice dans l'arraylist de la catÃ©gorie supprimÃ©e.
 	 */
 	public static void majTableauSuppr(Categorie c, int indice){
 		listeCategorie.remove(indice);
@@ -289,7 +289,7 @@ public class PanelCategorie extends JPanel{
 	
 	
 	/**
-	 * Méthode qui charge uniquement les catégories qui sont tapées dans le champs de recherche.
+	 * MÃ©thode qui charge uniquement les catÃ©gories qui sont tapÃ©es dans le champs de recherche.
 	 */
 	private static void majTableauRecherche(){
 		try {
@@ -313,7 +313,7 @@ public class PanelCategorie extends JPanel{
 	
 	
 	/**
-	 * Méthode getter qui retourne le bouton modifier.
+	 * MÃ©thode getter qui retourne le bouton modifier.
 	 * @return le bouton modifier.
 	 */
 	public static JButton getBtonModifier(){
@@ -322,7 +322,7 @@ public class PanelCategorie extends JPanel{
 	
 	
 	/**
-	 * Méthode getter qui retourne le bouton supprimer.
+	 * MÃ©thode getter qui retourne le bouton supprimer.
 	 * @return le bouton supprimer.
 	 */
 	public static JButton getBtonSupprimer(){
