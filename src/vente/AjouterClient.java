@@ -19,10 +19,6 @@ import javax.swing.JTextField;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 
-/**
- * @author Simon
- *
- */
 public class AjouterClient extends JDialog{
 	
 	private static FenetrePrincipale frame;
@@ -32,10 +28,9 @@ public class AjouterClient extends JDialog{
 	JPanel panelFlow3 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	JPanel panelFlow4 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	JPanel panelFlow5 = new JPanel(new FlowLayout(FlowLayout.CENTER));
-	/**
-	 * elements dans la page d'ajout de nouveaux clients
-	 * Libeles du nom, prenom, email, tel
-	 */
+
+	 //elements dans la page d'ajout de nouveaux clients
+	 //Libeles du nom, prenom, email, tel
 	 JLabel lbl_id = new JLabel("Id");
 	 JLabel lbl_nom = new JLabel("Nom");
 	 JLabel lbl_prenom = new JLabel("Prenom");
@@ -43,10 +38,9 @@ public class AjouterClient extends JDialog{
 	 JLabel lbl_email = new JLabel("Email");
 	 JLabel lbl_tel = new JLabel("Telephone");
 	 JLabel lbl_categorie = new JLabel("Categorie");
-	
-	/**
-	 * text box pour le nom, prenom, adresse, email, telephone du nouveau client
-	 */
+	 JLabel lbl_vide = new JLabel(" ");
+	 
+	 //text box pour le nom, prenom, adresse, email, telephone du nouveau client
 	 JTextField txt_id = new JTextField(10);
 	 JTextField txt_nom = new JTextField(10);
 	 JTextField txt_prenom = new JTextField(10);
@@ -55,20 +49,18 @@ public class AjouterClient extends JDialog{
 	 JTextField txt_tel = new JTextField(10);
 	 JTextField txt_categorie = new JTextField(10);
 	
-	/**
-	 * Bouton de validation et bouton d'annulation de la saisie d'un nouveau client
-	 */
-	private JButton bt_valider = new JButton("Valider");
-	private JButton bt_annuler = new JButton("Annuler");
+	 //Bouton de validation et bouton d'annulation de la saisie d'un nouveau client
+	 private JButton bt_valider = new JButton("Valider");
+	 private JButton bt_annuler = new JButton("Annuler");
 	
-	public AjouterClient(FenetrePrincipale frame){
+	 public AjouterClient(FenetrePrincipale frame){
 		super(frame,"Ajouter un client");
 		this.frame = frame;
 		
 		initFrame();
 		initElement();
 		initHandlers();
-	}
+	 }
 	
 	public void initFrame(){
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -84,25 +76,31 @@ public class AjouterClient extends JDialog{
 		contenuPanel.add(panelFlow3);
 		contenuPanel.add(panelFlow4);
 		contenuPanel.add(panelFlow5);
-		panelFlow1.add(lbl_id);
-		panelFlow1.add(txt_id);
+		 /*panelFlow1.add(lbl_id);
+		 panelFlow1.add(txt_id);*/
+
 		panelFlow1.add(lbl_nom);
 		panelFlow1.add(txt_nom);
-		panelFlow2.add(lbl_prenom);
-		panelFlow2.add(txt_prenom);
+		panelFlow1.add(lbl_prenom);
+		panelFlow1.add(txt_prenom);
 		panelFlow2.add(lbl_adresse);
 		panelFlow2.add(txt_adresse);
-		panelFlow3.add(lbl_email);
-		panelFlow3.add(txt_email);
+		panelFlow2.add(lbl_email);
+		panelFlow2.add(txt_email);
 		panelFlow3.add(lbl_tel);
 		panelFlow3.add(txt_tel);
-		panelFlow4.add(lbl_categorie);
-		panelFlow4.add(txt_categorie);
-		
+		panelFlow3.add(lbl_categorie);
+		panelFlow3.add(txt_categorie);
+		panelFlow4.add(lbl_vide);
+		panelFlow4.add(lbl_vide);
+		panelFlow4.add(lbl_vide);
+		panelFlow4.add(lbl_vide);
 		panelFlow5.add(bt_valider);
 		panelFlow5.add(bt_annuler);
 		setVisible(true);
 	}
+	
+	//Action Event
 	public void initHandlers(){
 		txt_id.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){
@@ -130,8 +128,8 @@ public class AjouterClient extends JDialog{
 				String tel = txt_tel.getText();
 				String categorie = txt_categorie.getText();
 				
-				if(DatabaseConnection.requete("INSERT INTO VENTE_CLIENTS(idclient, nomclient, prenomclient, adresseclient, emailclient, telclient, codecategorieclient) VALUES  ('"+id+"','"+nom+"','"+prenom+"','"+adresse+"','"+email+"','"+tel+"','"+categorie+"')")){
-					frame.getPanelClient().refreshListeTableClient(id, nom, prenom, adresse, email, tel, categorie);
+				if(DatabaseConnection.requete("INSERT INTO VENTE_CLIENTS(idclient, nomclient, prenomclient, adresseclient, emailclient, telclient, codecategorieclient) VALUES (sequence_client.NEXTVAL,'"+nom+"','"+prenom+"','"+adresse+"','"+email+"','"+tel+"','"+categorie+"')")){
+					frame.getPanelClient().remplirtableClient();
 					setVisible(false);
 				}
 				else{

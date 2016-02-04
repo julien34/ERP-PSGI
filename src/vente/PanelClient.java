@@ -35,13 +35,7 @@ import production.AjouterProduits;
 import production.ModifierProduits;
 import vente.ModifierClients;
 
-/**
- * 
- * @author Simon
- * Classes qui genere l'interface 
- */
 public class PanelClient extends JPanel{
-	
 	
 	private static FenetrePrincipale framePrincipale;
 	
@@ -65,9 +59,7 @@ public class PanelClient extends JPanel{
 	//private AjouterClient ajouter_p = new AjouterClient();
 	//private ModifierClients modifier_p = new ModifierClients(null);
 	
-	/**
-	 * GridLayout qui contient les informations des Clients
-	 */
+	//GridLayout qui contient les informations des Clients
 	private static JTable tableClient;
 	
 	private JScrollPane scrollPane;
@@ -90,11 +82,6 @@ public class PanelClient extends JPanel{
 	private Dimension dimensionBouttons = new Dimension(140,26);
 	private Dimension dimensionTable = new Dimension(540, 224);
 	
-	public static void remplirtableClient(){
-		modelTableClient.setDataVector(DatabaseConnection.remplirListeClient(), nomColonnes);
-		tableClient.getRowSorter().toggleSortOrder(0);
-	}
-	
 	public PanelClient(FenetrePrincipale framePrincipale){
 		this.framePrincipale = framePrincipale;
 		initElements();
@@ -110,31 +97,25 @@ public class PanelClient extends JPanel{
 		tableClient.setPreferredScrollableViewportSize(dimensionTable);
 		
 		this.panelGrid = new JPanel(new GridLayout(2,1));
-		
 		this.panelRecherche = new JPanel();
+		
 		lblRecherche = new JLabel("Rechercher : ");
 		txtRecherche = new JTextField(20);
 		
 		add(panelRecherche);
-		
 		add(panelGrid);
-		
 		add(contenu);
+		
 		contenu.add("North",panelRecherche);
 		contenu.add("Center",scrollPane);
 		contenu.add("South",panelBouttons);
-		
-		
 		//add(panelRecherche);
-		
 		panelBouttons.add(bt_ajouter);
 		bt_ajouter.setPreferredSize(dimensionBouttons);
 		panelBouttons.add(bt_modifier);
 		bt_modifier.setPreferredSize(dimensionBouttons);
 		panelBouttons.add(bt_supprimer);
 		bt_supprimer.setPreferredSize(dimensionBouttons);
-		
-		
 		
 		panelRecherche.add(lblRecherche);
 		panelRecherche.add(txtRecherche);
@@ -143,7 +124,7 @@ public class PanelClient extends JPanel{
 	
 		panelGrid.add(contenu);
 	}
-	
+	 
 	public void initHandlers(){
 		
 		tableClient.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
@@ -154,12 +135,13 @@ public class PanelClient extends JPanel{
 		        ListSelectionModel selection = (ListSelectionModel) e.getSource();
 		        clientChoisi = selection.getMinSelectionIndex();
 		        
-		        //DÃ©sactiver certains boutons si on ne selectionne aucune ligne
+		        //Désactiver certains boutons si on ne selectionne aucune ligne
 		        bt_modifier.setEnabled(!selection.isSelectionEmpty());
 		        bt_supprimer.setEnabled(!selection.isSelectionEmpty());
 		    }
 		});
 		
+		//Action Event des boutons
 		bt_ajouter.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 			new AjouterClient(framePrincipale);
@@ -169,7 +151,6 @@ public class PanelClient extends JPanel{
 		/*bt_rech.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				majTableauRecherche();
-				
 			}
 		});*/
 		
@@ -213,7 +194,7 @@ public class PanelClient extends JPanel{
 						Integer idClient = Integer.parseInt(id);
 						if (DatabaseConnection.requete("DELETE FROM vente_clients WHERE IDCLIENT = '"+idClient+"'")){
 							modelTableClient.removeRow(tableClient.convertRowIndexToModel(clientChoisi));
-							JOptionPane.showMessageDialog(null, "Client supprimer avec succÃ¨s.", "Suppression de client", JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(null, "Client supprimer avec succès.", "Suppression de client", JOptionPane.INFORMATION_MESSAGE);
 						}
 						else{
 							System.out.println("Suppression du client interrompu");
@@ -225,13 +206,23 @@ public class PanelClient extends JPanel{
 		
 		
 	}
-	public void refreshListeTableClient(String id, String nom, String prenom, String adresse, String email, String tel, String categorie){
-		//int id2 = Integer.parseInt(id);
-		//int categ = Integer.parseInt(categorie);
-		Object[] obj = {id, nom, prenom, adresse, email, tel, categorie};
-		modelTableClient.addRow(obj);
+	
+	//replit le tablea client avec la base de données vente_clients
+	public static void remplirtableClient(){
+		modelTableClient.setDataVector(DatabaseConnection.remplirListeClient(), nomColonnes);
+		tableClient.getRowSorter().toggleSortOrder(0);
 	}
 	
+	/**
+	 * Met a jour la ligne du tableau client selectionner
+	 * @param id
+	 * @param nom
+	 * @param prenom
+	 * @param adresse
+	 * @param email
+	 * @param tel
+	 * @param categorie
+	 */
 	public void raffraichirLigne(String id, String nom, String prenom, String adresse, String email, String tel, String categorie)
 	{
 		int ligneChoisieTemp = clientChoisi;
