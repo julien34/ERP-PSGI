@@ -269,7 +269,8 @@ public class FenetrePrincipale extends JFrame
 	   		menuVentesDevis.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e)
-	   			{	   				
+	   			{	
+	   				InterfaceDevis.setComboBoxClient();
 	   				ajouterOnglet("Gestion des Devis", InterfaceDevis);
 	   			}
 	   		});	

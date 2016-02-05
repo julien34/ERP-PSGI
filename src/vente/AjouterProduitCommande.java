@@ -45,23 +45,23 @@ public class AjouterProduitCommande extends JDialog{
 	private ScrollPane scrollPane;
 	private String numCommande;
 	private LignesCommande ligneCommande;
-	
+	private Client clientCommande;
 	
 	/**
 	 * Constructeur d'une Popup d'ajout de ligne commande fournisseur.
 	 */
 	public AjouterProduitCommande(String numCommande){
 		this.numCommande = numCommande;
-		this.getProduits();//On récupère l'ensemble des produits et on les ajoute dans l'arryList
-		this.getCategories();//On récupère les catégories pour permettre la recherche
+		this.getProduits();//On rï¿½cupï¿½re l'ensemble des produits et on les ajoute dans l'arryList
+		this.getCategories();//On rï¿½cupï¿½re les catï¿½gories pour permettre la recherche
 		this.initFenetre();//On initialise la fenetre
 		this.initElements();//On initialise l'ensemble des composants
-		this.initEcouteurs();//On initialise les écouteurs de la fenetre
+		this.initEcouteurs();//On initialise les ï¿½couteurs de la fenetre
 	}
 	
 	
 	/**
-	 * Méthode qui initie la fenetre popup.
+	 * Mï¿½thode qui initie la fenetre popup.
 	 */
 	private void initFenetre(){
 		this.setSize(550, 350);
@@ -75,20 +75,20 @@ public class AjouterProduitCommande extends JDialog{
 	
 	
 	/**
-	 * Méthode qui initialise l'ensemble de tous les panels et composants de la fenetre.
+	 * Mï¿½thode qui initialise l'ensemble de tous les panels et composants de la fenetre.
 	 */
 	private void initElements(){
-		this.setLayout(new BorderLayout());//On défini la page en Borderlayout
+		this.setLayout(new BorderLayout());//On dï¿½fini la page en Borderlayout
 		
-		//On défini les différents panels
+		//On dï¿½fini les diffï¿½rents panels
 		JPanel panelRecherche = new JPanel();
 		JPanel panelListe = new JPanel();
 		JPanel panelBoutonsQte = new JPanel();
 		
-		//On défini les différents composants
-		JLabel lblCategorie = new JLabel("Catégorie : ");
+		//On dï¿½fini les diffï¿½rents composants
+		JLabel lblCategorie = new JLabel("Catï¿½gorie : ");
 		JLabel lblProduit = new JLabel("Produit : ");
-		JLabel lblQte = new JLabel("Qté : ");
+		JLabel lblQte = new JLabel("Qtï¿½ : ");
 		this.txtNomProduitRecherche = new JTextField(10);
 		this.txtQte = new JSpinner(new SpinnerNumberModel(1, 1, 999,1)); //Min - min - max - saut
 		//this.txtQte.set
@@ -110,14 +110,14 @@ public class AjouterProduitCommande extends JDialog{
 		this.scrollPane.add(this.jListProduit);
 		panelListe.add(this.scrollPane);
 		
-		//On ajoute les boutons et la quantité au panel Sud
+		//On ajoute les boutons et la quantitï¿½ au panel Sud
 		panelBoutonsQte.add(lblQte);
 		panelBoutonsQte.add(this.txtQte);
 		panelBoutonsQte.add(this.btnAjouter);
 		panelBoutonsQte.add(this.btnAnnuler);
 		
 		
-		//On ajoute les panels à la frame
+		//On ajoute les panels ï¿½ la frame
 		this.add(panelRecherche, BorderLayout.NORTH);
 		this.add(panelListe, BorderLayout.CENTER);
 		this.add(panelBoutonsQte, BorderLayout.SOUTH);
@@ -153,7 +153,7 @@ public class AjouterProduitCommande extends JDialog{
 			}
 		});
 		
-		//Changement de catégorie
+		//Changement de catï¿½gorie
 		this.chCategorieRecherche.addItemListener(new ItemListener() {
 			
 			@Override
@@ -173,7 +173,7 @@ public class AjouterProduitCommande extends JDialog{
 	
 	
 	/**
-	 * Méthode qui se connecte à la base de donnée pour récupérer l'ensemble des produits (disponible à l'achat).
+	 * Mï¿½thode qui se connecte ï¿½ la base de donnï¿½e pour rï¿½cupï¿½rer l'ensemble des produits (disponible ï¿½ l'achat).
 	 */
 	private void getProduits(){
 		
@@ -192,7 +192,7 @@ public class AjouterProduitCommande extends JDialog{
 				this.listeProduits.add(new Produit(codePdt, descriptionPdt, prixAchat, codeCategorie, nomCategorie));
 			}
 			
-			//On ajoute tous les produits à la JList
+			//On ajoute tous les produits ï¿½ la JList
 			for(Produit p : this.listeProduits){
 				this.dLMProduits.addElement(p.getDescription());
 			}
@@ -204,7 +204,7 @@ public class AjouterProduitCommande extends JDialog{
 	
 	
 	/**
-	 * Méthode qui se connecte à la base de donnée et récupère l'ensemble des catégories de produits.
+	 * Mï¿½thode qui se connecte ï¿½ la base de donnï¿½e et rï¿½cupï¿½re l'ensemble des catï¿½gories de produits.
 	 */
 	private void getCategories(){
 		
@@ -233,9 +233,8 @@ public class AjouterProduitCommande extends JDialog{
 		}
 	}
 	
-	
 	/**
-	 * Méthode qui ajoute une ligneCommande dans la BDD et dans la l'ArrayList.
+	 * Mï¿½thode qui ajoute une ligneCommande dans la BDD et dans la l'ArrayList.
 	 * @param lc, Une ligne de commande.
 	 */
 	/*private void ajoutLigneCommande(LignesCommande lc){
@@ -258,7 +257,7 @@ public class AjouterProduitCommande extends JDialog{
 */	
 	
 	/**
-	 * Méthode qui remplit la LigneCommande courrante avec les informations renseignées.
+	 * Mï¿½thode qui remplit la LigneCommande courrante avec les informations renseignï¿½es.
 	 */
 	private void setLigne(){
 		String refProduit = this.listeProduits.get(this.jListProduit.getSelectedIndex()).getCode();
@@ -268,36 +267,36 @@ public class AjouterProduitCommande extends JDialog{
 		int qte = (Integer) this.txtQte.getValue();
 		Double total = qte*pHT;
 			
-		//On créer la ligne de commande
+		//On crï¿½er la ligne de commande
 		this.ligneCommande = new LignesCommande(refProduit, nomProduit, categorieProduit, pHT, qte, total);
 	}
 	
 	
 	/**
-	 * Méthode qui recherche dans la liste des produits en fonction des champs de la recherche.
+	 * Mï¿½thode qui recherche dans la liste des produits en fonction des champs de la recherche.
 	 */
 	private void rechercheProduit(){
 		try {
 			Connection cn = DatabaseConnection.getCon();
 			PreparedStatement pst = cn.prepareStatement("SELECT p.code, p.nom, p.prixAchat, p.categorie, c.nom AS nomCategorie FROM Produit p JOIN categorie c ON c.code = p.categorie WHERE UPPER(c.code) LIKE UPPER(?) AND UPPER(p.nom) LIKE UPPER(?) AND p.disponibilite = 'Achat' ORDER BY p.nom");
 			
-			//On remet la liste à 0
+			//On remet la liste ï¿½ 0
 			this.listeProduits.clear();
 			this.dLMProduits.clear();
 			
-			//Si la catégorie est sur "Toutes", on initialise la catégorie à vide ("")
+			//Si la catï¿½gorie est sur "Toutes", on initialise la catï¿½gorie ï¿½ vide ("")
 			if(chCategorieRecherche.getSelectedItem().equals("Toutes")){
 				pst.setString(1, "%%");
 			}
 			
-			//Si non on récupère l'id de la catégorie depuis la liste (-1, car "Toutes" est au début)
+			//Si non on rï¿½cupï¿½re l'id de la catï¿½gorie depuis la liste (-1, car "Toutes" est au dï¿½but)
 			else{
 				pst.setString(1, "%"+this.listeCategorie.get(chCategorieRecherche.getSelectedIndex()-1).getId()+"%");
 			}
 			pst.setString(2, "%"+this.txtNomProduitRecherche.getText()+"%");
 			ResultSet rs = pst.executeQuery();
 			
-			//On boucle sur les résultat pour remplir l'arraylist
+			//On boucle sur les rï¿½sultat pour remplir l'arraylist
 			while(rs.next()){
 				String codePdt = rs.getString("code");
 				String descriptionPdt = rs.getString("nom");
@@ -308,7 +307,7 @@ public class AjouterProduitCommande extends JDialog{
 				this.listeProduits.add(new Produit(codePdt, descriptionPdt, prixAchat, codeCategorie, nomCategorie));
 			}
 			
-			//On ajoute tous les produits à la JList
+			//On ajoute tous les produits ï¿½ la JList
 			for(Produit p : this.listeProduits){
 				this.dLMProduits.addElement(p.getDescription());
 			}

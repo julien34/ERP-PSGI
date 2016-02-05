@@ -56,7 +56,7 @@ public class InterfaceDevis extends JPanel{
 	  private JTextField ChampTextBon = new JTextField("");
 
 	  private JLabel Client = new JLabel("Client : ");
-	  private JComboBox<ArrayList<?>> ChampTextClient = new JComboBox<ArrayList<?>>();;
+	  private JComboBox<String> ChampTextClient = new JComboBox<String>();;
 	  
 	  private JScrollBar bar =new JScrollBar();
 	  private JLabel Code = new JLabel("Code : ");
@@ -77,7 +77,7 @@ public class InterfaceDevis extends JPanel{
 	  
 		private JTable tableDevis;
 		private JScrollPane scrollPane;
-		private final String[] Colonnes = {"description","quantité","udm","prix"};
+		private final String[] Colonnes = {"description","quantitï¿½","udm","prix"};
 		private static DefaultTableModel modelTableDevis = new DefaultTableModel(0,4)
 		{
 			Class[] types = {String.class, Integer.class, Float.class, Float.class};
@@ -99,7 +99,7 @@ public class InterfaceDevis extends JPanel{
 			 
 	  };
 	  
-     String title[] = { "Ref","Designation","Quantité","PrixUnitaire"};
+     String title[] = { "Ref","Designation","Quantitï¿½","PrixUnitaire"};
 	  
 	  JTable tableau = new JTable(data,title);*/
 	  
@@ -234,5 +234,12 @@ public void initHandlers(){
 		float val3 = Float.parseFloat(quantite); 		
 		Object[] obj = {numProd,nom,quantite,};
 		modelTableDevis.addRow(obj);
+	}
+	
+	public void setComboBoxClient(){
+		ArrayList<Client> clientBDD = DatabaseConnection.getClients();
+		for(Client client: clientBDD){
+			ChampTextClient.addItem(client.idclient + " : " + client.nomclient + " " + client.prenomclient);
+		}
 	}
 }

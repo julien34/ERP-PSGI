@@ -26,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import com.toedter.calendar.JDateChooser;
 
 import achat.modeles.CommandesFournisseur;
+import achat.modeles.Fournisseur;
 import achat.modeles.UneditableTableModel;
 import achat.vues.popup.PopupCommande;
 import jdbc.DatabaseConnection;
@@ -35,7 +36,7 @@ public class PanelCommandes extends JPanel{
 	
 	public static ArrayList<Commande> listeCommandes = new ArrayList<Commande>();
 	private static Object[][] tabCo;
-	private static Object[] titres = {"N° Commande","Acheteur","Date", "Montant", "Etat"};
+	private static Object[] titres = {"Nï¿½ Commande","Acheteur","Date", "Montant", "Etat"};
 	
 	private static JTable tableau = new JTable(new DefaultTableModel());
 	private static UneditableTableModel modele = new UneditableTableModel(0,5);
@@ -79,10 +80,10 @@ public static void remplirTableau(){
 	}
 	
 	public static void maj(){
-		int nbDeCo = listeCommandes.size();//On calcule la taille de l'arrylist pour créer un tableau adéquat
-		tabCo = new Object[nbDeCo][5];//On créer le tableau de la taille récupérée 
+		int nbDeCo = listeCommandes.size();//On calcule la taille de l'arrylist pour crï¿½er un tableau adï¿½quat
+		tabCo = new Object[nbDeCo][5];//On crï¿½er le tableau de la taille rï¿½cupï¿½rï¿½e 
 		
-		//On remplit ce dernier avec les CommandesFournisseur récupérées
+		//On remplit ce dernier avec les CommandesFournisseur rï¿½cupï¿½rï¿½es
 		for(Commande cf : listeCommandes){
 			tabCo[listeCommandes.indexOf(cf)][0] = cf.getRefCommande();
 			tabCo[listeCommandes.indexOf(cf)][1] = cf.getNomClient();
@@ -106,7 +107,7 @@ private void initElements(){
 		JPanel panelBouton = new JPanel();
 		
 		
-		JLabel lblRechercheCommande = new JLabel("N° Commande : ");
+		JLabel lblRechercheCommande = new JLabel("Nï¿½ Commande : ");
 		txtRechercheCommande = new JTextField(10);
 		JLabel lblRechercheFournisseur = new JLabel("Client : ");
 		txtRechercheClient = new JTextField(10);
@@ -134,10 +135,6 @@ private void initElements(){
 		this.add(panelRechercheNord, BorderLayout.NORTH);
 		this.add(panelGrilleCentre, BorderLayout.CENTER);
 		
-		
-		
-		
-		
 		btnNouveau.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
@@ -145,7 +142,6 @@ private void initElements(){
 
 			}
 		});
-
 	}  
 
 

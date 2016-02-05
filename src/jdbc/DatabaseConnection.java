@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
+import vente.Client;
+
 public class DatabaseConnection 
 {	
 	static private Connection con;
@@ -165,6 +167,31 @@ public class DatabaseConnection
 		}
 	}
 	
+	static public ArrayList<Client> getClients()
+	{
+		int longueurTableau = 0;
+		int indexActuel = 0;
+		ArrayList<Client> clientBDD = new ArrayList<Client>();
+		
+		try
+		{
+			stat = con.createStatement();
+			ResultSet rs = stat.executeQuery("SELECT * FROM VENTE_CLIENTS ORDER BY idclient");
+			while(rs.next())
+			{
+				Client client = new Client(rs.getString("idclient"),rs.getString("nomclient"), rs.getString("prenomclient"),rs.getString("adresseclient"), rs.getString("emailclient"),rs.getString("telclient"),rs.getString("codecategorieclient"));
+				clientBDD.add(client);
+			}
+			rs.close();		
+			stat.close();
+			return clientBDD;
+		}
+		catch (SQLException e)
+		{
+			System.out.println(e.getMessage());
+			return null;
+		}
+	}
 	static public Object[][] rechercherListeClient(String Recherche)
 	{
 		int longueurTableau = 0;

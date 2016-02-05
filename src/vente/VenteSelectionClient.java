@@ -22,20 +22,21 @@ import javax.swing.JPanel;
 
 import jdbc.DatabaseConnection;
 import achat.modeles.Fournisseur;
+import achat.vues.PanelCommande;
 
 public class VenteSelectionClient extends JFrame{
-	private static Fournisseur fn;
+	private static Client client;
 	private JButton btnValider, btnAnnuler;
 	private ScrollPane scrollPane;
-	private ArrayList<Fournisseur> liste = new ArrayList<Fournisseur>();
+	private ArrayList<Client> clientBDD = new ArrayList<Client>();
 	private DefaultListModel<String> dLM = new DefaultListModel<String>();
-	private JList<String> jList = new JList<String>(this.dLM);
+	private JList<String> jListClient = new JList<String>(this.dLM);
 	
 	/**
-	 * Constructeur sans paramètre de la classe.
+	 * Constructeur sans paramï¿½tre de la classe.
 	 */
 	public VenteSelectionClient(){
-		this.getClient();//On récupère les Client sur la base de données
+		this.getClient();//On rï¿½cupï¿½re les Client sur la base de donnï¿½es
 		this.initFenetre();//On initie la fenetre
 		this.initComposants();//On initie les composants de la fenetre
 		this.initEcouteurs();
@@ -43,14 +44,14 @@ public class VenteSelectionClient extends JFrame{
 	
 	
 	/**
-	 * Méthode qui initialise la fenetre d'ajout de Client à une commande.
+	 * Mï¿½thode qui initialise la fenetre d'ajout de Client ï¿½ une commande.
 	 */
 	private void initFenetre(){
-		this.setTitle("Sélectionner un Client à affecter à la commande");//Titre de la fenetre
+		this.setTitle("Selection Client");//Titre de la fenetre
 		this.setSize(450, 200);//Taille de la fenetre
 		
-		Dimension dim = new Dimension(450,250);//Dimension pour dimension minimale
-		this.setMinimumSize(dim);//On défini la taille minimale de la fenetre
+		Dimension dim = new Dimension(460,250);//Dimension pour dimension minimale
+		this.setMinimumSize(dim);//On dï¿½fini la taille minimale de la fenetre
 		this.setLocationRelativeTo(null);//On centre la fenetre
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);//fermeture lors du clic sur la croix rouge
 		this.setVisible(true);//rendre la fenetre visible
@@ -58,29 +59,29 @@ public class VenteSelectionClient extends JFrame{
 	
 	
 	/**
-	 * Méthode qui initialise l'ensemble des composants.
+	 * Mï¿½thode qui initialise l'ensemble des composants.
 	 */
 	private void initComposants(){
 		
-		//Initialisation des différents panels
+		//Initialisation des diffï¿½rents panels
 		JPanel panelPrincipal = new JPanel(new BorderLayout());//Principal
 		JPanel panelListe = new JPanel();//Celui qui accueillera la liste
 		JPanel panelBtn = new JPanel();//Celui qui accueillera les boutons
 		
 		//Initialisation des composants
-		this.btnValider = new JButton("Valider");
+		this.btnValider = new JButton("OK");
 		this.btnAnnuler = new JButton("Annuler");
 		this.btnValider.setEnabled(false);//On grise le bouton valider
 		this.scrollPane = new ScrollPane();
 		this.scrollPane.setSize(450, 180);
 		
-		//Ajouts des composants aux différents panels
-		this.scrollPane.add(this.jList);
+		//Ajouts des composants aux diffï¿½rents panels
+		this.scrollPane.add(this.jListClient);
 		panelListe.add(scrollPane);
 		panelBtn.add(this.btnValider);
 		panelBtn.add(this.btnAnnuler);
 		
-		//On ajoute l'ensemble des panels à la frame
+		//On ajoute l'ensemble des panels ï¿½ la frame
 		panelPrincipal.add(panelListe, BorderLayout.CENTER);
 		panelPrincipal.add(panelBtn, BorderLayout.SOUTH);
 		this.add(panelPrincipal);
@@ -88,25 +89,30 @@ public class VenteSelectionClient extends JFrame{
 	
 	
 	/**
-	 * Méthode qui récupère l'ensemble des Clients de la base de données et les ajoute dans l'arrayList.
+	 * Mï¿½thode qui rï¿½cupï¿½re l'ensemble des Clients de la base de donnï¿½es et les affiche dans la JListet.
 	 */
 	private void getClient() {
-
+		clientBDD = DatabaseConnection.getClients();
+		for(Client client: clientBDD){
+			this.dLM.addElement(client.idclient+" - "+client.nomclient+ " " + client.prenomclient);
+		}
 	}
 	
 	
 	/**
-	 * Méthode qui assigne le Client sélectionné au Client courant.
+	 * Mï¿½thode qui assigne le Client selectionne au Client courant.
 	 * @param f, un Client.
-	 * @return le Client selectionné.
+	 * @return le Client selectionnï¿½.
 	 */
-	private static void selectClient(Client f){
-
+	//recuperer le client qui passe une commande a la fenetre qui gere la commande
+	private static void setClientChoisit(Client cli){
+		client = cli;
+		//PanelCommande.getClient(client);
 	}
 	
 	
 	/**
-	 * Méthode qui initialise les écouteurs.
+	 * Mï¿½thode qui initialise les ï¿½couteurs.
 	 */
 	private void initEcouteurs(){
 		
@@ -115,7 +121,7 @@ public class VenteSelectionClient extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-			//	VenteSelectionClient.selectClient(VenteSelectionClient.this.liste.get(VenteSelectionClient.this.jList.getSelectedIndex()));
+				VenteSelectionClient.setClientChoisit(VenteSelectionClient.this.clientBDD.get(VenteSelectionClient.this.jListClient.getSelectedIndex()));
 				dispose(); 
 			}
 		});
@@ -130,7 +136,7 @@ public class VenteSelectionClient extends JFrame{
 		});
 		
 		//JListe
-		this.jList.addMouseListener(new MouseAdapter() {
+		this.jListClient.addMouseListener(new MouseAdapter() {
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -139,7 +145,7 @@ public class VenteSelectionClient extends JFrame{
 				
 				//Double clic
 				if(e.getClickCount()%2==0){
-					//VenteSelectionClient.selectClient(VenteSelectionClient.this.liste.get(VenteSelectionClient.this.jList.getSelectedIndex()));
+					VenteSelectionClient.setClientChoisit(VenteSelectionClient.this.clientBDD.get(VenteSelectionClient.this.jListClient.getSelectedIndex()));
 					dispose();
 				}
 			}

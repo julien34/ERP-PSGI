@@ -93,9 +93,9 @@ public class AjouterCommande extends JDialog{
 			if(DatabaseConnection.requete("CALL procedure('"+numProd+"',"+nom+",'"+quantite+"')"))
 			{
 				FenetrePrincipale.getInterfaceDevis().raffraichirListe(numProd,nom,quantite);
-				JOptionPane.showMessageDialog(null, "Produit ajouté avec succès.", "Ajout de produit", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Produit ajoutï¿½ avec succï¿½s.", "Ajout de produit", JOptionPane.INFORMATION_MESSAGE);
 			}
-			else JOptionPane.showMessageDialog(null, "Erreur d'ajout du produit. Vérifiez vos variables.", "Ajout de produit", JOptionPane.WARNING_MESSAGE);
+			else JOptionPane.showMessageDialog(null, "Erreur d'ajout du produit. Vï¿½rifiez vos variables.", "Ajout de produit", JOptionPane.WARNING_MESSAGE);
 		}
 	});
 			bt_annuler.addActionListener(new ActionListener()
@@ -107,5 +107,12 @@ public class AjouterCommande extends JDialog{
 			});
 			
 		}
-
+		/**
+		 * MÃ©thode qui change le fournisseur avec celui sÃ©lectionnÃ© dans la liste.
+		 * @param f, le Fournisseur Ã  changer.
+		 */
+		/*public static void getClient(Client cli){
+			clienCommande = cli;
+			txtRechercheClient.setText(cli.idclient + " " + cli.nomclient + " " + cli.prenomclient);
+		}*/
 }
