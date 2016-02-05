@@ -179,7 +179,7 @@ public class AjouterProduitCommande extends JDialog{
 		
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT p.code, p.nom, p.prixAchat, p.categorie, c.nom AS nomCategorie FROM Produit p JOIN categorie c ON c.code = p.categorie WHERE p.disponibilite = 'Achat' ORDER BY p.nom");
+			PreparedStatement pst = cn.prepareStatement("SELECT p.code, p.nom, p.prixAchat, p.categorie, c.nom AS nomCategorie FROM Produit p JOIN categorie c ON c.code = p.categorie WHERE p.disponibilite = 'Vente' ORDER BY p.nom");
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
