@@ -32,7 +32,7 @@ import com.toedter.calendar.JDateChooser;
 
 import achat.modeles.CommandesFournisseur;
 import achat.modeles.UneditableTableModel;
-import achat.vues.popup.PopupCommande;
+import achat.vues.popup.popCommande.PopupCommande;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 

@@ -1,4 +1,4 @@
-package achat.vues.popup;
+package achat.vues.popup.popFournisseur;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;

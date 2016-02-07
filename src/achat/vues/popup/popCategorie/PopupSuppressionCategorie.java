@@ -1,4 +1,4 @@
-package achat.vues.popup;
+package achat.vues.popup.popCategorie;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -10,25 +10,25 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 import jdbc.DatabaseConnection;
 import achat.modeles.Categorie;
 import achat.vues.PanelCategorie;
 
-public class PopupModifCategorie extends JDialog{
-	private String nom, code;
+public class PopupSuppressionCategorie extends JDialog{
+	
+	private String code, nom;
 	private int indice;
-	private JTextField txtNomCategorie;
 	private JButton btnAnnuler, btnValider;
 	private JLabel lblNomCategorie;
 	
 	/**
-	 * Constructeur avec une catégorie à modifier en paramètre.
+	 * Constructeur avec une catégorie à supprimer en paramètre.
 	 * @param c, une catégorie à modifier.
 	 */
-	public PopupModifCategorie(Categorie c, int indice){
+	public PopupSuppressionCategorie(Categorie c, int indice){
 		this.code = c.getId();
 		this.nom = c.getNom();
 		this.indice = indice;
@@ -37,26 +37,26 @@ public class PopupModifCategorie extends JDialog{
 		this.initElements();
 		this.initEcouteurs();
 	}
-	
+
 	
 	/**
-	 * Méthode qui créer une nouvelle fenetre avec des caractéristiques.
+	 * Méthode qui initialise la frame de suppression d'une catégorie fournisseurs.
 	 */
-	private void initFenetre(){
-		this.setTitle("Modifier une catégorie de fournisseur");
+	private void initFenetre() {
+		this.setTitle("Supprimer une catégorie de fournisseur");
 		this.setResizable(false);
 		this.setSize(500, 200);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-		this.setVisible(true);
+		this.setVisible(true);	
 	}
 	
 	
 	/**
-	 * Méthode qui initialise les composants sur les JPanels
+	 * Méthode qui initialise les éléments du panel.
 	 */
-	private void initElements(){
-		
+	private void initElements() {
+
 		//On défini le layout de la fenêtre
 		this.setLayout(new GridLayout(2,1));
 		
@@ -67,13 +67,10 @@ public class PopupModifCategorie extends JDialog{
 		
 		this.btnAnnuler = new JButton("Annuler");
 		this.btnValider = new JButton("Valider");
-		this.lblNomCategorie = new JLabel("Nom de la catégorie : ");
-		this.txtNomCategorie = new JTextField(15);
-		this.txtNomCategorie.setText(this.nom);
+		this.lblNomCategorie = new JLabel("Voulez-vous vraiment supprimer cette catégorie ?");
 		
 		//On dispose les éléments sur la fenêtre
 		panelTxt.add(this.lblNomCategorie);
-		panelTxt.add(this.txtNomCategorie);
 		panelBtn.add(this.btnValider);
 		panelBtn.add(this.btnAnnuler);
 		
@@ -85,9 +82,20 @@ public class PopupModifCategorie extends JDialog{
 	/**
 	 * Méthode qui initialise les écouteurs des boutons.
 	 */
-	private void initEcouteurs(){
+	private void initEcouteurs() {
 		
-		//Bouton annuler (ferme la fenetre)
+		//Bouton valider
+		this.btnValider.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				PopupSuppressionCategorie.this.envoierequete();
+				dispose();
+			}
+		});
+		
+		
+		//Bouton annuler
 		this.btnAnnuler.addActionListener(new ActionListener() {
 			
 			@Override
@@ -95,37 +103,29 @@ public class PopupModifCategorie extends JDialog{
 				dispose();
 			}
 		});
-		
-		//Bouton valider (envoie la requete, modifie le panelCategorie et ferme la fenetre)
-		this.btnValider.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				PopupModifCategorie.this.envoierequete();
-				PanelCategorie.majTableauModif(new Categorie(PopupModifCategorie.this.code, PopupModifCategorie.this.nom), PopupModifCategorie.this.indice);
-				PanelCategorie.getBtonModifier().setEnabled(false);
-				PanelCategorie.getBtonSupprimer().setEnabled(false);
-				dispose();
-			}
-		});
 	}
 	
 	
 	/**
-	 * Méthode qui exécute la requete (modification de ligne dans la table)
+	 * Méthode qui exécute la requete (modification de ligne dans la table).
 	 */
 	private void envoierequete(){
-		this.nom = this.txtNomCategorie.getText();
-		
+
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("UPDATE CategoriesFournisseur SET nomCategorie = ? WHERE RefCategorie = ?");
-			pst.setString(1, this.nom);
-			pst.setString(2, this.code);
+			PreparedStatement pst = cn.prepareStatement("DELETE FROM CategoriesFournisseur WHERE RefCategorie = ?");
+			pst.setString(1, this.code);
 			pst.executeQuery();
+			
+			//On retire la catégorie du tableau, et on grise les deux bouton "modifier" et "supprimer"
+			PanelCategorie.majTableauSuppr(new Categorie(PopupSuppressionCategorie.this.code, PopupSuppressionCategorie.this.nom), PopupSuppressionCategorie.this.indice);
+			PanelCategorie.getBtonSupprimer().setEnabled(false);
+			PanelCategorie.getBtonModifier().setEnabled(false);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "La catégorie est associée à un ou plusieurs fournisseur(s).", "Erreur", JOptionPane.ERROR_MESSAGE);
+
 		}
 	}
 }

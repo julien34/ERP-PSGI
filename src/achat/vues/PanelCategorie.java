@@ -25,9 +25,9 @@ import javax.swing.ListSelectionModel;
 
 import achat.modeles.Categorie;
 import achat.modeles.UneditableTableModel;
-import achat.vues.popup.PopupAjoutCategorie;
-import achat.vues.popup.PopupModifCategorie;
-import achat.vues.popup.PopupSuppressionCategorie;
+import achat.vues.popup.popCategorie.PopupAjoutCategorie;
+import achat.vues.popup.popCategorie.PopupModifCategorie;
+import achat.vues.popup.popCategorie.PopupSuppressionCategorie;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 

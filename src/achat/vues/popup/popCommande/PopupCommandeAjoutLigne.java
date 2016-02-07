@@ -1,4 +1,4 @@
-package achat.vues.popup;
+package achat.vues.popup.popCommande;
 
 import java.awt.BorderLayout;
 import java.awt.Choice;

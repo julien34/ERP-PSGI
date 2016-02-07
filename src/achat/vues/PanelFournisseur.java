@@ -29,9 +29,9 @@ import javax.swing.table.DefaultTableModel;
 
 import achat.modeles.Fournisseur;
 import achat.modeles.UneditableTableModel;
-import achat.vues.popup.PopupAjoutFournisseur;
-import achat.vues.popup.PopupModifFournisseur;
-import achat.vues.popup.PopupSupressionFournisseur;
+import achat.vues.popup.popFournisseur.PopupAjoutFournisseur;
+import achat.vues.popup.popFournisseur.PopupModifFournisseur;
+import achat.vues.popup.popFournisseur.PopupSupressionFournisseur;
 import principal.FenetrePrincipale;
 import jdbc.DatabaseConnection;
 
