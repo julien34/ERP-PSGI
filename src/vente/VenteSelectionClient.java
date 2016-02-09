@@ -85,8 +85,11 @@ public class VenteSelectionClient extends JFrame{
 		panelPrincipal.add(panelListe, BorderLayout.CENTER);
 		panelPrincipal.add(panelBtn, BorderLayout.SOUTH);
 		this.add(panelPrincipal);
+		
+		
+		
 	}
-	
+
 	
 	/**
 	 * M�thode qui r�cup�re l'ensemble des Clients de la base de donn�es et les affiche dans la JListet.
@@ -98,7 +101,7 @@ public class VenteSelectionClient extends JFrame{
 		}
 	}
 	
-	
+
 	/**
 	 * M�thode qui assigne le Client selectionne au Client courant.
 	 * @param f, un Client.
@@ -110,7 +113,14 @@ public class VenteSelectionClient extends JFrame{
 		//PanelCommande.getClient(client);
 	}
 	
+	private static String getClientChoisit(Client cli){
+		return cli.getNomClient();
+	}
 	
+	private static String getIDClientChoisit(Client cli){
+		return cli.getIdClient();
+	}
+
 	/**
 	 * M�thode qui initialise les �couteurs.
 	 */
@@ -122,6 +132,7 @@ public class VenteSelectionClient extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				VenteSelectionClient.setClientChoisit(VenteSelectionClient.this.clientBDD.get(VenteSelectionClient.this.jListClient.getSelectedIndex()));
+				FenetreVente.lblFournisseurCode.setText(getClientChoisit( client)+" ( "+getIDClientChoisit( client)+" )");
 				dispose(); 
 			}
 		});
@@ -142,7 +153,6 @@ public class VenteSelectionClient extends JFrame{
 			public void mouseClicked(MouseEvent e) {
 				
 				VenteSelectionClient.this.btnValider.setEnabled(true);//On active le bouton valider
-				
 				//Double clic
 				if(e.getClickCount()%2==0){
 					VenteSelectionClient.setClientChoisit(VenteSelectionClient.this.clientBDD.get(VenteSelectionClient.this.jListClient.getSelectedIndex()));

@@ -57,7 +57,7 @@ public class FenetreVente extends JDialog {
 	private static Object[] titres = {"Code","Description","Catégorie","Prix HT","Qté","Total HT"};
 	
 	private JLabel lblMontantTotalHt, lblMontantRemise, lblMontantTva, lblMontantTtc;
-	private static JLabel lblFournisseurCode;
+	static JLabel lblFournisseurCode;
 	private JSpinner txtRemise;
 	private JButton btnCalculerTotal, btnValider, btnAnnuler, btnRechercher, btnAjouter, btnModifier, btnSupprimer;
 	private JDateChooser jdcDateLivr, jdcDate;
