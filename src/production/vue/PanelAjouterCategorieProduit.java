@@ -14,7 +14,7 @@ import jdbc.DatabaseProduction;
  * Ce panel permet d'ajouter une categorie.
  */
 @SuppressWarnings("serial")
-public class PanelAjouterCategorieProduit extends JPanel
+public class PanelAjouterCategorieProduit extends JDialog
 {	
 	/**
 	 * Le panel sur lequel celui-ci est implenté.
@@ -24,8 +24,10 @@ public class PanelAjouterCategorieProduit extends JPanel
 	/**
 	 * Le panel qui contient tous les autres éléments.
 	 */
-	private JPanel panel_grid = new JPanel(new GridLayout(3,5,4,4));
-	
+	private JPanel panel_grid = new JPanel(new GridLayout(5,3,4,4));
+	private JPanel  principal = new JPanel(new GridLayout(15,8));
+	private JPanel button = new JPanel(new BorderLayout(5,5));
+	private JPanel txt = new JPanel (new BorderLayout(5,5));
 	/**
 	 * Label du champs nom.
 	 */
@@ -66,28 +68,46 @@ public class PanelAjouterCategorieProduit extends JPanel
 	 * @param panel_categorie Le panel sur lequel celui-ci est implenté.
 	 */
 	public PanelAjouterCategorieProduit(PanelCategorieProduit panel_categorie)
-	{	  
+	{	 
+		
 		this.panel_categorie = panel_categorie;
+		
+	
+		initFenetre();
 		
 		//Ajouter les élements	
 		add(panel_grid);
-		panel_grid.add(nom_label);
-		panel_grid.add(nom);
-		panel_grid.add(new JPanel());
-		panel_grid.add(parent_label);
-		panel_grid.add(parent);
-
-		panel_grid.add(new JPanel());
-		panel_grid.add(new JPanel());
-		panel_grid.add(new JPanel());
-		panel_grid.add(new JPanel());
-		panel_grid.add(new JPanel());
+		panel_grid.setLayout(new GridLayout());
+		panel_grid.add(principal);
 		
-		panel_grid.add(new JPanel());
-		panel_grid.add(new JPanel());
-		panel_grid.add(new JPanel());
-		panel_grid.add(ajouter);
-		panel_grid.add(retour);
+		principal.add(txt);
+		principal.add(button);
+		
+		txt.add(nom_label);
+		txt.add(nom);
+		txt.add(parent_label);
+		txt.add(parent);
+		
+		button.add(ajouter);
+		button.add(retour);
+	
+		principal.add(nom_label);
+		principal.add(nom);
+		principal.add(new JPanel());
+		principal.add(parent_label);
+		principal.add(parent);
+
+		principal.add(new JPanel());
+		principal.add(new JPanel());
+		principal.add(new JPanel());
+		principal.add(new JPanel());
+		principal.add(new JPanel());
+		
+		principal.add(new JPanel());
+		principal.add(new JPanel());
+		principal.add(new JPanel());
+		principal.add(ajouter);
+		principal.add(retour);
 		
 		//Action si click sur bouton
 		ajouter.addActionListener(new ActionListener()
@@ -171,4 +191,13 @@ public class PanelAjouterCategorieProduit extends JPanel
 		repaint();
 		revalidate();
     }
+    private void initFenetre(){
+		this.setTitle("Ajouter une catégorie de Produit");
+		this.setResizable(false);
+		this.setSize(600, 400);
+		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		this.setVisible(true);
+	}
+	
 }

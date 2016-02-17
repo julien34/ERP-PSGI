@@ -16,7 +16,7 @@ import jdbc.DatabaseProduction;
  *
  */
 @SuppressWarnings("serial")
-public class PanelModifierCategorieProduit extends JPanel
+public class PanelModifierCategorieProduit extends JDialog
 {	
 	/**
 	 * Le panel sur lequel celui-ci est implenté.
@@ -26,7 +26,7 @@ public class PanelModifierCategorieProduit extends JPanel
 	/**
 	 * Le panel qui contient tous les autres éléments.
 	 */
-	private JPanel panel_grid = new JPanel(new GridLayout(3,5,4,4));
+	private JPanel panel_grid = new JPanel(new GridLayout(6,6));
 	
 	/**
 	 * Label du champs nom.
@@ -80,7 +80,8 @@ public class PanelModifierCategorieProduit extends JPanel
 		this.panel_categorie = panel_categorie;
 		code = code_arg;
 		nom.setText(nom_arg);		
-
+		
+		initFenetre();
 		//Ajouter les élements	
 		add(panel_grid);
 		panel_grid.add(nom_label);
@@ -174,4 +175,12 @@ public class PanelModifierCategorieProduit extends JPanel
 		repaint();
 		revalidate();
     }
+    private void initFenetre(){
+		this.setTitle("Modifier une catégorie de Produit");
+		this.setResizable(false);
+		this.setSize(500, 300);
+		this.setLocationRelativeTo(null);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		this.setVisible(true);
+	}
 }
