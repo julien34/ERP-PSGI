@@ -29,9 +29,9 @@ import jdbc.DatabaseProduction;
 public class PanelComposition extends JPanel
 {
 	/**
-	 * Le code de la nomenclature a.
+	 * Le code de la nomenclature b.
 	 */
-	private int codeNomenclatureA;
+	private int codeNomenclatureB;
 	
 	/**
 	 * Le panel qui contient le tableau.
@@ -113,9 +113,9 @@ public class PanelComposition extends JPanel
     /**
      * Constructeur du panel contenant l'interface de gestion de composition.
      */
-	public PanelComposition(int codeNomenclatureA)
+	public PanelComposition(int codeNomenclatureB)
 	{
-		this.codeNomenclatureA = codeNomenclatureA;
+		this.codeNomenclatureB = codeNomenclatureB;
 		
 		//Remplir, configurer et créer la table
 		table = new JTable(model);
@@ -270,7 +270,7 @@ public class PanelComposition extends JPanel
 		//Passage d'array list en array. Les attributs des objets sont récupérés
 		for (Composition composition : compositions) 
 		{
-			if(composition.getNomenclatureDeux().getCode() == codeNomenclatureA)
+			if(composition.getNomenclatureUn().getCode() == codeNomenclatureB)
 			{
 				data[index][0] = composition.getCode();
 				data[index][1] = composition.getNomenclatureUn().getNom();
