@@ -29,6 +29,11 @@ import jdbc.DatabaseProduction;
 public class PanelOperation extends JPanel
 {
 	/**
+	 * Le code de la gamme des opérations.
+	 */
+	private int codeGamme;
+	
+	/**
 	 * Le panel qui contient le tableau.
 	 */
 	private JPanel panel_table = new JPanel(new BorderLayout(10,10));
@@ -108,8 +113,10 @@ public class PanelOperation extends JPanel
     /**
      * Constructeur du panel contenant l'interface de gestion d'operation.
      */
-	public PanelOperation()
+	public PanelOperation(int codeGamme)
 	{
+		this.codeGamme = codeGamme;
+		
 		//Remplir, configurer et créer la table
 		table = new JTable(model);
 		table.setRowSorter(sorter);
@@ -138,6 +145,7 @@ public class PanelOperation extends JPanel
 		supprimer.setEnabled(false);
 		
 		creationListener();
+		raffraichirTable();
 	}
 
 	/**
@@ -264,20 +272,25 @@ public class PanelOperation extends JPanel
 	{
 		DatabaseProduction.chargerClasse();
 		ArrayList<Operation> operations = DatabaseProduction.getListeOperation();
+		//ArrayList<Operation> operations = panel_gamme.getListeOperation();
 		Object[][] data = new Object[operations.size()][7];
 		int index = 0;
 
 		//Passage d'array list en array. Les attributs des objets sont récupérés
 		for (Operation object : operations) 
 		{
-			data[index][0] = object.getCode();
-			data[index][1] = object.getNom();
-			data[index][2] = object.getSequence();
-			data[index][3] = object.getNombreCycle();
-			data[index][4] = object.getNombreHeure();
-			data[index][5] = object.getGamme().getNom();
-			data[index][6] = object.getCentreDeTravail().getNom();
-			index++;
+			//vérification de la gamme passée en paramètre
+			if(object.getGamme().getCode() == codeGamme)
+			{
+				data[index][0] = object.getCode();
+				data[index][1] = object.getNom();
+				data[index][2] = object.getSequence();
+				data[index][3] = object.getNombreCycle();
+				data[index][4] = object.getNombreHeure();
+				data[index][5] = object.getGamme().getNom();
+				data[index][6] = object.getCentreDeTravail().getNom();
+				index++;
+			}
 		}
 
 		model.setRowCount(0);

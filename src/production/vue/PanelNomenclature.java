@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -29,6 +30,11 @@ import jdbc.DatabaseProduction;
 @SuppressWarnings("serial")
 public class PanelNomenclature extends JPanel
 {
+	/**
+	 * Le panel des compositions liées.
+	 */
+	private PanelComposition panel_composition;
+	
 	/**
 	 * Le panel qui contient le tableau.
 	 */
@@ -58,6 +64,11 @@ public class PanelNomenclature extends JPanel
 	 * Bouton de suppression de produit.
 	 */
 	private JButton supprimer = new JButton("Supprimer");	
+	
+	/**
+	 * Bouton de gestion des compositions.
+	 */
+	private JButton compositions = new JButton("Compositions");	
 	
 	/**
 	 * Le tableau qui contient les informations des produits.
@@ -134,10 +145,13 @@ public class PanelNomenclature extends JPanel
 		modifier.setPreferredSize(new Dimension(140,26));
 		panel_boutton.add(supprimer);
 		supprimer.setPreferredSize(new Dimension(140,26));
+		panel_boutton.add(compositions);
+		compositions.setPreferredSize(new Dimension(140,26));
 		    	
 		//Désactiver les bouttons
 		modifier.setEnabled(false);
 		supprimer.setEnabled(false);
+		compositions.setEnabled(false);
 		
 		creationListener();
 	}
@@ -159,6 +173,7 @@ public class PanelNomenclature extends JPanel
 		        //Désactiver certains boutons si on ne selectionne aucune ligne
 		        modifier.setEnabled(!selection.isSelectionEmpty());
 		        supprimer.setEnabled(!selection.isSelectionEmpty());
+		        compositions.setEnabled(!selection.isSelectionEmpty());
 		    }
 		});
 		
@@ -244,6 +259,22 @@ public class PanelNomenclature extends JPanel
 						}
 					}
 				}
+			}
+		});
+		compositions.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{ 
+				JFrame frameOperations = new JFrame();
+				panel_composition = new PanelComposition((int) model.getValueAt(table.convertRowIndexToModel(ligne_choisie), 0));
+				frameOperations.add(panel_composition);
+				frameOperations.setContentPane(panel_composition);
+				frameOperations.setTitle("Gestion des compositions");
+				frameOperations.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				frameOperations.setSize(700,700);
+				frameOperations.setLocationRelativeTo(null);
+				frameOperations.setResizable(true);
+				frameOperations.setVisible(true);
 			}
 		});
 	}

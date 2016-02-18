@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -28,6 +29,11 @@ import jdbc.DatabaseProduction;
 @SuppressWarnings("serial")
 public class PanelGamme extends JPanel
 {
+	/**
+	 * Le panel des opérations liées.
+	 */
+	private PanelOperation panel_operation;
+	
 	/**
 	 * Le panel qui contient le tableau.
 	 */
@@ -57,6 +63,11 @@ public class PanelGamme extends JPanel
 	 * Bouton de suppression de gamme.
 	 */
 	private JButton supprimer = new JButton("Supprimer");	
+	
+	/**
+	 * Bouton de gestion des operations.
+	 */
+	private JButton operations = new JButton("Opérations");	
 	
 	/**
 	 * Le tableau qui contient les informations des gammes.
@@ -132,10 +143,13 @@ public class PanelGamme extends JPanel
 		modifier.setPreferredSize(new Dimension(140,26));
 		panel_boutton.add(supprimer);
 		supprimer.setPreferredSize(new Dimension(140,26));
+		panel_boutton.add(operations);
+		operations.setPreferredSize(new Dimension(140,26));
 		    	
 		//Désactiver les bouttons
 		modifier.setEnabled(false);
 		supprimer.setEnabled(false);
+		operations.setEnabled(false);
 		
 		creationListener();
 	}
@@ -158,6 +172,7 @@ public class PanelGamme extends JPanel
 		        //Désactiver certains boutons si on ne selectionne aucune ligne
 		        modifier.setEnabled(!selection.isSelectionEmpty());
 		        supprimer.setEnabled(!selection.isSelectionEmpty());
+		        operations.setEnabled(!selection.isSelectionEmpty());
 		    }
 		});
 		
@@ -240,6 +255,23 @@ public class PanelGamme extends JPanel
 						}
 					}
 				}
+			}
+		});
+		
+		operations.addActionListener (new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				JFrame frameOperations = new JFrame();
+				panel_operation = new PanelOperation((int) model.getValueAt(table.convertRowIndexToModel(ligne_choisie), 0));
+				frameOperations.add(panel_operation);
+				frameOperations.setContentPane(panel_operation);
+				frameOperations.setTitle("Gestion des opérations");
+				frameOperations.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				frameOperations.setSize(700,700);
+				frameOperations.setLocationRelativeTo(null);
+				frameOperations.setResizable(true);
+				frameOperations.setVisible(true);
 			}
 		});
 	}

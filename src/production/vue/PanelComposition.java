@@ -29,6 +29,11 @@ import jdbc.DatabaseProduction;
 public class PanelComposition extends JPanel
 {
 	/**
+	 * Le code de la nomenclature a.
+	 */
+	private int codeNomenclatureA;
+	
+	/**
 	 * Le panel qui contient le tableau.
 	 */
 	private JPanel panel_table = new JPanel(new BorderLayout(10,10));
@@ -108,8 +113,10 @@ public class PanelComposition extends JPanel
     /**
      * Constructeur du panel contenant l'interface de gestion de composition.
      */
-	public PanelComposition()
+	public PanelComposition(int codeNomenclatureA)
 	{
+		this.codeNomenclatureA = codeNomenclatureA;
+		
 		//Remplir, configurer et créer la table
 		table = new JTable(model);
 		table.setRowSorter(sorter);
@@ -135,6 +142,7 @@ public class PanelComposition extends JPanel
 		supprimer.setEnabled(false);
 		
 		creationListener();
+		raffraichirTable();
 	}
 
 	/**
@@ -262,10 +270,13 @@ public class PanelComposition extends JPanel
 		//Passage d'array list en array. Les attributs des objets sont récupérés
 		for (Composition composition : compositions) 
 		{
-			data[index][0] = composition.getCode();
-			data[index][1] = composition.getNomenclatureUn().getNom();
-			data[index][2] = composition.getNomenclatureDeux().getNom();
-			index++;
+			if(composition.getNomenclatureDeux().getCode() == codeNomenclatureA)
+			{
+				data[index][0] = composition.getCode();
+				data[index][1] = composition.getNomenclatureUn().getNom();
+				data[index][2] = composition.getNomenclatureDeux().getNom();
+				index++;
+			}
 		}
 
 		model.setRowCount(0);

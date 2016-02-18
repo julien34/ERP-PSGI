@@ -68,10 +68,8 @@ public class FenetrePrincipale extends JFrame
         private static JMenu menu_production = new JMenu("Production");
         private JMenuItem menu_production_produit = new JMenuItem("Gérer les produits");
         private JMenuItem menu_production_categorie = new JMenuItem("Gérer les categories");
-        private JMenuItem menu_production_operation = new JMenuItem("Gérer les operations");
         private JMenuItem menu_production_gamme = new JMenuItem("Gérer les gammes");
         private JMenuItem menu_production_centre_de_travail = new JMenuItem("Gérer les centres");
-        private JMenuItem menu_production_composition = new JMenuItem("Gérer les compositions");
         private JMenuItem menu_production_emplacement = new JMenuItem("Gérer les emplacements");
         private JMenuItem menu_production_nomenclature = new JMenuItem("Gérer les nomenclatures");
         private JMenuItem menu_production_unite_de_mesure = new JMenuItem("Gérer les unite de mesure");
@@ -94,10 +92,8 @@ public class FenetrePrincipale extends JFrame
    	//Production
    	private PanelProduit panel_produit = new PanelProduit();
     private static PanelCategorieProduit panel_categorie_produit = new PanelCategorieProduit();
-    private static PanelOperation panel_operation = new PanelOperation();
     private static PanelGamme panel_gamme = new PanelGamme();
     private static PanelCentreDeTravail panel_centre_de_travail = new PanelCentreDeTravail();
-    private static PanelComposition panel_composition = new PanelComposition();
     private static PanelEmplacement panel_emplacement = new PanelEmplacement();
     private static PanelNomenclature panel_nomenclature = new PanelNomenclature();
     private static PanelUniteDeMesure panel_unite_de_mesure = new PanelUniteDeMesure();
@@ -147,10 +143,8 @@ public class FenetrePrincipale extends JFrame
 				menu.add(menu_production);
 				menu_production.add(menu_production_produit);
 		        menu_production.add(menu_production_categorie);
-		        menu_production.add(menu_production_operation);
 		        menu_production.add(menu_production_gamme);
 		        menu_production.add(menu_production_centre_de_travail);
-		        menu_production.add(menu_production_composition);
 		        menu_production.add(menu_production_emplacement);
 		        menu_production.add(menu_production_nomenclature);
 		        menu_production.add(menu_production_unite_de_mesure);
@@ -296,15 +290,7 @@ public class FenetrePrincipale extends JFrame
 	   				ajouterOnglet("Gérer les categories", panel_categorie_produit);
 	   				panel_categorie_produit.raffraichirTable();
 	   			}
-	   		});	
-	        menu_production_operation.addActionListener(new ActionListener()
-	        {
-	            public void actionPerformed(ActionEvent e) 
-	            {
-	   				ajouterOnglet("Gérer les opérations", panel_operation);
-	   				panel_operation.raffraichirTable();
-	            }
-	        });
+	   		});
 	        menu_production_gamme.addActionListener(new ActionListener()
 	        {
 	            public void actionPerformed(ActionEvent e) 
@@ -319,14 +305,6 @@ public class FenetrePrincipale extends JFrame
 	            {
 	            	ajouterOnglet("Gérer les centres de travail", panel_centre_de_travail);
 	                panel_centre_de_travail.raffraichirTable();
-	            }
-	        });
-	        menu_production_composition.addActionListener(new ActionListener()
-	        {
-	            public void actionPerformed(ActionEvent e) 
-	            {
-	            	ajouterOnglet("Gérer les compositions", panel_composition);
-	                panel_composition.raffraichirTable();
 	            }
 	        });
 	        menu_production_emplacement.addActionListener(new ActionListener()
