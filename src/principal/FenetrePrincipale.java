@@ -50,6 +50,7 @@ public class FenetrePrincipale extends JFrame
         static JMenuItem menuAchatAjoutFournisseur = new JMenuItem("Fournisseurs");//Item ajouter un fournisseur
         static JMenuItem menuAchatAjoutCategorie = new JMenuItem("Catégories");//Item ajouter une catégorie de fournisseurs
         static JMenuItem menuAchatCommande = new JMenuItem("Commandes");//Item commande
+        static JMenuItem menuAchatTVA = new JMenuItem("TVA");//Item TVA
         
          //Ventes
         static JMenu menuVentes = new JMenu("Ventes");
@@ -132,6 +133,7 @@ public class FenetrePrincipale extends JFrame
 				menuAchatFournisseur.add(menuAchatAjoutFournisseur);
 				menuAchats.add(menuAchatFournisseur);
 				menuAchats.add(menuAchatCommande);
+				menuAchats.add(menuAchatTVA);
 				
 	        //Ventes
 				menu.add(menuVentes);
@@ -227,6 +229,16 @@ public class FenetrePrincipale extends JFrame
 						ajouterOnglet("Commandes d'achat", panelCommande);
 					}
 					
+				}
+			});
+	   		
+	   		menuAchatTVA.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (true) {
+						
+					}
 				}
 			});
 	   		
