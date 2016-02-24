@@ -63,7 +63,7 @@ public class FenetrePrincipale extends JFrame
         
         
         static JMenuItem menuVentesClients = new JMenuItem("Interface de clients");
-        static JMenuItem menuVentesDevis = new JMenuItem("Interface de devis");
+       // static JMenuItem menuVentesDevis = new JMenuItem("Interface de devis");
         	        
         //Production
         private static JMenu menu_production = new JMenu("Production");
@@ -138,7 +138,7 @@ public class FenetrePrincipale extends JFrame
 	        //Ventes
 				menu.add(menuVentes);
 				menuVentes.add(menuVentesClients);
-				menuVentes.add(menuVentesDevis);
+				//menuVentes.add(menuVentesDevis);
 				menuVentes.add(menuCommandes);
 
 	        //Production
@@ -272,7 +272,7 @@ public class FenetrePrincipale extends JFrame
 	   				ajouterOnglet("Gestion des clients", panelClient);
 	   			}
 	   		});	
-	   		menuVentesDevis.addActionListener(new ActionListener()
+	   	/*	menuVentesDevis.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{	
@@ -280,7 +280,7 @@ public class FenetrePrincipale extends JFrame
 	   				ajouterOnglet("Gestion des Devis", InterfaceDevis);
 	   			}
 	   		});	
-	   		
+	   		*/
 	   		
 	   		
 	   		
