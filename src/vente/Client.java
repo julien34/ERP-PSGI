@@ -1,14 +1,14 @@
 package vente;
 
 public class Client {
-	String idclient, nomclient, prenomclient, adresseclient,mailclient,telclient,codecateg;
+	String idclient, nomclient, prenomclient, adresseclient,mailclient,telclient,categorie;
 	
 	public String getCategorie() {
-		return codecateg;
+		return categorie;
 	}
 
 	public void setCategorie(String codecateg) {
-		this.codecateg = codecateg;
+		this.categorie = codecateg;
 	}
 
 	public void setidClient(String idclient) {
@@ -65,7 +65,7 @@ public class Client {
 		this.telclient = telclient;
 		this.mailclient = mailclient;
 		this.adresseclient = adresseclient;
-		this.codecateg = codecateg;	
+		this.categorie = codecateg;	
 	}
 	
 	

@@ -132,7 +132,7 @@ public class DatabaseConnection
 	{
 		int longueurTableau = 0;
 		int indexActuel = 0;
-			
+		String categ;
 		try
 		{
 			stat = con.createStatement();
@@ -153,7 +153,11 @@ public class DatabaseConnection
 				databaseData[indexActuel][3] = resultat.getString("adresseclient");
 				databaseData[indexActuel][4] = resultat.getString("emailclient");
 				databaseData[indexActuel][5] = resultat.getString("telclient");
-				databaseData[indexActuel][6] = resultat.getString("codecategorieclient");
+				if(resultat.getString("codecategorieclient").equals("1"))
+					categ = "Particulier";
+				else
+					categ = "Entreprise";
+				databaseData[indexActuel][6] = categ;
 				indexActuel++;
 			}
 			resultat.close();		
@@ -196,7 +200,7 @@ public class DatabaseConnection
 	{
 		int longueurTableau = 0;
 		int indexActuel = 0;
-			
+		String categ;	
 		try
 		{
 			PreparedStatement pstat;
@@ -228,7 +232,11 @@ public class DatabaseConnection
 				databaseData[indexActuel][3] = rs.getString("adresseclient");
 				databaseData[indexActuel][4] = rs.getString("emailclient");
 				databaseData[indexActuel][5] = rs.getString("telclient");
-				databaseData[indexActuel][6] = rs.getString("codecategorieclient");
+				if(rs.getString("codecategorieclient").equals("1"))
+					categ = "Particulier";
+				else
+					categ = "Entreprise";
+				databaseData[indexActuel][6] = categ;
 				indexActuel++;
 			}
 			longueurTableau = 2;
@@ -250,7 +258,11 @@ public class DatabaseConnection
 						databaseData[indexActuel][3] = rs.getString("adresseclient");
 						databaseData[indexActuel][4] = rs.getString("emailclient");
 						databaseData[indexActuel][5] = rs.getString("telclient");
-						databaseData[indexActuel][6] = rs.getString("codecategorieclient");
+						if(rs.getString("codecategorieclient").equals("1"))
+							categ = "Particulier";
+						else
+							categ = "Entreprise";
+						databaseData[indexActuel][6] = categ;
 						indexActuel++;
 					}
 					rs.close();		

@@ -61,7 +61,7 @@ public class PanelClient extends JPanel{
 	private static JTable tableClient;
 	
 	private JScrollPane scrollPane;
-	private final static String[] nomColonnes = {"Id","Nom","Prenom","Adresseclient","Emailclient","Telehponeclient","codeCategorieclient"};
+	private final static String[] nomColonnes = {"Id","Nom","Prenom","Adresse","Email","Telehpone","Categorie"};
 	private static DefaultTableModel modelTableClient = new DefaultTableModel(0,7){
 		Class[] types = {String.class, String.class, String.class,String.class,String.class,String.class,String.class};
 		
@@ -82,6 +82,7 @@ public class PanelClient extends JPanel{
 	
 	public PanelClient(FenetrePrincipale framePrincipale){
 		this.framePrincipale = framePrincipale;
+		
 		initElements();
 		initHandlers();
 	}
@@ -121,6 +122,8 @@ public class PanelClient extends JPanel{
 		//panelRecherche.add(bt_tous);
 	
 		panelGrid.add(contenu);
+        bt_modifier.setEnabled(false);
+        bt_supprimer.setEnabled(false);
 	}
 	 
 	public void initHandlers(){
@@ -134,8 +137,15 @@ public class PanelClient extends JPanel{
 		        clientChoisi = selection.getMinSelectionIndex();
 		        
 		        //D�sactiver certains boutons si on ne selectionne aucune ligne
-		        bt_modifier.setEnabled(!selection.isSelectionEmpty());
-		        bt_supprimer.setEnabled(!selection.isSelectionEmpty());
+		        
+		        if(!selection.isSelectionEmpty()){
+		            bt_modifier.setEnabled(true);
+			        bt_supprimer.setEnabled(true);
+		        }
+			    else{
+		        bt_modifier.setEnabled(false);
+		        bt_supprimer.setEnabled(false);
+			    }
 		    }
 		});
 		
