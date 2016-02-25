@@ -49,7 +49,7 @@ public class PopupCommande extends JDialog {
 	private JLabel lblMontantTotalHt, lblMontantRemise, lblMontantTva, lblMontantTtc;
 	private static JLabel lblFournisseurCode;
 	private JSpinner txtRemise;
-	private JButton btnCalculerTotal, btnValider, btnAnnuler, btnRechercher, btnAjouter, btnModifier, btnSupprimer;
+	private JButton btnCalculerTotal, btnValider, btnAnnuler, btnRechercher, btnAjouter, btnModifier, btnSupprimer, btnValiderCommande;
 	private JDateChooser jdcDateLivr, jdcDate;
 	private Choice chTauxTva, chPaiement;
 	private PopupCommandeSelectFournisseur fenetreSelectFn;
@@ -80,6 +80,8 @@ public class PopupCommande extends JDialog {
 	 * @param cmd, une commande de type CommandesFournisseur. Modifie la commande passée en paramètre.
 	 */
 	public PopupCommande(CommandesFournisseur cmd){
+            
+                        System.out.println(this.getOwner());
 		listeLignesCommande.clear();
 		this.commande = cmd;
 		this.initFenetre();
@@ -162,11 +164,13 @@ public class PopupCommande extends JDialog {
 		this.btnModifier = new JButton("Modifier");
 		this.btnSupprimer = new JButton("Supprimer");
 		this.btnCalculerTotal = new JButton("Calculer Total");
+                this.btnValiderCommande = new JButton("Valider Commande");
 		
 		panelGrilleSud.add(this.btnAjouter);
 		panelGrilleSud.add(this.btnModifier);
 		panelGrilleSud.add(this.btnSupprimer);
 		panelGrilleSud.add(this.btnCalculerTotal);
+                panelGrilleSud.add(this.btnValiderCommande);
 		
 		
 		//On créer les différents panels du bas
@@ -306,6 +310,13 @@ public class PopupCommande extends JDialog {
 				new PopupCommandeAjoutLigne(PopupCommande.this.commande.getRefCommande());
 			}
 		});
+                this.btnValiderCommande.addActionListener(new ActionListener(){
+                                @Override
+                                public void actionPerformed(ActionEvent e){
+                                    PopupCommande.this.validationCommande();
+                                    maj();
+                                }
+                });
 		
 		
 		//Bouton pour valider une commande
@@ -618,4 +629,19 @@ public class PopupCommande extends JDialog {
 			maj();
 		}
 	}
+
+    private void validationCommande() {
+        try {
+				Connection cn = DatabaseConnection.getCon();
+				PreparedStatement pst = cn.prepareStatement("UPDATE CommandesFournisseur SET EtatCommande = ? WHERE refCommande = ?");
+				pst.setString(1, "Validée");
+				pst.setString(2, this.commande.getRefCommande());
+				pst.executeQuery();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			this.commande.setEtatCommande("Validée");
+			//To change body of generated methods, choose Tools | Templates.
+    }
 }
