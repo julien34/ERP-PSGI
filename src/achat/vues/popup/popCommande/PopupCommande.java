@@ -81,7 +81,6 @@ public class PopupCommande extends JDialog {
 	 */
 	public PopupCommande(CommandesFournisseur cmd){
             
-                        System.out.println(this.getOwner());
 		listeLignesCommande.clear();
 		this.commande = cmd;
 		this.initFenetre();
@@ -642,6 +641,5 @@ public class PopupCommande extends JDialog {
 			}
 			
 			this.commande.setEtatCommande("Validée");
-			//To change body of generated methods, choose Tools | Templates.
     }
 }
