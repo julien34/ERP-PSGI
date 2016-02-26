@@ -22,6 +22,7 @@ import production.vue.PanelUniteDeMesure;
 import achat.vues.PanelCategorie;
 import achat.vues.PanelCommande;
 import achat.vues.PanelFournisseur;
+import achat.vues.PanelTVA;
 import components.ButtonTabComponent;
 import jdbc.DatabaseConnection;
 import jdbc.FenetreConnexion;
@@ -82,6 +83,7 @@ public class FenetrePrincipale extends JFrame
    	private static PanelFournisseur panelFournisseur = null;
    	private static PanelCategorie panelCategorie = null;
    	public static PanelCommande panelCommande = null;
+   	public static PanelTVA panelTVA = null;
    	
    	//Vente
    	private static PanelVente panelVente;
@@ -236,8 +238,10 @@ public class FenetrePrincipale extends JFrame
 				
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if (true) {
-						
+					if (PanelTVA.getListeTVA().isEmpty()) {
+						ajouterOnglet("TVA", panelTVA = new PanelTVA(framePrincipale));
+					} else {
+						ajouterOnglet("TVA", panelTVA);
 					}
 				}
 			});

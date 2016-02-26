@@ -67,27 +67,22 @@ public class PopupAjoutTVA extends JDialog {
 		private void initElements() {
 
 			JPanel panelAjoutTVA = new JPanel(new GridLayout(6,1,5,5));
-			JPanel panelRefTVA = new JPanel();
 			JPanel panelNomTVA = new JPanel();
 			JPanel panelTauxTVA = new JPanel();
 			JPanel panelBoutons = new JPanel();
 			
-			JLabel lblRefTVA = new JLabel("Référence : ");
 			JLabel lblNomTVA = new JLabel("Nom TVA : ");
 			JLabel lblTauxTVA = new JLabel("Taux : ");
 			
 			this.txtNomTVA = new JTextField(10);
-			this.txtRefTVA = new JTextField(10);
 			this.txtTauxTVA = new JTextField(10);
 			
 			this.btValider = new JButton("Valider");
 			this.btAnnuler = new JButton("Annuler");
 			
-			panelRefTVA.add(lblRefTVA);
-			panelRefTVA.add(this.txtNomTVA);
 			
 			panelNomTVA.add(lblNomTVA);
-			panelNomTVA.add(this.txtRefTVA);
+			panelNomTVA.add(this.txtNomTVA);
 			
 			panelTauxTVA.add(lblTauxTVA);
 			panelTauxTVA.add(this.txtTauxTVA);
@@ -95,8 +90,6 @@ public class PopupAjoutTVA extends JDialog {
 			panelBoutons.add(this.btValider);
 			panelBoutons.add(this.btAnnuler);
 			
-			//On ajoute les panel au panel en grid
-			panelAjoutTVA.add(panelRefTVA);
 			panelAjoutTVA.add(panelNomTVA);
 			panelAjoutTVA.add(panelTauxTVA);
 			panelAjoutTVA.add(panelBoutons);
@@ -117,21 +110,18 @@ public class PopupAjoutTVA extends JDialog {
 					try {
 						PreparedStatement pst = cn.prepareStatement("INSERT INTO TVA(refTVA, nomTVA, tauxTVA) VALUES(seqRefTVA.NEXTVAL,?,?)");
 						
-						pst.setString(1, PopupAjoutTVA.this.txtRefTVA.getText());
-						pst.setString(2, PopupAjoutTVA.this.txtNomTVA.getText());
-						pst.setString(3, PopupAjoutTVA.this.txtTauxTVA.getText());
+						pst.setString(1, PopupAjoutTVA.this.txtNomTVA.getText());
+						pst.setString(2, PopupAjoutTVA.this.txtTauxTVA.getText());
 						pst.executeQuery();
-
-						//TVA tva = new TVA(txtRefTVA.getText(), txtNomTVA.getText(), Integer.parseInt(txtTauxTVA.getText()));
-
-						PanelTVA.maj();
-
+						TVA tva = new TVA(Integer.toString(PanelTVA.getReference_glob()), PopupAjoutTVA.this.txtNomTVA.getText(), Integer.parseInt(PopupAjoutTVA.this.txtTauxTVA.getText()));
+						//PanelTVA.ajoutTVAListe(new TVA(Integer.toString(PanelTVA.getReference_glob()), PopupAjoutTVA.this.txtNomTVA.getText(), Integer.parseInt(PopupAjoutTVA.this.txtTauxTVA.getText())));
+						PanelTVA.getAllTVA();
+						PanelTVA.remplirTableau();
 						Window window = SwingUtilities.windowForComponent((Component)e.getSource());
 						window.dispose();
 
 						JOptionPane.showMessageDialog(null, "TVA ajoutée avec succès","Vous venez d'ajouter la TVA "+txtNomTVA.getText()+".",JOptionPane.INFORMATION_MESSAGE);
-
-
+						
 					} catch(SQLException e1) {
 						e1.printStackTrace();
 						JOptionPane.showMessageDialog(null, "Erreur dans la saisie des informations", "Ajout de TVA", JOptionPane.WARNING_MESSAGE);

@@ -3,6 +3,14 @@ package achat.vues;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -24,6 +32,9 @@ import com.toedter.calendar.JDateChooser;
 import achat.modeles.CommandesFournisseur;
 import achat.modeles.TVA;
 import achat.modeles.UneditableTableModel;
+import achat.vues.popup.popCommande.PopupCommande;
+import achat.vues.popup.popTVA.PopupAjoutTVA;
+import achat.vues.popup.popTVA.PopupModifTVA;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 
@@ -34,18 +45,19 @@ public class PanelTVA extends JPanel {
 	private static Object[][] tabTVA;
 	private static Object[] titres = {"Référence TVA", "Nom TVA", "Taux"};
 	
-	//On crée la JTable et son modèle
 	private static JTable tableau = new JTable(new DefaultTableModel());
 	private static UneditableTableModel modele = new UneditableTableModel(0,5);
 	private static JScrollPane scrollPane  = new JScrollPane(tableau);
 	
-	//On crée les composants dont on va se servir dans plusieurs méthodes 
-		private static JButton btNouveau, btModifier, btSupprimer;
-		//private static JTextField txtRechercheCommande, txtRechercheFournisseur, txtRechercheMontant;
-		private static JTextField txtRechercheNomTVA;
-	
+	private static JButton btNouveau, btModifier, btSupprimer;
+	private static JTextField txtRechercheNomTVA;
+	private static int reference_glob;
+
 	public PanelTVA(FenetrePrincipale f) {
 		getAllTVA();
+		remplirTableau();
+		this.initElements();
+		this.initEcouteurs();
 	}
 	
 	/**
@@ -55,7 +67,7 @@ public class PanelTVA extends JPanel {
 		listeTVA.clear();
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT t.refTVA, t.nomTVA, t.tauxTVA FROM TVA t ORDER BY tauxTVA");
+			PreparedStatement pst = cn.prepareStatement("SELECT t.refTVA, t.nomTVA, t.tauxTVA FROM TVA t ORDER BY t.tauxTVA");
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
@@ -65,6 +77,8 @@ public class PanelTVA extends JPanel {
 				ref = rs.getString("refTVA");
 				nom = rs.getString("nomTVA");
 				taux = rs.getDouble("tauxTVA");
+				System.out.println(ref.length());
+				reference_glob = Integer.parseInt(clearVoidSpace(ref));
 
 				listeTVA.add(new TVA(ref, nom, taux));
 			}
@@ -169,11 +183,73 @@ public class PanelTVA extends JPanel {
 	}
 	
 	/**
+	 * Méthode qui initialise les écouteurs.
+	 */
+	public void initEcouteurs(){
+
+		btNouveau.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new PopupAjoutTVA();
+			}
+		});
+		
+		
+	/*	//Bouton "Modifier"
+		btModifier.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new PopupModifTVA(listeTVA.get(tableau.getSelectedRow()));
+			}
+		});*/
+
+		txtRechercheNomTVA.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				PanelTVA.getTVARecherche();
+				PanelTVA.remplirTableau();
+			}
+		});
+
+	}
+	
+	/**
 	 * Change la possibilité d'appuyer sur le bouton modifier et supprimer selon le paramètre.
 	 * @param b, un booléen.
 	 */
 	public static void setBt(boolean b){
 		btModifier.setEnabled(b);
 		btSupprimer.setEnabled(b);
+	}
+	
+	/**
+	 * @return the listeTVA
+	 */
+	public static ArrayList<TVA> getListeTVA() {
+		return listeTVA;
+	}
+	
+	/**
+	 * @return the reference_glob
+	 */
+	public static int getReference_glob() {
+		return reference_glob;
+	}
+	
+	private static String clearVoidSpace(String ref) {
+		String[] result = ref.split("\\s");
+		String retour = "";
+		for (int x=0; x<result.length; x++) {
+			if (result[x] != "") {
+				retour += result[x];
+			}
+		}
+		return retour;
+	}
+	
+	public static void ajoutTVAListe(TVA tva) {
+		listeTVA.add(tva);
 	}
 }
