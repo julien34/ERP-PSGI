@@ -21,6 +21,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 
 import jdbc.DatabaseConnection;
+import vente.model.Client;
 import achat.modeles.Fournisseur;
 import achat.vues.PanelCommande;
 
@@ -85,11 +86,7 @@ public class VenteSelectionClient extends JFrame{
 		panelPrincipal.add(panelListe, BorderLayout.CENTER);
 		panelPrincipal.add(panelBtn, BorderLayout.SOUTH);
 		this.add(panelPrincipal);
-		
-		
-		
 	}
-
 	
 	/**
 	 * M�thode qui r�cup�re l'ensemble des Clients de la base de donn�es et les affiche dans la JListet.
@@ -97,7 +94,7 @@ public class VenteSelectionClient extends JFrame{
 	private void getClient() {
 		clientBDD = DatabaseConnection.getClients();
 		for(Client client: clientBDD){
-			this.dLM.addElement(client.idclient+" - "+client.nomclient+ " " + client.prenomclient);
+			this.dLM.addElement(client.getIdClient()+" - "+client.getNomClient()+ " " + client.getPrenomClient());
 		}
 	}
 	

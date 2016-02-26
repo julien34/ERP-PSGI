@@ -29,6 +29,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
 import jdbc.DatabaseConnection;
+import vente.model.Client;
 import achat.modeles.Categorie;
 import achat.modeles.LignesCommande;
 import achat.modeles.Produit; 

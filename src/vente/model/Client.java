@@ -1,4 +1,4 @@
-package vente;
+package vente.model;
 
 public class Client {
 	String idclient, nomclient, prenomclient, adresseclient,mailclient,telclient,categorie;
@@ -66,6 +66,20 @@ public class Client {
 		this.mailclient = mailclient;
 		this.adresseclient = adresseclient;
 		this.categorie = codecateg;	
+	}
+
+	public Client() {
+		this.idclient = null;
+		this.nomclient = null;
+		this.prenomclient = null;
+		this.telclient = null;
+		this.mailclient = null;
+		this.adresseclient = null;
+		this.categorie = null;	
+	}
+
+	public Client(String idCli) {
+		idclient = idCli;
 	}
 	
 	

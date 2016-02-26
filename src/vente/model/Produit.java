@@ -1,4 +1,4 @@
-package vente;
+package vente.model;
 
 public class Produit {
 	private String numProduit,nomProduit , prixProduit, prixHorsTaxe;

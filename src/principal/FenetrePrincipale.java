@@ -242,20 +242,13 @@ public class FenetrePrincipale extends JFrame
 				}
 			});
 	   		
-	   		//Ventes
-	   	/*	menuFenetreVente.addActionListener(new ActionListener()
-	   		{
-	   			public void actionPerformed(ActionEvent e)
-	   			{
-	   				ajouterOnglet("Gestion des ventes",fenetreVente);
-	   			}
-	   		});	*/
-
-	   		
+	   		//Vente
 	   		menuCommandes.addActionListener(new ActionListener()
 	   		{
 	   			public void actionPerformed(ActionEvent e)
 	   			{
+	   				PanelCommandes.getCommande();
+	   				PanelCommandes.remplirTableau();
 	   				ajouterOnglet("Gestion des commandes",panelCommandes);
 	   			}
 	   		});	
@@ -272,15 +265,6 @@ public class FenetrePrincipale extends JFrame
 	   				ajouterOnglet("Gestion des clients", panelClient);
 	   			}
 	   		});	
-	   	/*	menuVentesDevis.addActionListener(new ActionListener()
-	   		{
-	   			public void actionPerformed(ActionEvent e)
-	   			{	
-	   				InterfaceDevis.setComboBoxClient();
-	   				ajouterOnglet("Gestion des Devis", InterfaceDevis);
-	   			}
-	   		});	
-	   		*/
 	   		
 	   		
 	   		

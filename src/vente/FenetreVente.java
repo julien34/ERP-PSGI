@@ -1,6 +1,5 @@
 package vente;
 
-
 import java.awt.BorderLayout;
 import java.awt.Choice;
 import java.awt.Dimension;
@@ -36,13 +35,8 @@ import principal.FenetrePrincipale;
 
 import com.toedter.calendar.JDateChooser;
 
-import achat.modeles.CommandesFournisseur;
-import achat.modeles.Fournisseur;
-import achat.modeles.LignesCommande;
 import achat.modeles.UneditableTableModel;
-import achat.vues.PanelCommande;
-
-
+import vente.model.*;
 
 
 public class FenetreVente extends JDialog {
@@ -50,8 +44,8 @@ public class FenetreVente extends JDialog {
 	private static FenetrePrincipale frame;
 
 	
-	private static Fournisseur fournisseur = new Fournisseur();
-	private CommandesFournisseur commande;
+	private static Client client = new Client();
+	private Commande commande;
 	private static ArrayList<LignesCommande> listeLignesCommande = new ArrayList<LignesCommande>();
 	private static Object[][] tabLignesCo;
 	private static Object[] titres = {"Code","Description","Catégorie","Prix HT","Qté","Total HT"};
@@ -89,7 +83,7 @@ public class FenetreVente extends JDialog {
 	 * Constructeur avec en paramètre une commande de type CommandesFournisseur. Modifie une commande existante.
 	 * @param cmd, une commande de type CommandesFournisseur. Modifie la commande passée en paramètre.
 	 */
-	/*public PopupCommande(CommandesFournisseur cmd){
+	public FenetreVente(Commande cmd){
 		listeLignesCommande.clear();
 		this.commande = cmd;
 		this.initFenetre();
@@ -99,7 +93,6 @@ public class FenetreVente extends JDialog {
 		this.preRemplir();
 		this.setBtnEnabled(false);
 	}
-	*/
 	
 	/**
 	 * Méthode qui initie la fenetre popup.
@@ -129,11 +122,11 @@ public class FenetreVente extends JDialog {
 	private void initElements(){
 		
 		//On défini le fournisseur s'il est présent dans la commande si non vide
-		if(this.commande == null || this.commande.getRefFournisseur() == null){
-			fournisseur = new Fournisseur();
+		if(this.commande == null || this.commande.getIdClient() == null){
+			client = new Client();
 		}
 		else{
-			fournisseur = new Fournisseur(this.commande.getRefFournisseur(), this.commande.getNomFourniseur());
+			client = new Client(this.commande.getIdClient());
 		}
 		
 		//On créer les différents panels du haut
@@ -282,7 +275,7 @@ public class FenetreVente extends JDialog {
 		tabLignesCo = new Object[nouvelleLongueur][6];
 		
 		for(LignesCommande lc : listeLignesCommande){
-			tabLignesCo[listeLignesCommande.indexOf(lc)][0] = lc.getRefProduit();
+			tabLignesCo[listeLignesCommande.indexOf(lc)][0] = lc.getIdProduit();
 			tabLignesCo[listeLignesCommande.indexOf(lc)][1] = lc.getNomproduit();
 			tabLignesCo[listeLignesCommande.indexOf(lc)][2] = lc.getCategorieProduit();
 			tabLignesCo[listeLignesCommande.indexOf(lc)][3] = lc.getpHT()+"€";
@@ -413,19 +406,19 @@ public class FenetreVente extends JDialog {
 	private void preRemplir(){
 		
 		//On remplit le nom du fournisseur
-		if(fournisseur.getRef().equals("")){
+		if(client.getIdClient().equals("")){
 			lblFournisseurCode.setText("Sélectionner un founisseur");
 		}
 		else{
-			lblFournisseurCode.setText(fournisseur.getNom()+" ("+fournisseur.getRef()+")");
+			lblFournisseurCode.setText(client.getNomClient()+" ("+client.getIdClient()+")");
 		}
 		
 		//On remplit la date
 		this.jdcDate.setDate(this.commande.getDate());
 		
 		//On selectionne de base le montant de TVA approprié à la commande (si non 0%)
-		if(this.commande.getTauxTva() != null){
-			this.chTauxTva.select(String.valueOf(this.commande.getTauxTva()));
+		if(this.commande.getTauxTVA() != 0){
+			this.chTauxTva.select(String.valueOf(this.commande.getTauxTVA()));
 		}
 		
 		//On selectionne de base le type de paiement
@@ -434,13 +427,13 @@ public class FenetreVente extends JDialog {
 		}
 		
 		//On affiche le taux remise de base
-		if(this.commande.getRemise() != null){
-			this.txtRemise.setValue((Double) this.commande.getRemise());
+		if(this.commande.getRemise() != 0){
+			this.txtRemise.setValue((float) this.commande.getRemise());
 		}
 		
 		//On remplit la date de livraison
-		if(this.commande.getDateLivr() != null){
-			this.jdcDateLivr.setDate(this.commande.getDateLivr());
+		if(this.commande.getDate() != null){
+			this.jdcDateLivr.setDate(this.commande.getDate());
 		}
 		
 		//On effectue les calculs
@@ -479,12 +472,13 @@ public class FenetreVente extends JDialog {
 	/**
 	 * Méthode qui ajoute dans la base de donnée une nouvelle commande (vide).
 	 */
-	private void ajouterCommande(CommandesFournisseur c){
+	private void ajouterCommande(Commande c){
 		
 		//On vérifie si la commande est dans l'arraylist des commandes
-		if(PanelCommande.getListeCommande().contains(c)){
+		if(0 == 0){
+				//PanelCommande.getListeCommande().contains(c)){
 			
-			if(this.commande.getTauxTva() == null){
+			if(this.commande.getTauxTVA() == 0){
 				this.chTauxTva.select("0.0");//TVA à 0 si vide
 			}
 			
@@ -498,7 +492,7 @@ public class FenetreVente extends JDialog {
 				Connection cn = DatabaseConnection.getCon();
 				PreparedStatement pst = cn.prepareStatement("UPDATE CommandesFournisseur SET dateCommande = ?, refFournisseur = ?, tauxTVA = ?, remise = ?, dateLivr = ?, typepaiement = ? WHERE refCommande = ?");
 				pst.setDate(1, new Date(this.jdcDate.getDate().getTime()));
-				pst.setString(2, fournisseur.getRef());
+				//pst.setString(2, fournisseur.getRef());
 				pst.setDouble(3, Double.valueOf(this.chTauxTva.getSelectedItem()));
 				pst.setDouble(4, (Double) this.txtRemise.getValue());
 				pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
@@ -519,7 +513,7 @@ public class FenetreVente extends JDialog {
 			try {
 				Connection cn = DatabaseConnection.getCon();
 				PreparedStatement pst = cn.prepareStatement("INSERT INTO CommandesFournisseur(refCommande, dateCommande, refFournisseur, etatCommande, tauxTVA, remise, dateLivr, typepaiement) VALUES(seqRefCommande.NEXTVAL,CURRENT_DATE,?,?,?,?,?,?)");
-				pst.setString(1, fournisseur.getRef());
+				//pst.setString(1, fournisseur.getRef());
 				pst.setString(2, "En cours");
 				pst.setDouble(3, Double.valueOf(this.chTauxTva.getSelectedItem()));
 				pst.setDouble(4, (Double) this.txtRemise.getValue());
@@ -541,10 +535,10 @@ public class FenetreVente extends JDialog {
 			}
 		}
 		
-		PanelCommande.getCommande();
-		PanelCommande.maj();
-		PanelCommande.setBtn(false);
-		setFournisseur(new Fournisseur());
+		//PanelCommande.getCommande();
+		//PanelCommande.maj();
+		//PanelCommande.setBtn(false);
+		//setFournisseur(new Fournisseur());
 		dispose();
 	}
 	
@@ -553,9 +547,9 @@ public class FenetreVente extends JDialog {
 	 * Méthode qui change le fournisseur avec celui sélectionné dans la liste.
 	 * @param f, le Fournisseur à changer.
 	 */
-	public static void setFournisseur(Fournisseur f){
-		lblFournisseurCode.setText(f.getNom()+" ("+f.getRef()+")");
-		fournisseur = f;
+	public static void setFournisseur(Client f){
+		lblFournisseurCode.setText(f.getNomClient()+" ("+f.getIdClient()+")");
+		client = f;
 	}
 	
 	
@@ -590,7 +584,7 @@ public class FenetreVente extends JDialog {
 				Connection cn = DatabaseConnection.getCon();
 				PreparedStatement pst = cn.prepareStatement("DELETE FROM LignesCommandeFournisseur WHERE refCommande = ? AND refProduit = ? AND quantite = ?");
 				pst.setString(1, this.commande.getRefCommande());
-				pst.setString(2, listeLignesCommande.get(tableau.getSelectedRow()).getRefProduit());
+				//pst.setString(2, listeLignesCommande.get(tableau.getSelectedRow()).getRefProduit());
 				pst.setInt(3, listeLignesCommande.get(tableau.getSelectedRow()).getQte());
 				pst.executeQuery();
 			} catch (SQLException e) {
@@ -618,7 +612,7 @@ public class FenetreVente extends JDialog {
 				PreparedStatement pst = cn.prepareStatement("UPDATE LignesCommandeFournisseur SET quantite = ? WHERE refCommande = ? AND refProduit = ? AND quantite = ?");
 				pst.setInt(1, (Integer) spinner.getValue());
 				pst.setString(2, this.commande.getRefCommande());
-				pst.setString(3, listeLignesCommande.get(tableau.getSelectedRow()).getRefProduit());
+				//pst.setString(3, listeLignesCommande.get(tableau.getSelectedRow()).getRefProduit());
 				pst.setInt(4, listeLignesCommande.get(tableau.getSelectedRow()).getQte());
 				pst.executeQuery();
 			} catch (SQLException e) {

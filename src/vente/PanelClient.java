@@ -32,6 +32,7 @@ import achat.vues.PanelFournisseur;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 import vente.ModifierClients;
+import vente.model.Client;
 
 public class PanelClient extends JPanel{
 	
@@ -211,8 +212,6 @@ public class PanelClient extends JPanel{
 				}
 			}
 		});	
-		
-		
 	}
 	
 	//replit le tablea client avec la base de donn�es vente_clients

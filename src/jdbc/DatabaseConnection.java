@@ -1,6 +1,7 @@
 package jdbc;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,7 +12,8 @@ import java.util.ArrayList;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 
-import vente.Client;
+import vente.model.Client;
+import vente.model.Commande;
 
 public class DatabaseConnection 
 {	
@@ -196,6 +198,7 @@ public class DatabaseConnection
 			return null;
 		}
 	}
+	
 	static public Object[][] rechercherListeClient(String Recherche)
 	{
 		int longueurTableau = 0;

@@ -32,6 +32,7 @@ import javax.swing.table.DefaultTableModel;
 
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
+import vente.model.Client;
 
 public class InterfaceDevis extends JPanel{
 
@@ -239,7 +240,7 @@ public void initHandlers(){
 	public void setComboBoxClient(){
 		ArrayList<Client> clientBDD = DatabaseConnection.getClients();
 		for(Client client: clientBDD){
-			ChampTextClient.addItem(client.idclient + " : " + client.nomclient + " " + client.prenomclient);
+			ChampTextClient.addItem(client.getIdClient() + " : " + client.getNomClient() + " " + client.getPrenomClient());
 		}
 	}
 }

@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
-import vente.Client;
+import vente.model.Client;
 
 public class ModifierClients extends JDialog
 {	
@@ -40,7 +40,7 @@ public class ModifierClients extends JDialog
 	JLabel lbl_Categorie = new JLabel("Categorie");
 	JTextField Categorie = new JTextField(value6,10);
 	/**
-	 * Rend un champ null égal a un string vide
+	 * Rend un champ null ï¿½gal a un string vide
 	 * @param s
 	 * @return
 	 */
@@ -52,7 +52,7 @@ public class ModifierClients extends JDialog
 	}
 	
 	/**
-	 * Le constructeur par défaut fait appel à la fonction init
+	 * Le constructeur par dï¿½faut fait appel ï¿½ la fonction init
 	 */
 	public ModifierClients(FenetrePrincipale frame, Client client)
 	{	
@@ -79,11 +79,11 @@ public class ModifierClients extends JDialog
 	}
 	public void initElements()
 	{
-		//Création des boutons
+		//Crï¿½ation des boutons
 		JButton modifier = new JButton("Modifier");	
 		JLabel error = new JLabel("");	
 		
-		//Ajouter les élements	
+		//Ajouter les ï¿½lements	
 		add(panelGrid);
 		panelGrid.add(panelFlow1);
 		panelGrid.add(panelFlow2);
@@ -126,15 +126,15 @@ public class ModifierClients extends JDialog
 				{
 					public void actionPerformed(ActionEvent e)
 					{
-						//Si la requete à réussie
+						//Si la requete ï¿½ rï¿½ussie
 						if(DatabaseConnection.requete("UPDATE vente_clients SET NOMCLIENT ='"+Nom.getText()+"', PRENOMCLIENT='"+Prenom.getText()+"', ADRESSECLIENT='"+Adresse.getText()+"', EMAILCLIENT='"+Email.getText()+"', TELCLIENT='"+Telephone.getText()+"', CODECATEGORIECLIENT='"+Integer.parseInt(Categorie.getText())+"' WHERE IDCLIENT='"+codeClient+"'"))
 						{
 							String idClient = Integer.toString(codeClient);
 							FenetrePrincipale.getPanelClient().raffraichirLigne(idClient, Nom.getText(),Prenom.getText(),Adresse.getText(),Email.getText(),Telephone.getText(), Categorie.getText());
-							JOptionPane.showMessageDialog(null, "Client modifié avec succès.", "Modification de Client", JOptionPane.INFORMATION_MESSAGE);
+							JOptionPane.showMessageDialog(null, "Client modifiï¿½ avec succï¿½s.", "Modification de Client", JOptionPane.INFORMATION_MESSAGE);
 							setVisible(false);
 						}
-						else JOptionPane.showMessageDialog(null, "Erreur de modification du client. Vérifiez vos champs.", "Modification de client", JOptionPane.WARNING_MESSAGE);
+						else JOptionPane.showMessageDialog(null, "Erreur de modification du client. Vï¿½rifiez vos champs.", "Modification de client", JOptionPane.WARNING_MESSAGE);
 					}
 				});
 	}
