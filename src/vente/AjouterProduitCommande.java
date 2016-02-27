@@ -177,7 +177,7 @@ public class AjouterProduitCommande extends JDialog{
 	
 	
 	/**
-	 * M�thode qui se connecte � la base de donn�e pour r�cup�rer l'ensemble des produits (disponible � l'achat).
+	 * M�thode qui se connecte � la base de donn�e pour r�cup�rer l'ensemble des produits (disponible � Vente).
 	 */
 	private void getProduits(){
 		
@@ -292,7 +292,7 @@ public class AjouterProduitCommande extends JDialog{
 	private void rechercheProduit(){
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT p.code, p.nom, p.prixVente, p.categorie, c.nom AS nomCategorie FROM Produit p JOIN categorie c ON c.code = p.categorie WHERE UPPER(c.code) LIKE UPPER(?) AND UPPER(p.nom) LIKE UPPER(?) AND p.disponibilite = 'Achat' ORDER BY p.nom");
+			PreparedStatement pst = cn.prepareStatement("SELECT p.code, p.nom, p.prixVente, p.categorie, c.nom AS nomCategorie FROM Produit p JOIN categorie c ON c.code = p.categorie WHERE UPPER(c.code) LIKE UPPER(?) AND UPPER(p.nom) LIKE UPPER(?) AND p.disponibilite = 'Vente' ORDER BY p.nom");
 			
 			//On remet la liste � 0
 			this.listeProduits.clear();
