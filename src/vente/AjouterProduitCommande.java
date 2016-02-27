@@ -47,6 +47,7 @@ public class AjouterProduitCommande extends JDialog{
 	private String numCommande;
 	private LignesCommande ligneCommande;
 	private Client clientCommande;
+	private int i = Integer.parseInt(getLastIdCommande());
 	
 	/**
 	 * Constructeur d'une Popup d'ajout de ligne commande fournisseur.
@@ -142,7 +143,7 @@ public class AjouterProduitCommande extends JDialog{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				AjouterProduitCommande.this.setLigne();
-		//		AjouterProduitCommande.this.ajoutLigneCommande(AjouterProduitCommande.this.ligneCommande);
+				ajoutLigneCommande(AjouterProduitCommande.this.ligneCommande);
 			}
 		});
 		
@@ -238,15 +239,15 @@ public class AjouterProduitCommande extends JDialog{
 	 * M�thode qui ajoute une ligneCommande dans la BDD et dans la l'ArrayList.
 	 * @param lc, Une ligne de commande.
 	 */
-	/*private void ajoutLigneCommande(LignesCommande lc){
+	private void ajoutLigneCommande(LignesCommande lc){
 		
 		try {
 		
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("INSERT INTO LignesCommandeFournisseur(refCommande, refProduit, quantite) VALUES(?,?,?)");
-			pst.setString(1, this.numCommande);
-			pst.setString(2, lc.getRefProduit());
-			pst.setInt(3, lc.getQte());
+			PreparedStatement pst = cn.prepareStatement("INSERT INTO vente_ligneCommande(idcommande, codeProduit, quantite) VALUES(sequence_commandeVente.NEXTVAL,?,?)");
+		//	numCommande = String.valueOf(i);
+			pst.setString(1 , lc.getRefProduit());
+			pst.setInt(2, lc.getQte());
 			pst.executeQuery();
 
 			dispose();
@@ -255,7 +256,7 @@ public class AjouterProduitCommande extends JDialog{
 			e.printStackTrace();
 		}
 	}
-*/	
+
 	
 	/**
 	 * M�thode qui remplit la LigneCommande courrante avec les informations renseign�es.
@@ -316,5 +317,23 @@ public class AjouterProduitCommande extends JDialog{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
 	}
+	
+	
+	 private String getLastIdCommande(){
+		  String dernierId = null;
+		   try {
+		    Connection cn = DatabaseConnection.getCon();
+		    PreparedStatement pst;
+		    pst = cn.prepareStatement("SELECT max(idCommande) as maxId from vente_commande ");
+		    ResultSet rs = pst.executeQuery();
+		    rs.next();
+		    dernierId = rs.getString("maxId");
+		   } catch (SQLException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		   }
+		   return dernierId;
+		 }
 }

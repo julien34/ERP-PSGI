@@ -377,7 +377,7 @@ public class FenetreVente extends JDialog {
 	private void getProduitsCommande(){
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT * FROM LignesCommandeFournisseur lc JOIN Produits p ON p.codeproduit = lc.refProduit JOIN Categorie c ON c.codeCategorie = p.categorie WHERE refCommande = ?");
+			PreparedStatement pst = cn.prepareStatement("SELECT * FROM vente_ligneCommande lc JOIN Produit p ON p.code = lc.codeProduit JOIN Categorie c ON c.code = p.categorie WHERE idCommande = ?");
 			pst.setString(1, FenetreVente.this.commande.getRefCommande());
 			ResultSet rs = pst.executeQuery();
 			
@@ -475,8 +475,8 @@ public class FenetreVente extends JDialog {
 	private void ajouterCommande(Commande c){
 		
 		//On vérifie si la commande est dans l'arraylist des commandes
-		if(0 == 0){
-				//PanelCommande.getListeCommande().contains(c)){
+		
+			if(PanelCommandes.getListeCommande().contains(c)){
 			
 			if(this.commande.getTauxTVA() == 0){
 				this.chTauxTva.select("0.0");//TVA à 0 si vide
