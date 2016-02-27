@@ -24,6 +24,8 @@ import jdbc.DatabaseConnection;
 import vente.model.Client;
 import achat.modeles.Fournisseur;
 import achat.vues.PanelCommande;
+import achat.vues.popup.popCommande.PopupCommande;
+import achat.vues.popup.popCommande.PopupCommandeSelectFournisseur;
 
 public class VenteSelectionClient extends JFrame{
 	private static Client client;
@@ -107,7 +109,7 @@ public class VenteSelectionClient extends JFrame{
 	//recuperer le client qui passe une commande a la fenetre qui gere la commande
 	private static void setClientChoisit(Client cli){
 		client = cli;
-		//PanelCommande.getClient(client);
+		FenetreVente.setClient(cli);
 	}
 	
 	private static String getClientChoisit(Client cli){
@@ -128,8 +130,8 @@ public class VenteSelectionClient extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				VenteSelectionClient.setClientChoisit(VenteSelectionClient.this.clientBDD.get(VenteSelectionClient.this.jListClient.getSelectedIndex()));
-				FenetreVente.lblFournisseurCode.setText(getClientChoisit( client)+" ( "+getIDClientChoisit( client)+" )");
+				setClientChoisit(clientBDD.get(jListClient.getSelectedIndex()));
+
 				dispose(); 
 			}
 		});

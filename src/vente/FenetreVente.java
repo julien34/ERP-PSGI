@@ -518,7 +518,7 @@ public class FenetreVente extends JDialog {
 			
 			try {
 				Connection cn = DatabaseConnection.getCon();
-				PreparedStatement pst = cn.prepareStatement("UPDATE vente_commande SET dateCommande = ?, idClient = ?, tauxTVA = ?, remise = ?, dateLivr = ?, typePaiement = ? WHERE idCommande = ?");
+				PreparedStatement pst = cn.prepareStatement("UPDATE vente_commande SET idClient = ?, dateCommande = ?, tauxTVA = ?, remise = ?, typePaiement = ? WHERE idCommande = ?");
 				pst.setDate(1, new Date(this.jdcDate.getDate().getTime()));
 				pst.setString(2, client.getIdClient());
 				pst.setDouble(3, Double.valueOf(this.chTauxTva.getSelectedItem()));
@@ -540,20 +540,21 @@ public class FenetreVente extends JDialog {
 			
 			try {
 				Connection cn = DatabaseConnection.getCon();
-				PreparedStatement pst = cn.prepareStatement("INSERT INTO vente_commande(idCommande, dateCommande, idClient, idEtatCommande, tauxTVA, remise, dateLivr, typePaiement) VALUES(sequence_commandeVente.NEXTVAL,CURRENT_DATE,?,?,?,?,?,?)");
+				PreparedStatement pst = cn.prepareStatement("INSERT INTO vente_commande(idCommande, idClient, datecommande, idEtatCommande, tauxTVA, remise, typePaiement) VALUES(sequence_commandeVente.NEXTVAL,?,?,?,?,?,?)");
 				pst.setString(1, client.getIdClient());
-				pst.setString(2, "En cours");
-				pst.setDouble(3, Double.valueOf(this.chTauxTva.getSelectedItem()));
-				pst.setDouble(4, (Double) this.txtRemise.getValue());
+				pst.setDate(2, getCurrentDate());
+				pst.setString(3, "En cours");
+				pst.setDouble(4, Double.valueOf(this.chTauxTva.getSelectedItem()));
+				pst.setDouble(5, (Double) this.txtRemise.getValue());
 				
-				if(this.jdcDateLivr.getDate() == null){
+		/*		if(this.jdcDateLivr.getDate() == null){
 					Calendar cal = Calendar.getInstance(); 
 					Date date = new Date(cal.getTimeInMillis());
 					pst.setDate(5, date);
 				}
 				else{
 					pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
-				}
+				}*/
 				
 				pst.setString(6, this.chPaiement.getSelectedItem());
 				pst.executeQuery();
@@ -570,7 +571,11 @@ public class FenetreVente extends JDialog {
 		setClient(new Client());
 		dispose();
 	}
-
+	
+	private static java.sql.Date getCurrentDate() {
+	    java.util.Date today = new java.util.Date();
+	    return new java.sql.Date(today.getTime());
+	}
 
 	/**
 	 * Méthode qui change le fournisseur avec celui sélectionné dans la liste.
