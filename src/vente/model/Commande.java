@@ -18,10 +18,10 @@ public class Commande {
 
 	private String idCommande, idClient, nomClient, etatCommande, montantTotal, typePaiement;
 	private Date date;
-	private float tauxTVA, remise;
+	private Double tauxTVA, remise;
 	private ArrayList<LignesCommande> lignesCommande;
 	
-	public Commande(String refCommande,String refClient,String nomClient, Date date, String etatCommande, String montantTotal,float txTVA, float remis, String typePaiement){
+	public Commande(String refCommande,String refClient,String nomClient, Date date, String etatCommande, String montantTotal,double tauxTva2, double remise2, String typePaiement){
 		this.idCommande = refCommande;
 		this.idClient = refClient;
 		this.nomClient = nomClient;
@@ -29,8 +29,8 @@ public class Commande {
 		this.etatCommande = etatCommande;
 		this.typePaiement = typePaiement;
 		this.date = date;
-		this.tauxTVA = txTVA;
-		this.remise = remis;
+		this.tauxTVA = tauxTva2;
+		this.remise = remise2;
 	} 
 
 	public Commande(){
@@ -40,8 +40,8 @@ public class Commande {
 		this.etatCommande = null;
 		this.typePaiement = null;
 		this.date = null;
-		this.tauxTVA = 0;
-		this.remise = 0;
+		this.tauxTVA = 0.0;
+		this.remise = 0.0;
 	}
 	/**
 	 * @return the idCommande
@@ -74,77 +74,106 @@ public class Commande {
 	/**
 	 * @return the tauxTVA
 	 */
-	public float getTauxTVA() {
+	public Double getTauxTVA() {
 		return tauxTVA;
 	}
 
 	/**
 	 * @param tauxTVA the tauxTVA to set
 	 */
-	public void setTauxTVA(float tauxTVA) {
+	public void setTauxTVA(Double tauxTVA) {
 		this.tauxTVA = tauxTVA;
 	}
 
 	/**
 	 * @return the remise
 	 */
-	public float getRemise() {
+	public Double getRemise() {
 		return remise;
 	}
 
 	/**
 	 * @param remise the remise to set
 	 */
-	public void setRemise(float remise) {
+	public void setRemise(Double remise) {
 		this.remise = remise;
 	}
 
+	/**
+	 * @return the nomClient
+	 */
+	public String getNomClient() {
+		return nomClient;
+	}
+
+	/**
+	 * @param nomClient the nomClient to set
+	 */
+	public void setNomClient(String nomClient) {
+		this.nomClient = nomClient;
+	}
+
+	/**
+	 * @return the etatCommande
+	 */
+	public String getEtatCommande() {
+		return etatCommande;
+	}
+
+	/**
+	 * @param etatCommande the etatCommande to set
+	 */
+	public void setEtatCommande(String etatCommande) {
+		this.etatCommande = etatCommande;
+	}
+
+	/**
+	 * @return the montantTotal
+	 */
 	public String getMontantTotal() {
 		return montantTotal;
 	}
 
+	/**
+	 * @param montantTotal the montantTotal to set
+	 */
 	public void setMontantTotal(String montantTotal) {
 		this.montantTotal = montantTotal;
 	}
-	
-	public String getRefCommande() {
-		return idCommande;
-	}
 
-	public void setRefCommande(String refCommande) {
-		this.idCommande = refCommande;
-	}
-
-	public String getRefClient() {
-		return idClient;
-	}
-
-	public void setRefClient(String refClient) {
-		this.idClient = refClient;
-	}
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
-	}
-	
-	public String getEtatCommande(){
-		return this.etatCommande;
-	}
-
+	/**
+	 * @return the typePaiement
+	 */
 	public String getTypePaiement() {
 		return typePaiement;
 	}
 
+	/**
+	 * @param typePaiement the typePaiement to set
+	 */
 	public void setTypePaiement(String typePaiement) {
 		this.typePaiement = typePaiement;
 	}
 
+	/**
+	 * @return the date
+	 */
+	public Date getDate() {
+		return date;
+	}
 
-	public void setEtatCommande(String etatCommande) {
-		this.etatCommande = etatCommande;
+	/**
+	 * @param date the date to set
+	 */
+	public void setDate(Date date) {
+		this.date = date;
+	}
+
+	/**
+	 * @param lignesCommande the lignesCommande to set
+	 */
+	public void setLignesCommande(ArrayList<LignesCommande> lignesCommande) {
+		this.lignesCommande = lignesCommande;
 	}
 
 	/**
@@ -154,12 +183,6 @@ public class Commande {
 		return lignesCommande;
 	}
 
-	/**
-	 * @param lignesCommande the lignesCommande to set
-	 */
-	public void setLignesCommande(ArrayList<LignesCommande> lignesCommande) {
-		this.lignesCommande = lignesCommande;
-	}
 	
 	
 }

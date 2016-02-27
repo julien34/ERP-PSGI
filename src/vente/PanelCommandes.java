@@ -5,13 +5,18 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -21,6 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import com.toedter.calendar.JDateChooser;
@@ -28,14 +35,17 @@ import com.toedter.calendar.JDateChooser;
 import achat.modeles.CommandesFournisseur;
 import achat.modeles.Fournisseur;
 import achat.modeles.UneditableTableModel;
+import achat.vues.PanelCommande;
 import achat.vues.popup.popCommande.PopupCommande;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 import vente.model.Commande;
+import vente.model.LignesCommande;
 
 public class PanelCommandes extends JPanel{
 
 	public static ArrayList<Commande> listeCommandes = new ArrayList<Commande>();
+	private String commandeChoisit;
 	private static Object[][] tabCo;
 	private static Object[] titres = {"N� Commande","Acheteur","Date", "Montant", "Etat"};
 
@@ -57,7 +67,7 @@ public class PanelCommandes extends JPanel{
 		//remplirTableau();
 
 		this.initElements();
-
+		initEcouteurs();
 	}
 
 	public static ArrayList<Commande> getListeCommande(){
@@ -96,7 +106,7 @@ public class PanelCommandes extends JPanel{
 				}
 
 				listeCommandes.add(new Commande(refCommande, refFournisseur, nomFournisseur, date, etatCommande,montantTotal, tauxTva,remise,typePaiement ));
-				
+
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -120,7 +130,7 @@ public class PanelCommandes extends JPanel{
 
 		//On remplit ce dernier avec les CommandesFournisseur r�cup�r�es
 		for(Commande cf : listeCommandes){
-			tabCo[listeCommandes.indexOf(cf)][0] = cf.getRefCommande();
+			tabCo[listeCommandes.indexOf(cf)][0] = cf.getIdCommande();
 			tabCo[listeCommandes.indexOf(cf)][1] = cf.getIdClient();
 			tabCo[listeCommandes.indexOf(cf)][2] = cf.getDate();
 			tabCo[listeCommandes.indexOf(cf)][3] = cf.getMontantTotal();
@@ -168,17 +178,92 @@ public class PanelCommandes extends JPanel{
 
 		this.add(panelRechercheNord, BorderLayout.NORTH);
 		this.add(panelGrilleCentre, BorderLayout.CENTER);
-
+		setBtn(true);
+}  
+	/**
+	 * Méthode qui initialise les écouteurs.
+	 */
+	public void initEcouteurs(){
+		
+		tableau.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
+		{
+			public void valueChanged(ListSelectionEvent e) 
+		    {
+				if (e.getValueIsAdjusting()) return;			        
+		        ListSelectionModel selection = (ListSelectionModel) e.getSource();
+		        int index = selection.getMinSelectionIndex();
+		        System.out.println(index);
+		        commandeChoisit = String.valueOf(modele.getValueAt(tableau.convertRowIndexToModel(index), 0));
+		        String truc1 = String.valueOf(modele.getValueAt(tableau.convertRowIndexToModel(index), 1));
+		        String truc2 = String.valueOf(modele.getValueAt(tableau.convertRowIndexToModel(index), 2));
+		        System.out.println(String.valueOf(modele.getValueAt(tableau.convertRowIndexToModel(index), 0)));
+		        System.out.println(truc1);
+		        System.out.println(truc2);
+		        //D�sactiver certains boutons si on ne selectionne aucune ligne
+		        
+		        if(!selection.isSelectionEmpty()){
+		        	 setBtn(true);
+				        System.out.println(commandeChoisit);
+				        System.out.println(truc1);
+				        System.out.println(truc2);
+		        }
+			    else{
+			    	setBtn(false);
+			    }
+		    }
+		});
+		
+		
 		btnNouveau.addActionListener(new ActionListener() {
 
+			private long myId;
+
 			public void actionPerformed(ActionEvent e) {
-				//commande = new Commande();
-				new FenetreVente();
+				Connection cn = DatabaseConnection.getCon();
+				try {
+					String sqlIdentifier = "select sequence_commandeVente.NEXTVAL from dual";
+
+					PreparedStatement pst = cn.prepareStatement(sqlIdentifier);
+					synchronized( this ) {
+						ResultSet rs = pst.executeQuery();
+						if(rs.next())
+							myId = rs.getLong(1);
+					}
+				}catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				try{
+				PreparedStatement pst = cn.prepareStatement("INSERT INTO vente_commande(idcommande) VALUES(?)");
+				pst.setInt(1 , (int)myId);
+				pst.executeQuery();
+
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			new FenetreVente((int)myId);
+		}
+	});
+		
+		
+		//Bouton "Modifier"
+		btnModifier.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Commande co = listeCommandes.get(tableau.getSelectedRow());
+				int idCo = Integer.parseInt(co.getIdCommande());
+				System.out.println(idCo); //les boutons sont tjr actif, getselection du tableau marche pas :(
+				new FenetreVente(idCo);
 			}
 		});
-	}  
-
-
-
-
+	}
+	
+	/**
+	 * Change la possibilité d'appuyer sur le bouton modifier et annuler selon son paramètre.
+	 * @param b, un booléen.
+	 */
+	public static void setBtn(boolean b){
+		btnModifier.setEnabled(b);
+		btnAnnuler.setEnabled(b);
+	}
 }

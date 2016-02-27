@@ -45,7 +45,7 @@ public class AjouterProduitCommande extends JDialog{
 	private DefaultListModel<String> dLMProduits = new DefaultListModel<String>();
 	private JList<String> jListProduit = new JList<String>(this.dLMProduits);
 	private ScrollPane scrollPane;
-	private String numCommande;
+	private int numCommande;
 	private LignesCommande ligneCommande;
 	private Client clientCommande;
 	//private int i = Integer.parseInt(getLastIdCommande());
@@ -53,7 +53,7 @@ public class AjouterProduitCommande extends JDialog{
 	/**
 	 * Constructeur d'une Popup d'ajout de ligne commande fournisseur.
 	 */
-	public AjouterProduitCommande(String numCommande){
+	public AjouterProduitCommande(int numCommande){
 		this.numCommande = numCommande;
 		this.getProduits();//On r�cup�re l'ensemble des produits et on les ajoute dans l'arryList
 		this.getCategories();//On r�cup�re les cat�gories pour permettre la recherche
@@ -246,10 +246,10 @@ public class AjouterProduitCommande extends JDialog{
 		try {
 		
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("INSERT INTO vente_ligneCommande(idcommande, codeProduit, quantite) VALUES(sequence_commandeVente.NEXTVAL,?,?)");
-		//	numCommande = String.valueOf(i);
-			pst.setString(1 , lc.getIdProduit());
-			pst.setInt(2, lc.getQte());
+			PreparedStatement pst = cn.prepareStatement("INSERT INTO vente_ligneCommande(idcommande, codeProduit, quantite) VALUES(?,?,?)");
+			pst.setInt(1 , numCommande);
+			pst.setString(2 , lc.getIdProduit());
+			pst.setInt(3, lc.getQte());
 			pst.executeQuery();
 
 			dispose();
@@ -275,7 +275,8 @@ public class AjouterProduitCommande extends JDialog{
 		//On cr�er la ligne de commande
 		this.ligneCommande = new LignesCommande(refProduit, nomProduit, categorieProduit, pHT, qte, total);
 		FenetreVente.addArrayListLigneCommande(ligneCommande);
-
+		// 1 ->   // 2 -> 1   //3 - > 1,2  //4 -> 1,2,3
+		FenetreVente.getProduitsCommande();
 		System.out.println(refProduit);
 		System.out.println(nomProduit);
 		System.out.println(categorieProduit);
