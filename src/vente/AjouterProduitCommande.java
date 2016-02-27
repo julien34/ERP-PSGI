@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
@@ -31,7 +32,7 @@ import javax.swing.SpinnerNumberModel;
 import jdbc.DatabaseConnection;
 import vente.model.Client;
 import achat.modeles.Categorie;
-import achat.modeles.LignesCommande;
+import vente.model.LignesCommande;
 import achat.modeles.Produit; 
 
 public class AjouterProduitCommande extends JDialog{
@@ -47,7 +48,7 @@ public class AjouterProduitCommande extends JDialog{
 	private String numCommande;
 	private LignesCommande ligneCommande;
 	private Client clientCommande;
-	private int i = Integer.parseInt(getLastIdCommande());
+	//private int i = Integer.parseInt(getLastIdCommande());
 	
 	/**
 	 * Constructeur d'une Popup d'ajout de ligne commande fournisseur.
@@ -144,6 +145,7 @@ public class AjouterProduitCommande extends JDialog{
 			public void actionPerformed(ActionEvent e) {
 				AjouterProduitCommande.this.setLigne();
 				ajoutLigneCommande(AjouterProduitCommande.this.ligneCommande);
+;
 			}
 		});
 		
@@ -181,17 +183,17 @@ public class AjouterProduitCommande extends JDialog{
 		
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT p.code, p.nom, p.prixAchat, p.categorie, c.nom AS nomCategorie FROM Produit p JOIN categorie c ON c.code = p.categorie WHERE p.disponibilite = 'Vente' ORDER BY p.nom");
+			PreparedStatement pst = cn.prepareStatement("SELECT p.code, p.nom, p.prixVente, p.categorie, c.nom AS nomCategorie FROM Produit p JOIN categorie c ON c.code = p.categorie WHERE p.disponibilite = 'Vente' ORDER BY p.nom");
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
 				String codePdt = rs.getString("code");
 				String descriptionPdt = rs.getString("nom");
-				Double prixAchat = rs.getDouble("prixAchat");
+				Double prixVente = rs.getDouble("prixVente");
 				String codeCategorie = rs.getString("categorie");
 				String nomCategorie = rs.getString("nomCategorie");
 				
-				this.listeProduits.add(new Produit(codePdt, descriptionPdt, prixAchat, codeCategorie, nomCategorie));
+				this.listeProduits.add(new Produit(codePdt, descriptionPdt, prixVente, codeCategorie, nomCategorie));
 			}
 			
 			//On ajoute tous les produits � la JList
@@ -246,7 +248,7 @@ public class AjouterProduitCommande extends JDialog{
 			Connection cn = DatabaseConnection.getCon();
 			PreparedStatement pst = cn.prepareStatement("INSERT INTO vente_ligneCommande(idcommande, codeProduit, quantite) VALUES(sequence_commandeVente.NEXTVAL,?,?)");
 		//	numCommande = String.valueOf(i);
-			pst.setString(1 , lc.getRefProduit());
+			pst.setString(1 , lc.getIdProduit());
 			pst.setInt(2, lc.getQte());
 			pst.executeQuery();
 
@@ -262,6 +264,7 @@ public class AjouterProduitCommande extends JDialog{
 	 * M�thode qui remplit la LigneCommande courrante avec les informations renseign�es.
 	 */
 	private void setLigne(){
+		System.out.println(jListProduit.getSelectedIndex());
 		String refProduit = this.listeProduits.get(this.jListProduit.getSelectedIndex()).getCode();
 		String nomProduit = this.listeProduits.get(this.jListProduit.getSelectedIndex()).getDescription();
 		String categorieProduit = this.listeProduits.get(this.jListProduit.getSelectedIndex()).getNomCat();
@@ -271,6 +274,15 @@ public class AjouterProduitCommande extends JDialog{
 			
 		//On cr�er la ligne de commande
 		this.ligneCommande = new LignesCommande(refProduit, nomProduit, categorieProduit, pHT, qte, total);
+		FenetreVente.addArrayListLigneCommande(ligneCommande);
+
+		System.out.println(refProduit);
+		System.out.println(nomProduit);
+		System.out.println(categorieProduit);
+		System.out.println(pHT);
+		System.out.println(qte);
+		System.out.println(total);
+
 	}
 	
 	
@@ -280,7 +292,7 @@ public class AjouterProduitCommande extends JDialog{
 	private void rechercheProduit(){
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT p.code, p.nom, p.prixAchat, p.categorie, c.nom AS nomCategorie FROM Produit p JOIN categorie c ON c.code = p.categorie WHERE UPPER(c.code) LIKE UPPER(?) AND UPPER(p.nom) LIKE UPPER(?) AND p.disponibilite = 'Achat' ORDER BY p.nom");
+			PreparedStatement pst = cn.prepareStatement("SELECT p.code, p.nom, p.prixVente, p.categorie, c.nom AS nomCategorie FROM Produit p JOIN categorie c ON c.code = p.categorie WHERE UPPER(c.code) LIKE UPPER(?) AND UPPER(p.nom) LIKE UPPER(?) AND p.disponibilite = 'Achat' ORDER BY p.nom");
 			
 			//On remet la liste � 0
 			this.listeProduits.clear();
@@ -302,11 +314,11 @@ public class AjouterProduitCommande extends JDialog{
 			while(rs.next()){
 				String codePdt = rs.getString("code");
 				String descriptionPdt = rs.getString("nom");
-				Double prixAchat = rs.getDouble("prixAchat");
+				Double prixVente = rs.getDouble("prixVente");
 				String codeCategorie = rs.getString("categorie");
 				String nomCategorie = rs.getString("nomCategorie");
 				
-				this.listeProduits.add(new Produit(codePdt, descriptionPdt, prixAchat, codeCategorie, nomCategorie));
+				this.listeProduits.add(new Produit(codePdt, descriptionPdt, prixVente, codeCategorie, nomCategorie));
 			}
 			
 			//On ajoute tous les produits � la JList
@@ -320,20 +332,21 @@ public class AjouterProduitCommande extends JDialog{
 
 	}
 	
-	
-	 private String getLastIdCommande(){
+	/*private void getLastIdCommande(){
 		  String dernierId = null;
 		   try {
 		    Connection cn = DatabaseConnection.getCon();
-		    PreparedStatement pst;
-		    pst = cn.prepareStatement("SELECT max(idCommande) as maxId from vente_commande ");
-		    ResultSet rs = pst.executeQuery();
+		    Statement st;
+		    st = cn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+		    ResultSet rs = st.executeQuery("SELECT IDCOMMANDE, CODEPRODUIT, QUANTITE FROM vente_ligneCommande WHERE IDCOMMANDE= (SELECT MAX(IDCOMMANDE) FROM vente_ligneCommande)) ");
 		    rs.next();
-		    dernierId = rs.getString("maxId");
+		    String refProduit = rs.getString("IDCOMMANDE");
+		    
 		   } catch (SQLException e) {
 		    // TODO Auto-generated catch block
 		    e.printStackTrace();
 		   }
-		   return dernierId;
-		 }
+		   
+		 }*/
+
 }

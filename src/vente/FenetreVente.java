@@ -281,9 +281,10 @@ public class FenetreVente extends JDialog {
 			tabLignesCo[listeLignesCommande.indexOf(lc)][3] = lc.getpHT()+"€";
 			tabLignesCo[listeLignesCommande.indexOf(lc)][4] = lc.getQte();
 			tabLignesCo[listeLignesCommande.indexOf(lc)][5] = lc.getTotal()+"€";
+			
 		}
-		
 		modele.setDataVector(tabLignesCo, titres);
+		System.err.println(listeLignesCommande);
 	}
 	
 	
@@ -309,7 +310,7 @@ public class FenetreVente extends JDialog {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				 new AjouterProduitCommande(null);
+				 new AjouterProduitCommande(null);	
 			}
 		});
 
@@ -559,6 +560,7 @@ public class FenetreVente extends JDialog {
 	 */
 	public static void addArrayListLigneCommande(LignesCommande lc){
 		listeLignesCommande.add(lc);
+
 	}
 	
 	
