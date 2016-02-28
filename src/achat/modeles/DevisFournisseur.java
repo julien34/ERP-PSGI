@@ -4,11 +4,11 @@ import java.sql.Date;
 
 public class DevisFournisseur {
 	private Integer refDevis;
-	private String refFournisseur, nomFourniseur, montantTotal, etatDevis, typePaiement;
+	private String refFournisseur, nomFourniseur, montantTotal, etatDevis, typePaiement, refCommande;
 	Double tauxTva, remise;
 	private Date date;
-	public DevisFournisseur(Integer refCommande, Date date, String refFournisseur, String nomFournisseur, String montantTotal, String etatCommande, double tauxTva, double remise, String typePaiement){
-		this.refDevis = refCommande;
+	public DevisFournisseur(Integer refDevis, Date date, String refFournisseur, String nomFournisseur, String montantTotal, String etatCommande, double tauxTva, double remise, String typePaiement, String refCommande){
+		this.refDevis = refDevis;
 		this.date = date;
 		this.refFournisseur = refFournisseur;
 		this.nomFourniseur = nomFournisseur;
@@ -17,6 +17,13 @@ public class DevisFournisseur {
 		this.typePaiement = typePaiement;
 		this.tauxTva = tauxTva;
 		this.remise = remise;
+		this.refCommande= refCommande;
+	}
+	public String getRefCommande() {
+		return refCommande;
+	}
+	public void setRefCommande(String refCommande) {
+		this.refCommande = refCommande;
 	}
 	public Integer getRefDevis() {
 		return refDevis;

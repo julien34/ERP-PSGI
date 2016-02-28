@@ -96,16 +96,16 @@ public class PanelDevis extends JPanel{
 		listeDevis.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT d.refDevis, d.dateDevis, d.etatDevis, d.tauxTVA, d.remise, d.typePaiement, f.refFournisseur, f.nomFournisseur FROM DevisFournisseurs d LEFT JOIN Fournisseurs f ON f.refFournisseur = d.refFournisseur GROUP BY d.refDevis, d.dateDevis, d.etatdevis, d.tauxTVA, d.remise, d.typePaiement, f.refFournisseur, f.nomFournisseur ORDER BY d.dateDevis DESC");
+			PreparedStatement pst = cn.prepareStatement("SELECT d.refDevis, d.dateDevis, d.etatDevis, d.tauxTVA, d.remise, d.typePaiement, d.refCommande, f.refFournisseur, f.nomFournisseur, c.montantTotal FROM DevisFournisseurs d LEFT JOIN Fournisseurs f ON f.refFournisseur = d.refFournisseur LEFT join CommandesFournisseur c on d.refCommande= c.refCommande GROUP BY d.refDevis, d.dateDevis, d.etatdevis, d.tauxTVA, d.remise, d.typePaiement,d.refCommande f.refFournisseur, f.nomFournisseur ORDER BY d.dateDevis DESC");
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
-				Integer refCommande;
-				String  refFournisseur, nomFournisseur, montantTotal, etatCommande, typePaiement;
+				Integer refDevis;
+				String  refCommande = null, refFournisseur, nomFournisseur, montantTotal, etatCommande, typePaiement;
 				double tauxTva, remise;
 				Date date;
 				
-				refCommande = rs.getInt("refCommande");
+				refDevis= rs.getInt("refCommande");
 				date = rs.getDate("dateCommande");
 				refFournisseur = rs.getString("refFournisseur");
 				nomFournisseur = rs.getString("nomFournisseur");
@@ -114,7 +114,7 @@ public class PanelDevis extends JPanel{
 				remise = rs.getDouble("remise");
 				//dateLivr = rs.getDate("dateLivr");
 				typePaiement = rs.getString("typePaiement");
-				
+				//refCommande= rs.getString("refCommande"); a décommenter lors de la modification de la bdd
 				
 				//Montant total non vide
 				if (rs.getString("montantTotal") == null){
@@ -124,7 +124,7 @@ public class PanelDevis extends JPanel{
 					montantTotal = rs.getString("montantTotal")+" €";
 				}
 
-				listeDevis.add(new DevisFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal, etatCommande, tauxTva, remise, typePaiement));
+				listeDevis.add(new DevisFournisseur(refDevis, date, refFournisseur, nomFournisseur, montantTotal, etatCommande, tauxTva, remise, typePaiement,refCommande));
 				
 			}
 		} catch (SQLException e) {
@@ -142,19 +142,19 @@ public class PanelDevis extends JPanel{
 		
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT d.refDevis, d.dateDevis, d.etatDevis, d.tauxTVA, d.remise, d.typePaiement, f.refFournisseur, f.nomFournisseur FROM DevisFournisseurs d LEFT JOIN Fournisseurs f ON f.refFournisseur = d.refFournisseur WHERE UPPER(d.refDevis) LIKE UPPER(?) AND UPPER(f.nomFournisseur) LIKE UPPER(?) AND d.datedevis LIKE ? GROUP BY d.refDevis, d.dateDevis, d.etatdevis, d.tauxTVA, d.remise, d.typePaiement, f.refFournisseur, f.nomFournisseur ORDER BY d.dateDevis DESC");
+			PreparedStatement pst = cn.prepareStatement("SELECT d.refDevis, d.dateDevis, d.etatDevis, d.tauxTVA, d.remise, d.typePaiement, d.refCommande, f.refFournisseur, f.nomFournisseur FROM DevisFournisseurs d LEFT JOIN Fournisseurs f ON f.refFournisseur = d.refFournisseur WHERE UPPER(d.refDevis) LIKE UPPER(?) AND UPPER(f.nomFournisseur) LIKE UPPER(?) AND d.datedevis LIKE ? GROUP BY d.refDevis, d.dateDevis, d.etatdevis, d.tauxTVA, d.remise, d.typePaiement, d.refCommande, f.refFournisseur, f.nomFournisseur ORDER BY d.dateDevis DESC");
 			pst.setString(1, "%"+PanelDevis.txtRechercheCommande.getText()+"%");
 			pst.setString(2, "%"+PanelDevis.txtRechercheFournisseur.getText()+"%");
 			pst.setString(3, "%"+PanelDevis.dateRecherche+"%");
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
-				Integer refCommande;
-				String refFournisseur, nomFournisseur, montantTotal, etatCommande, typePaiement;
+				Integer refDevis;
+				String refCommande = null, refFournisseur, nomFournisseur, montantTotal, etatCommande, typePaiement;
 				double tauxTva, remise;
 				Date date;
 				
-				refCommande = rs.getInt("refDevis");
+				refDevis = rs.getInt("refDevis");
 				date = rs.getDate("dateDevis");
 				refFournisseur = rs.getString("refFournisseur");
 				nomFournisseur = rs.getString("nomFournisseur");
@@ -162,6 +162,7 @@ public class PanelDevis extends JPanel{
 				tauxTva = rs.getDouble("tauxTva");
 				remise = rs.getDouble("remise");
 				typePaiement = rs.getString("typePaiement");
+				//refCommande= rs.getString("refCommande"); a décommenter lors de la modification de la bdd
 				
 				
 				//Montant total non vide
@@ -172,7 +173,7 @@ public class PanelDevis extends JPanel{
 					montantTotal = rs.getString("montantTotal")+" €";
 				}
 
-				listeDevis.add(new DevisFournisseur(refCommande, date, refFournisseur, nomFournisseur, montantTotal, etatCommande, tauxTva, remise, typePaiement));
+				listeDevis.add(new DevisFournisseur(refDevis, date, refFournisseur, nomFournisseur, montantTotal, etatCommande, tauxTva, remise, typePaiement,refCommande));
 				
 			}
 		} catch (SQLException e) {
