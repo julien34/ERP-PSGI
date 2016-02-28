@@ -30,11 +30,14 @@ import javax.swing.table.DefaultTableModel;
 import com.toedter.calendar.JDateChooser;
 
 import achat.modeles.CommandesFournisseur;
+import achat.modeles.Fournisseur;
 import achat.modeles.TVA;
 import achat.modeles.UneditableTableModel;
 import achat.vues.popup.popCommande.PopupCommande;
+import achat.vues.popup.popFournisseur.PopupModifFournisseur;
 import achat.vues.popup.popTVA.PopupAjoutTVA;
 import achat.vues.popup.popTVA.PopupModifTVA;
+import achat.vues.popup.popTVA.PopupSuppressionTVA;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 
@@ -212,7 +215,20 @@ public class PanelTVA extends JPanel {
 				PanelTVA.remplirTableau();
 			}
 		});
-
+		
+		btSupprimer.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+					new PopupSuppressionTVA(getListeTVA().get(tableau.getSelectedRow()));
+			}
+		});
+		
+		tableau.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				setBt(true);
+			}
+		});
 	}
 	
 	/**
@@ -252,4 +268,24 @@ public class PanelTVA extends JPanel {
 	public static void ajoutTVAListe(TVA tva) {
 		listeTVA.add(tva);
 	}
+
+	/**
+	 * Méthode qui permet de mettre a jour le tableau des Fournisseurs après une supression
+	 * @param f, un Fournisseur.
+	 */
+	public static void majTableauSuppr(TVA tva) {
+
+			listeTVA.remove(tva);
+			int nouvelleLongueur = tabTVA.length-1;
+			tabTVA = new Object[nouvelleLongueur][3];
+			for(TVA t : listeTVA){
+				tabTVA[listeTVA.indexOf(t)][0] = t.getRefTVA();
+				tabTVA[listeTVA.indexOf(t)][1] = t.getNomTVA();
+				tabTVA[listeTVA.indexOf(t)][2] = t.getTauxTVA();
+			}
+			modele.setDataVector(tabTVA,titres);
+			setBt(false);
+	}
+
+	
 }
