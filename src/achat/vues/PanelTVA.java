@@ -9,10 +9,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,14 +24,8 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-import com.toedter.calendar.JDateChooser;
-
-import achat.modeles.CommandesFournisseur;
-import achat.modeles.Fournisseur;
 import achat.modeles.TVA;
 import achat.modeles.UneditableTableModel;
-import achat.vues.popup.popCommande.PopupCommande;
-import achat.vues.popup.popFournisseur.PopupModifFournisseur;
 import achat.vues.popup.popTVA.PopupAjoutTVA;
 import achat.vues.popup.popTVA.PopupModifTVA;
 import achat.vues.popup.popTVA.PopupSuppressionTVA;
@@ -198,15 +189,13 @@ public class PanelTVA extends JPanel {
 			}
 		});
 		
-		
-	/*	//Bouton "Modifier"
 		btModifier.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new PopupModifTVA(listeTVA.get(tableau.getSelectedRow()));
+				new PopupModifTVA(listeTVA.get(tableau.getSelectedRow()), tableau.getSelectedRow());
 			}
-		});*/
+		});
 
 		txtRechercheNomTVA.addKeyListener(new KeyAdapter() {
 			@Override
@@ -285,6 +274,17 @@ public class PanelTVA extends JPanel {
 			}
 			modele.setDataVector(tabTVA,titres);
 			setBt(false);
+	}
+
+	public static void setTableau(TVA tva, int indice) {
+		listeTVA.remove(indice);
+		listeTVA.add(indice,tva);
+		
+		tabTVA[indice][0] = tva.getRefTVA();
+		tabTVA[indice][1] = tva.getNomTVA();
+		tabTVA[indice][2] = tva.getTauxTVA();
+		
+		modele.setDataVector(tabTVA,titres);
 	}
 
 	

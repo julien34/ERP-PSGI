@@ -13,11 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import achat.modeles.Fournisseur;
 import achat.modeles.TVA;
-import achat.vues.PanelFournisseur;
 import achat.vues.PanelTVA;
-import achat.vues.popup.popFournisseur.PopupSupressionFournisseur;
 import jdbc.DatabaseConnection;
 
 public class PopupSuppressionTVA extends JDialog {

@@ -1,6 +1,5 @@
 package achat.vues.popup.popTVA;
 
-import java.awt.Choice;
 import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.Window;
@@ -8,10 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -21,19 +17,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-import achat.modeles.Categorie;
-import achat.modeles.Fournisseur;
 import achat.modeles.TVA;
-import achat.vues.PanelFournisseur;
 import achat.vues.PanelTVA;
-import achat.vues.popup.popFournisseur.PopupAjoutFournisseur;
 import jdbc.DatabaseConnection;
 
 public class PopupAjoutTVA extends JDialog {
 		
 		private static final long serialVersionUID = 1L;
 		private JButton btValider, btAnnuler;
-		private JTextField txtNomTVA, txtRefTVA, txtTauxTVA;
+		private JTextField txtNomTVA, txtTauxTVA;
 		//private static ArrayList<TVA> listeTVA;
 		
 		
@@ -113,6 +105,7 @@ public class PopupAjoutTVA extends JDialog {
 						pst.setString(1, PopupAjoutTVA.this.txtNomTVA.getText());
 						pst.setString(2, PopupAjoutTVA.this.txtTauxTVA.getText());
 						pst.executeQuery();
+						@SuppressWarnings("unused")
 						TVA tva = new TVA(Integer.toString(PanelTVA.getReference_glob()), PopupAjoutTVA.this.txtNomTVA.getText(), Integer.parseInt(PopupAjoutTVA.this.txtTauxTVA.getText()));
 						//PanelTVA.ajoutTVAListe(new TVA(Integer.toString(PanelTVA.getReference_glob()), PopupAjoutTVA.this.txtNomTVA.getText(), Integer.parseInt(PopupAjoutTVA.this.txtTauxTVA.getText())));
 						PanelTVA.getAllTVA();
