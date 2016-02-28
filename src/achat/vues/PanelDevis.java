@@ -234,7 +234,7 @@ public class PanelDevis extends JPanel{
 		
 		
 		//On créer les composants
-		JLabel lblRechercheCommande = new JLabel("N° Commande : ");
+		JLabel lblRechercheCommande = new JLabel("N° Devis : ");
 		txtRechercheCommande = new JTextField(10);
 		JLabel lblRechercheFournisseur = new JLabel("Fournisseur : ");
 		txtRechercheFournisseur = new JTextField(10);
@@ -246,7 +246,7 @@ public class PanelDevis extends JPanel{
 		btnNouveau = new JButton("Ajouter");
 		btnModifier = new JButton("Modifier");
 		btnAnnuler = new JButton("Annuler");
-		btnValiderCommande = new JButton("Valider Commande");
+		btnValiderCommande = new JButton("Valider Devis");
 		
 		//On grise l'accès aux boutons modifier et annuler tant qu'une ligne n'est pas sélectionnée
 		setBtn(false);
@@ -401,7 +401,7 @@ public class PanelDevis extends JPanel{
 	private void validationCommande(DevisFournisseur devisFournisseur) {
         try {
 				Connection cn = DatabaseConnection.getCon();
-				PreparedStatement pst = cn.prepareStatement("UPDATE CommandesFournisseur SET EtatCommande = ? WHERE refCommande = ?");
+				PreparedStatement pst = cn.prepareStatement("UPDATE DevisFournisseurs SET EtatDevis = ? WHERE refDevis = ?");
 				pst.setString(1, "Validée");
 				pst.setInt(2, devisFournisseur.getRefDevis());
 				pst.executeQuery();
