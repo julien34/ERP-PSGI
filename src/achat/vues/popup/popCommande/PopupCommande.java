@@ -640,6 +640,19 @@ public class PopupCommande extends JDialog {
 				e.printStackTrace();
 			}
 			
-			this.commande.setEtatCommande("Validée");
+			 try {
+					Connection cn = DatabaseConnection.getCon();
+					PreparedStatement pst = cn.prepareStatement("INSERT INTO DevisFournisseur(refDEvis,datedevis,reffournisseur,etatdevis,tauxtva,remise,typepaiement,refcommande)  VALUES(seqRefDevis.NEXTVAL,CURRENT_DATE,?,?,?,?,?,?)");
+					pst.setString(1, fournisseur.getRef());
+					pst.setString(2, "En cours");
+					pst.setDouble(3, Double.valueOf(this.chTauxTva.getSelectedItem()));
+					pst.setDouble(4, (Double) this.txtRemise.getValue());
+					pst.setString(5, this.chPaiement.getSelectedItem());
+					pst.setString(6, commande.getRefCommande());
+					pst.executeQuery();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			 this.commande.setEtatCommande("Validée");
     }
 }
