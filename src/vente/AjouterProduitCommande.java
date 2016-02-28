@@ -46,7 +46,7 @@ public class AjouterProduitCommande extends JDialog{
 	private JList<String> jListProduit = new JList<String>(this.dLMProduits);
 	private ScrollPane scrollPane;
 	private int numCommande;
-	LignesCommande ligneCommande;
+	private LignesCommande ligneCommande;
 	private Client clientCommande;
 	//private int i = Integer.parseInt(getLastIdCommande());
 	
@@ -145,7 +145,7 @@ public class AjouterProduitCommande extends JDialog{
 			public void actionPerformed(ActionEvent e) {
 				AjouterProduitCommande.this.setLigne();
 				ajoutLigneCommande(AjouterProduitCommande.this.ligneCommande);
-				
+;
 			}
 		});
 		
@@ -274,9 +274,14 @@ public class AjouterProduitCommande extends JDialog{
 			
 		//On cr�er la ligne de commande
 		this.ligneCommande = new LignesCommande(refProduit, nomProduit, categorieProduit, pHT, qte, total);
-		FenetreVente.addArrayListLigneCommande(ligneCommande);
-		// 1 ->   // 2 -> 1   //3 - > 1,2  //4 -> 1,2,3
+		//FenetreVente.addArrayListLigneCommande(ligneCommande);
 		FenetreVente.getProduitsCommande();
+		System.out.println(refProduit);
+		System.out.println(nomProduit);
+		System.out.println(categorieProduit);
+		System.out.println(pHT);
+		System.out.println(qte);
+		System.out.println(total);
 
 	}
 	

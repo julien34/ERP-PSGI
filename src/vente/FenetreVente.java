@@ -58,7 +58,7 @@ public class FenetreVente extends JDialog {
 	private JSpinner txtRemise;
 	private JButton btnCalculerTotal, btnValider, btnAnnuler, btnRechercher, btnAjouter, btnModifier, btnSupprimer;
 	private JDateChooser jdcDateLivr, jdcDate;
-	private Choice chTauxTva, chPaiement;
+	private Choice chTauxTva, chPaiement, chEtat;
 	//private PopupCommandeSelectFournisseur fenetreSelectFn;
 
 	//On créer la JTable et son modèle
@@ -89,12 +89,12 @@ public class FenetreVente extends JDialog {
 	public FenetreVente(int idCommande){
 		listeLignesCommande.clear();
 		idCommandeEnCour = idCommande;
-		System.out.println(idCommandeEnCour);
 		//this.commande.setIdCommande(String.valueOf(idCommande));
 		this.initFenetre();
 		this.initElements();
 		this.initEcouteurs();
 		FenetreVente.getProduitsCommande();
+		setInfoCommande();
 		//this.preRemplir();
 		this.setBtnEnabled(false);
 	}
@@ -127,12 +127,12 @@ public class FenetreVente extends JDialog {
 	private void initElements(){
 
 		//On défini le fournisseur s'il est présent dans la commande si non vide
-		if(this.commande == null || this.commande.getIdClient() == null){
+		/*if(this.commande == null || this.commande.getIdClient() == null){
 			client = new Client();
 		}
 		else{
 			client = new Client(this.commande.getIdClient());
-		}
+		}*/
 
 		//On créer les différents panels du haut
 		this.setLayout(new GridLayout(2, 1));//On défini la popup avec un layout en grid
@@ -180,11 +180,12 @@ public class FenetreVente extends JDialog {
 		//On créer les différents panels du bas
 		JPanel panelParametrage = new JPanel(new GridLayout(2,1));//panel du bas
 		JPanel panelParametrageCentre = new JPanel(new GridLayout(1,2));
-		JPanel panelParametrageCentreGauche = new JPanel(new GridLayout(4,1));
+		JPanel panelParametrageCentreGauche = new JPanel(new GridLayout(5,1));
 		JPanel gauche1 = new JPanel();
 		JPanel gauche2 = new JPanel();
 		JPanel gauche3 = new JPanel();
 		JPanel gauche4 = new JPanel();
+		JPanel gauche5 = new JPanel();
 		JPanel panelParametrageCentreDroite = new JPanel(new GridLayout(4,2));
 		JPanel panelParametrageSud = new JPanel();
 
@@ -207,6 +208,10 @@ public class FenetreVente extends JDialog {
 		chPaiement.add("Espèces");
 		chPaiement.add("Virement");
 		chPaiement.add("Autre");
+		JLabel lblEtat = new JLabel("Etat de la commande : ");
+		chEtat = new Choice();
+		chEtat.add("En cour");
+		chEtat.add("Terminer");
 
 		gauche1.add(lblTauxTva);
 		gauche1.add(chTauxTva);
@@ -218,11 +223,14 @@ public class FenetreVente extends JDialog {
 		gauche3.add(this.jdcDateLivr);
 		gauche4.add(lblPaiement);
 		gauche4.add(chPaiement);
+		gauche5.add(lblEtat);
+		gauche5.add(chEtat);
 
 		panelParametrageCentreGauche.add(gauche1);
 		panelParametrageCentreGauche.add(gauche2);
 		panelParametrageCentreGauche.add(gauche3);
 		panelParametrageCentreGauche.add(gauche4);
+		panelParametrageCentreGauche.add(gauche5);
 
 		panelParametrageCentreGauche.setBorder(BorderFactory.createTitledBorder("Parametrage"));
 		panelParametrageCentre.add(panelParametrageCentreGauche);
@@ -304,22 +312,22 @@ public class FenetreVente extends JDialog {
 		tableau.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
 		{
 			public void valueChanged(ListSelectionEvent e) 
-		    {
+			{
 				if (e.getValueIsAdjusting()) return;			        
-		        ListSelectionModel selection = (ListSelectionModel) e.getSource();
-		        //clientChoisi = selection.getMinSelectionIndex();
-		        
-		        //D�sactiver certains boutons si on ne selectionne aucune ligne
-		        
-		        if(!selection.isSelectionEmpty()){
-		        	 setBtnEnabled(true);
-		        }
-			    else{
-			    	setBtnEnabled(false);
-			    }
-		    }
+				ListSelectionModel selection = (ListSelectionModel) e.getSource();
+				//clientChoisi = selection.getMinSelectionIndex();
+
+				//D�sactiver certains boutons si on ne selectionne aucune ligne
+
+				if(!selection.isSelectionEmpty()){
+					setBtnEnabled(true);
+				}
+				else{
+					setBtnEnabled(false);
+				}
+			}
 		});
-		
+
 		//Bouton pour calculer le total de la commande
 		this.btnCalculerTotal.addActionListener(new ActionListener() {
 			@Override
@@ -428,6 +436,30 @@ public class FenetreVente extends JDialog {
 		}
 	}
 
+	/**
+	 * Méthode qui récupère l'ensemble des produits qui sont dans la commande.
+	 */
+	private void setInfoCommande(){
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("SELECT * FROM vente_Commande WHERE idCommande = ?");
+			pst.setInt(1, idCommandeEnCour);
+			ResultSet rs = pst.executeQuery();
+			while(rs.next()){
+				txtRemise.setValue(Double.valueOf(rs.getString("remise")));
+				//jdcDate.setDate((Date)rs.getString("dateCommande");
+				chTauxTva.select(rs.getString("tauxTVA"));
+				chPaiement.select(rs.getString("typePaiement"));
+				chEtat.select(rs.getString("etatcommande"));
+				getClientById(Integer.parseInt(rs.getString("idCLient")));
+			}
+
+			maj();
+			this.calculerTotal();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Méthode qui remplit les différents label avec les caractéristiques de la commande.
@@ -502,68 +534,36 @@ public class FenetreVente extends JDialog {
 	 * Méthode qui ajoute dans la base de donnée une nouvelle commande (vide).
 	 */
 	private void ajouterCommande(Commande c){
-		
+
 		//On vérifie si la commande est dans l'arraylist des commandes
-		if(PanelCommandes.getListeCommande().contains(c)){
-			
-			if(this.commande.getTauxTVA() == null){
+
+		/*if(this.commande.getTauxTVA() == null){
 				this.chTauxTva.select("0.0");//TVA à 0 si vide
 			}
-			
+
 			if(this.jdcDateLivr.getDate() == null || this.jdcDateLivr.getDate().before(this.jdcDate.getDate())){
 				this.jdcDateLivr.setDate(this.commande.getDate());//Date de livraison = date de création si vide ou antérieur à la création
-			}
-			
-			this.calculerTotal();//On calcule el total de la commande
-			
-			try {
-				Connection cn = DatabaseConnection.getCon();
-				PreparedStatement pst = cn.prepareStatement("UPDATE vente_commande SET idClient = ?, dateCommande = ?, tauxTVA = ?, remise = ?, typePaiement = ? WHERE idCommande = ?");
-				pst.setDate(1, new Date(this.jdcDate.getDate().getTime()));
-				pst.setString(2, client.getIdClient());
-				pst.setDouble(3, Double.valueOf(this.chTauxTva.getSelectedItem()));
-				pst.setDouble(4, (Double) this.txtRemise.getValue());
-				pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
-				pst.setString(6, this.chPaiement.getSelectedItem());
-				pst.setString(7, c.getIdCommande());
-				pst.executeQuery();
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			}*/
+
+		this.calculerTotal();//On calcule el total de la commande
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("UPDATE vente_commande SET idClient = ?,dateCommande = ?,etatCommande = ?, tauxTVA = ?, remise = ?, typePaiement = ? WHERE idCommande = ?");
+			pst.setString(1, client.getIdClient());
+			pst.setDate(2, getCurrentDate());
+			pst.setString(3,chEtat.getSelectedItem());
+			pst.setDouble(4, Double.valueOf(this.chTauxTva.getSelectedItem()));
+			pst.setDouble(5, (Double) this.txtRemise.getValue());
+			//pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
+			pst.setString(6,chPaiement.getSelectedItem());//this.chPaiement.getSelectedItem());
+			pst.setInt(7, idCommandeEnCour);
+
+			pst.executeQuery();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-		
-		//Si non on la créer
-		else {
-			
-			this.calculerTotal();//On calcule el total de la commande
-			
-			try {
-				Connection cn = DatabaseConnection.getCon();
-				PreparedStatement pst = cn.prepareStatement("INSERT INTO vente_commande(idCommande, idClient, datecommande, idEtatCommande, tauxTVA, remise, typePaiement) VALUES(sequence_commandeVente.NEXTVAL,?,?,?,?,?,?)");
-				pst.setString(1, client.getIdClient());
-				pst.setDate(2, getCurrentDate());
-				pst.setString(3, "En cours");
-				pst.setDouble(4, Double.valueOf(this.chTauxTva.getSelectedItem()));
-				pst.setDouble(5, (Double) this.txtRemise.getValue());
-				
-		/*		if(this.jdcDateLivr.getDate() == null){
-					Calendar cal = Calendar.getInstance(); 
-					Date date = new Date(cal.getTimeInMillis());
-					pst.setDate(5, date);
-				}
-				else{
-					pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
-				}*/
-				
-				pst.setString(6, this.chPaiement.getSelectedItem());
-				pst.executeQuery();
-				
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		
+
 		PanelCommandes.getCommande();
 		PanelCommandes.maj();
 		setBtnEnabled(false);
@@ -571,10 +571,10 @@ public class FenetreVente extends JDialog {
 		setClient(new Client());
 		dispose();
 	}
-	
+
 	private static java.sql.Date getCurrentDate() {
-	    java.util.Date today = new java.util.Date();
-	    return new java.sql.Date(today.getTime());
+		java.util.Date today = new java.util.Date();
+		return new java.sql.Date(today.getTime());
 	}
 
 	/**
@@ -586,7 +586,26 @@ public class FenetreVente extends JDialog {
 		client = cli;
 	}
 
-
+	/**
+	 * Méthode qui change le fournisseur avec celui sélectionné dans la liste.
+	 * @param f, le Fournisseur à changer.
+	 */
+	public static void getClientById(int idCli){
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("SELECT * FROM vente_clients WHERE idClient = ?");
+			pst.setInt(1, idCli);
+			pst.executeQuery();
+			ResultSet rs = pst.executeQuery();
+			while(rs.next()){
+				client.setidClient(rs.getString("IDCLIENT"));
+				client.setNom(rs.getString("NOMCLIENT"));
+				lblFournisseurCode.setText(client.getNomClient()+" ("+client.getIdClient()+")");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * Métode qui rajoute à la commande un produit avec une quantité.
 	 * @param lc, une ligne de commande à ajouter à la ommande.

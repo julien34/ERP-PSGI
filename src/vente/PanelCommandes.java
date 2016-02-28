@@ -78,7 +78,7 @@ public class PanelCommandes extends JPanel{
 		listeCommandes.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT co.idCommande, co.dateCommande, co.tauxTVA, co.remise, co.typePaiement, cli.idClient, cli.nomClient, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM vente_Commande co LEFT JOIN vente_clients cli ON cli.idClient = co.idClient LEFT JOIN vente_LigneCommande lc ON lc.idCommande = co.idCommande LEFT JOIN Produit p ON p.code = lc.codeProduit GROUP BY co.idCommande, co.dateCommande, co.tauxTVA, co.remise, co.typePaiement, cli.idClient, cli.nomCLient ORDER BY co.dateCommande DESC");
+			PreparedStatement pst = cn.prepareStatement("SELECT co.idCommande, co.dateCommande,co.etatCommande, co.tauxTVA, co.remise, co.typePaiement, cli.idClient, cli.nomClient, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM vente_Commande co LEFT JOIN vente_clients cli ON cli.idClient = co.idClient LEFT JOIN vente_LigneCommande lc ON lc.idCommande = co.idCommande LEFT JOIN Produit p ON p.code = lc.codeProduit GROUP BY co.idCommande, co.dateCommande,co.etatCommande, co.tauxTVA, co.remise, co.typePaiement, cli.idClient, cli.nomCLient ORDER BY co.dateCommande DESC");
 			ResultSet rs = pst.executeQuery();
 
 			while(rs.next()){
@@ -90,8 +90,7 @@ public class PanelCommandes extends JPanel{
 				date = rs.getDate("dateCommande");
 				refFournisseur = rs.getString("idClient");
 				nomFournisseur = rs.getString("nomClient");
-				//etatCommande = rs.getString("etatCommande");
-				etatCommande = "";
+				etatCommande = rs.getString("etatCommande");
 				tauxTva = rs.getFloat("tauxTva");
 				remise = rs.getFloat("remise");
 				typePaiement = rs.getString("typePaiement");
@@ -131,7 +130,7 @@ public class PanelCommandes extends JPanel{
 		//On remplit ce dernier avec les CommandesFournisseur r�cup�r�es
 		for(Commande cf : listeCommandes){
 			tabCo[listeCommandes.indexOf(cf)][0] = cf.getIdCommande();
-			tabCo[listeCommandes.indexOf(cf)][1] = cf.getIdClient();
+			tabCo[listeCommandes.indexOf(cf)][1] = cf.getNomClient();
 			tabCo[listeCommandes.indexOf(cf)][2] = cf.getDate();
 			tabCo[listeCommandes.indexOf(cf)][3] = cf.getMontantTotal();
 			tabCo[listeCommandes.indexOf(cf)][4] = cf.getEtatCommande();
@@ -192,20 +191,11 @@ public class PanelCommandes extends JPanel{
 				if (e.getValueIsAdjusting()) return;			        
 		        ListSelectionModel selection = (ListSelectionModel) e.getSource();
 		        int index = selection.getMinSelectionIndex();
-		        System.out.println(index);
 		        commandeChoisit = String.valueOf(modele.getValueAt(tableau.convertRowIndexToModel(index), 0));
-		        String truc1 = String.valueOf(modele.getValueAt(tableau.convertRowIndexToModel(index), 1));
-		        String truc2 = String.valueOf(modele.getValueAt(tableau.convertRowIndexToModel(index), 2));
-		        System.out.println(String.valueOf(modele.getValueAt(tableau.convertRowIndexToModel(index), 0)));
-		        System.out.println(truc1);
-		        System.out.println(truc2);
 		        //D�sactiver certains boutons si on ne selectionne aucune ligne
 		        
 		        if(!selection.isSelectionEmpty()){
 		        	 setBtn(true);
-				        System.out.println(commandeChoisit);
-				        System.out.println(truc1);
-				        System.out.println(truc2);
 		        }
 			    else{
 			    	setBtn(false);
@@ -252,7 +242,6 @@ public class PanelCommandes extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				Commande co = listeCommandes.get(tableau.getSelectedRow());
 				int idCo = Integer.parseInt(co.getIdCommande());
-				System.out.println(idCo); //les boutons sont tjr actif, getselection du tableau marche pas :(
 				new FenetreVente(idCo);
 			}
 		});
