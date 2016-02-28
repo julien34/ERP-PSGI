@@ -21,6 +21,7 @@ import production.vue.PanelProduit;
 import production.vue.PanelUniteDeMesure;
 import achat.vues.PanelCategorie;
 import achat.vues.PanelCommande;
+import achat.vues.PanelDevis;
 import achat.vues.PanelFournisseur;
 import achat.vues.PanelTVA;
 import components.ButtonTabComponent;
@@ -51,6 +52,7 @@ public class FenetrePrincipale extends JFrame
         static JMenuItem menuAchatAjoutFournisseur = new JMenuItem("Fournisseurs");//Item ajouter un fournisseur
         static JMenuItem menuAchatAjoutCategorie = new JMenuItem("Catégories");//Item ajouter une catégorie de fournisseurs
         static JMenuItem menuAchatCommande = new JMenuItem("Commandes");//Item commande
+        static JMenuItem menuAchatDevis = new JMenuItem("Devis");//Item devis
         static JMenuItem menuAchatTVA = new JMenuItem("TVA");//Item TVA
         
          //Ventes
@@ -83,6 +85,7 @@ public class FenetrePrincipale extends JFrame
    	private static PanelFournisseur panelFournisseur = null;
    	private static PanelCategorie panelCategorie = null;
    	public static PanelCommande panelCommande = null;
+   	public static PanelDevis panelDevis = null;
    	public static PanelTVA panelTVA = null;
    	
    	//Vente
@@ -135,6 +138,7 @@ public class FenetrePrincipale extends JFrame
 				menuAchatFournisseur.add(menuAchatAjoutFournisseur);
 				menuAchats.add(menuAchatFournisseur);
 				menuAchats.add(menuAchatCommande);
+				menuAchats.add(menuAchatDevis);
 				menuAchats.add(menuAchatTVA);
 				
 	        //Ventes
@@ -220,20 +224,33 @@ public class FenetrePrincipale extends JFrame
 				}
 			});
 	   		
-	   		menuAchatCommande.addActionListener(new ActionListener() {
-				
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					if(PanelCommande.getListeCommande().isEmpty()){
-						ajouterOnglet("Commandes d'achat", panelCommande = new PanelCommande(framePrincipale));
-					}
-					else{
-						ajouterOnglet("Commandes d'achat", panelCommande);
-					}
-					
-				}
-			});
 	   		
+	   		menuAchatCommande.addActionListener(new ActionListener() {
+	   			
+	   			@Override
+	   			public void actionPerformed(ActionEvent e) {
+	   				if(PanelCommande.getListeCommande().isEmpty()){
+	   					ajouterOnglet("Commandes d'achat", panelCommande = new PanelCommande(framePrincipale));
+	   				}
+	   				else{
+	   					ajouterOnglet("Commandes d'achat", panelCommande);
+	   				}
+	   				
+	   			}
+	   		});
+	   		menuAchatDevis.addActionListener(new ActionListener() {
+	   			
+	   			@Override
+	   			public void actionPerformed(ActionEvent e) {
+	   				if(PanelDevis.getListeDevis().isEmpty()){
+	   					ajouterOnglet("Devis d'achat", panelDevis = new PanelDevis(framePrincipale));
+	   				}
+	   				else{
+	   					ajouterOnglet("Devis d'achat", panelDevis);
+	   				}
+	   				
+	   			}
+	   		});
 	   		menuAchatTVA.addActionListener(new ActionListener() {
 				
 				@Override
