@@ -210,7 +210,7 @@ public class FenetreVente extends JDialog {
 		chPaiement.add("Autre");
 		JLabel lblEtat = new JLabel("Etat de la commande : ");
 		chEtat = new Choice();
-		chEtat.add("En cour");
+		chEtat.add("En cours");
 		chEtat.add("Terminer");
 
 		gauche1.add(lblTauxTva);

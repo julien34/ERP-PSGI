@@ -53,8 +53,10 @@ public class PanelCommandes extends JPanel{
 	private static UneditableTableModel modele = new UneditableTableModel(0,5);
 	private static JScrollPane scrollPane  = new JScrollPane(tableau);
 
-	private static JButton btnNouveau, btnModifier, btnAnnuler;
+	private static JButton btnNouveau, btnModifier, btnSupprimer;
 	private static JTextField txtRechercheCommande, txtRechercheClient, txtRechercheMontant;
+
+	private int index;
 
 	//private Commande commande;
 	//	private static JDateChooser jdcDate;
@@ -158,7 +160,7 @@ public class PanelCommandes extends JPanel{
 
 		btnNouveau= new JButton("Nouveau");
 		btnModifier = new JButton("Modifier");
-		btnAnnuler = new JButton("Annuler");
+		btnSupprimer = new JButton("Supprimer");
 
 
 
@@ -170,7 +172,7 @@ public class PanelCommandes extends JPanel{
 		panelGrille.add(scrollPane);
 		panelBouton.add(btnNouveau);
 		panelBouton.add(btnModifier);
-		panelBouton.add(btnAnnuler);
+		panelBouton.add(btnSupprimer);
 
 		panelGrilleCentre.add(panelGrille);
 		panelGrilleCentre.add(panelBouton);
@@ -178,32 +180,32 @@ public class PanelCommandes extends JPanel{
 		this.add(panelRechercheNord, BorderLayout.NORTH);
 		this.add(panelGrilleCentre, BorderLayout.CENTER);
 		setBtn(true);
-}  
+	}  
 	/**
 	 * Méthode qui initialise les écouteurs.
 	 */
 	public void initEcouteurs(){
-		
+
 		tableau.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
 		{
 			public void valueChanged(ListSelectionEvent e) 
-		    {
+			{
 				if (e.getValueIsAdjusting()) return;			        
-		        ListSelectionModel selection = (ListSelectionModel) e.getSource();
-		        int index = selection.getMinSelectionIndex();
-		        commandeChoisit = String.valueOf(modele.getValueAt(tableau.convertRowIndexToModel(index), 0));
-		        //D�sactiver certains boutons si on ne selectionne aucune ligne
-		        
-		        if(!selection.isSelectionEmpty()){
-		        	 setBtn(true);
-		        }
-			    else{
-			    	setBtn(false);
-			    }
-		    }
+				ListSelectionModel selection = (ListSelectionModel) e.getSource();
+				index = selection.getMinSelectionIndex();
+				commandeChoisit = String.valueOf(modele.getValueAt(tableau.convertRowIndexToModel(index), 0));
+				//D�sactiver certains boutons si on ne selectionne aucune ligne
+
+				if(!selection.isSelectionEmpty()){
+					setBtn(true);
+				}
+				else{
+					setBtn(false);
+				}
+			}
 		});
-		
-		
+
+
 		btnNouveau.addActionListener(new ActionListener() {
 
 			private long myId;
@@ -223,21 +225,21 @@ public class PanelCommandes extends JPanel{
 					e1.printStackTrace();
 				}
 				try{
-				PreparedStatement pst = cn.prepareStatement("INSERT INTO vente_commande(idcommande) VALUES(?)");
-				pst.setInt(1 , (int)myId);
-				pst.executeQuery();
+					PreparedStatement pst = cn.prepareStatement("INSERT INTO vente_commande(idcommande) VALUES(?)");
+					pst.setInt(1 , (int)myId);
+					pst.executeQuery();
 
-			} catch (SQLException e1) {
-				e1.printStackTrace();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+				new FenetreVente((int)myId);
 			}
-			new FenetreVente((int)myId);
-		}
-	});
-		
-		
+		});
+
+
 		//Bouton "Modifier"
 		btnModifier.addActionListener(new ActionListener() {
-			
+
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Commande co = listeCommandes.get(tableau.getSelectedRow());
@@ -245,14 +247,60 @@ public class PanelCommandes extends JPanel{
 				new FenetreVente(idCo);
 			}
 		});
+
+		btnSupprimer.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Commande co = listeCommandes.get(tableau.getSelectedRow());
+				int idCo = Integer.parseInt(co.getIdCommande());
+				supprimerCom(idCo);
+
+				if (index != -1)
+				{
+					modele.removeRow(tableau.convertRowIndexToModel(index));
+
+				}
+				else{
+					System.out.println("Suppression de la commande interrompu");
+				}
+			}
+		});
+		
+		txtRechercheCommande.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				
+				getCommandeRecherche();
+				maj();
+			}
+		});
 	}
 	
+	public static void getCommandeRecherche(){
+		
+		
+	}
+	
+	private void supprimerCom(int id){
+		Connection cn = DatabaseConnection.getCon();
+
+		PreparedStatement pst;
+		try {
+			pst = cn.prepareStatement("DELETE FROM vente_commande WHERE idcommande = ?") ;
+			pst.setInt(1 , id);
+			pst.executeQuery();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
 	/**
 	 * Change la possibilité d'appuyer sur le bouton modifier et annuler selon son paramètre.
 	 * @param b, un booléen.
 	 */
 	public static void setBtn(boolean b){
 		btnModifier.setEnabled(b);
-		btnAnnuler.setEnabled(b);
+		btnSupprimer.setEnabled(b);
 	}
 }
