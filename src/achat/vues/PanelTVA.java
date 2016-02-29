@@ -216,7 +216,11 @@ public class PanelTVA extends JPanel {
 		tableau.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				setBt(true);
+				if (e.getClickCount()%2 == 0){
+					new PopupModifTVA(listeTVA.get(tableau.getSelectedRow()), tableau.getSelectedRow());
+				}
 			}
+			
 		});
 	}
 	
