@@ -59,8 +59,8 @@ public class PanelCommandes extends JPanel{
 	private int index;
 
 	//private Commande commande;
-	//	private static JDateChooser jdcDate;
-	//	private static String dateRecherche = "";
+	private static JDateChooser jdcDate;
+	private static String dateRecherche = "";
 
 
 	public PanelCommandes(FenetrePrincipale f){
@@ -150,14 +150,16 @@ public class PanelCommandes extends JPanel{
 		JPanel panelGrilleCentre = new JPanel(new GridLayout(2,1));
 		JPanel panelGrille = new JPanel();
 		JPanel panelBouton = new JPanel();
-
+		jdcDate = new JDateChooser();
 
 		JLabel lblRechercheCommande = new JLabel("N� Commande : ");
 		txtRechercheCommande = new JTextField(10);
 		JLabel lblRechercheFournisseur = new JLabel("Client : ");
 		txtRechercheClient = new JTextField(10);
-
-
+		JLabel lblRechercheDate = new JLabel("Date : ");
+		JLabel lblRechercheMontant = new JLabel("Montant : ");
+		txtRechercheMontant = new JTextField(5);
+		
 		btnNouveau= new JButton("Nouveau");
 		btnModifier = new JButton("Modifier");
 		btnSupprimer = new JButton("Supprimer");
@@ -168,6 +170,10 @@ public class PanelCommandes extends JPanel{
 		panelRechercheNord.add(txtRechercheCommande);
 		panelRechercheNord.add(lblRechercheFournisseur);
 		panelRechercheNord.add(txtRechercheClient);
+		panelRechercheNord.add(lblRechercheDate);
+		panelRechercheNord.add(jdcDate);
+		panelRechercheNord.add(lblRechercheMontant);
+		panelRechercheNord.add(txtRechercheMontant);
 
 		panelGrille.add(scrollPane);
 		panelBouton.add(btnNouveau);
@@ -275,11 +281,83 @@ public class PanelCommandes extends JPanel{
 				maj();
 			}
 		});
+		
+		//Ecouteur de la Date
+				jdcDate.addPropertyChangeListener(new PropertyChangeListener() {
+					
+					@Override
+					public void propertyChange(PropertyChangeEvent evt) {
+						if("date".equals(evt.getPropertyName())){
+							//initDate();//On change la date si elle est vide
+							getCommandeRecherche();
+							maj();
+						}
+					}
+				});
+				
+				//Txt nom du client
+				txtRechercheClient.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyReleased(KeyEvent e) {
+					//	PanelCommande.this.initDate();//On change la date si elle est vide
+						getCommandeRecherche();
+						maj();
+					}
+				});
+				
+				//Txt du montant de la commande
+				txtRechercheMontant.addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyReleased(KeyEvent e) {
+						//PanelCommande.this.initDate();//On change la date si elle est vide
+						getCommandeRecherche();
+						maj();
+					}
+				});
 	}
 	
 	public static void getCommandeRecherche(){
 		
+		listeCommandes.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
 		
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("SELECT c.idcommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.typePaiement, cl.IDCLIENT, cl.NOMCLIENT, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM vente_Commande c LEFT JOIN VENTE_CLIENTS cl ON cl.IDCLIENT = c.IDCLIENT LEFT JOIN vente_ligneCommande lc ON lc.idcommande = c.idcommande LEFT JOIN Produit p ON p.code = lc.codeProduit WHERE UPPER(c.idcommande) LIKE UPPER(?) AND UPPER(cl.NOMCLIENT) LIKE UPPER(?) AND c.dateCommande LIKE ? GROUP BY c.idcommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.typePaiement, cl.IDCLIENT, cl.NOMCLIENT HAVING COALESCE(SUM(p.prixAchat*lc.quantite),0) LIKE ? ORDER BY c.dateCommande DESC");
+			pst.setString(1, "%"+ txtRechercheCommande.getText()+"%");
+			pst.setString(2, "%"+txtRechercheClient.getText()+"%");
+			pst.setString(3, "%"+dateRecherche+"%");
+			pst.setString(4, "%"+txtRechercheMontant.getText()+"%");
+			ResultSet rs = pst.executeQuery();
+			
+			while(rs.next()){
+				String refCommande, refFournisseur, nomFournisseur, montantTotal, etatCommande, typePaiement;
+				double tauxTva, remise;
+				Date date, dateLivr;
+				
+				refCommande = rs.getString("idCommande");
+				date = rs.getDate("dateCommande");
+				refFournisseur = rs.getString("idClient");
+				nomFournisseur = rs.getString("nomClient");
+				etatCommande = rs.getString("etatCommande");
+				tauxTva = rs.getFloat("tauxTva");
+				remise = rs.getFloat("remise");
+				typePaiement = rs.getString("typePaiement");
+				
+				
+				//Montant total non vide
+				if (rs.getString("montantTotal") == null){
+					montantTotal = "Pas de produits";
+				}
+				else {
+					montantTotal = rs.getString("montantTotal")+" €";
+				}
+
+				listeCommandes.add(new Commande(refCommande, refFournisseur, nomFournisseur, date, etatCommande,montantTotal, tauxTva,remise,typePaiement ));
+				
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void supprimerCom(int id){
