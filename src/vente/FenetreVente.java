@@ -105,11 +105,11 @@ public class FenetreVente extends JDialog {
 	private void initFenetre(){
 
 		//On donne un titre selon la provenance du clic (si cmd en paramètre alors modification)
-		if(this.commande == null){
-			this.setTitle("Nouvelle commande de vente");
+		if( getEtatC() == null){
+			this.setTitle("Nouvelle commande de vente n°"+idCommandeEnCour);
 		}
 		else {
-			this.setTitle("Modification de la commande de vente n°"+this.commande.getIdCommande()+" du "+this.commande.getDate());
+			this.setTitle("Modification de la commande de vente n°"+idCommandeEnCour);
 		}
 
 		this.setSize(850, 650);
@@ -120,6 +120,23 @@ public class FenetreVente extends JDialog {
 		this.setVisible(true);
 	}
 
+	private String getEtatC(){
+		String etat = null;
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("SELECT etatCommande FROM vente_Commande WHERE idCommande = ?");
+			pst.setInt(1, idCommandeEnCour);
+			
+			ResultSet rs = pst.executeQuery();
+			rs.next();
+			etat = rs.getString("etatCommande");
+			return etat;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return etat;
+	}
 
 	/**
 	 * Méthode qui initialise l'ensemble de tous les panels et composants de la fenetre.
