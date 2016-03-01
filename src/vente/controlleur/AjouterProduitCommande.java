@@ -1,4 +1,4 @@
-package vente;
+package vente.controlleur;
 
 import java.awt.BorderLayout;
 import java.awt.Choice;
@@ -33,6 +33,7 @@ import jdbc.DatabaseConnection;
 import vente.model.Client;
 import achat.modeles.Categorie;
 import vente.model.LignesCommande;
+import vente.vue.PanelLigneCommande;
 import achat.modeles.Produit; 
 
 public class AjouterProduitCommande extends JDialog{
@@ -145,7 +146,7 @@ public class AjouterProduitCommande extends JDialog{
 			public void actionPerformed(ActionEvent e) {
 				AjouterProduitCommande.this.setLigne();
 				ajoutLigneCommande(AjouterProduitCommande.this.ligneCommande);
-				FenetreVente.getProduitsCommande();
+				PanelLigneCommande.getProduitsCommande();
 			}
 		});
 		

@@ -1,4 +1,4 @@
-package vente;
+package vente.vue;
 
 import java.awt.BorderLayout;
 import java.awt.Choice;
@@ -38,13 +38,14 @@ import principal.FenetrePrincipale;
 import com.toedter.calendar.JDateChooser;
 
 import achat.modeles.UneditableTableModel;
+import vente.controlleur.AjouterProduitCommande;
+import vente.controlleur.SelectionClientCommande;
 import vente.model.*;
 
 
-public class FenetreVente extends JDialog {
+public class PanelLigneCommande extends JDialog {
 
 	private static FenetrePrincipale frame;
-
 
 	private static Client client = new Client();
 	private Commande commande;
@@ -52,25 +53,23 @@ public class FenetreVente extends JDialog {
 	private static ArrayList<LignesCommande> listeLignesCommande = new ArrayList<LignesCommande>();
 	private static Object[][] tabLignesCo;
 	private static Object[] titres = {"Code","Description","Catégorie","Prix HT","Qté","Total HT"};
-
 	private JLabel lblMontantTotalHt, lblMontantRemise, lblMontantTva, lblMontantTtc;
-	static JLabel lblFournisseurCode;
+	public static JLabel lblClientCode;
 	private JSpinner txtRemise;
 	private JButton btnCalculerTotal, btnValider, btnAnnuler, btnRechercher, btnAjouter, btnModifier, btnSupprimer;
 	private JDateChooser jdcDateLivr, jdcDate;
 	private Choice chTauxTva, chPaiement, chEtat;
-	//private PopupCommandeSelectFournisseur fenetreSelectFn;
-
-	//On créer la JTable et son modèle
+	
+	//On créer la JTable et son modèle avec le scrollPane
 	private static UneditableTableModel modele = new UneditableTableModel(0,5);
-	private static JTable tableau = new JTable(modele);
+	private JTable tableau = new JTable(modele);
 	private JScrollPane scrollPane;
 
 
 	/**
 	 * Constructeur vide. Créer une nouvelle commande.
 	 */
-	public FenetreVente(){
+	public PanelLigneCommande(){
 		listeLignesCommande.clear();
 		maj();//On mets à jour pour éviter que la table ne se remplisse avec les produits de la dernière commande
 		this.initFenetre();
@@ -86,14 +85,14 @@ public class FenetreVente extends JDialog {
 	 * Constructeur avec en paramètre une commande de type CommandesFournisseur. Modifie une commande existante.
 	 * @param cmd, une commande de type CommandesFournisseur. Modifie la commande passée en paramètre.
 	 */
-	public FenetreVente(int idCommande){
+	public PanelLigneCommande(int idCommande){
 		listeLignesCommande.clear();
 		idCommandeEnCour = idCommande;
 		//this.commande.setIdCommande(String.valueOf(idCommande));
 		this.initFenetre();
 		this.initElements();
 		this.initEcouteurs();
-		FenetreVente.getProduitsCommande();
+		PanelLigneCommande.getProduitsCommande();
 		setInfoCommande();
 		//this.preRemplir();
 		this.setBtnEnabled(false);
@@ -143,14 +142,6 @@ public class FenetreVente extends JDialog {
 	 */
 	private void initElements(){
 
-		//On défini le fournisseur s'il est présent dans la commande si non vide
-		/*if(this.commande == null || this.commande.getIdClient() == null){
-			client = new Client();
-		}
-		else{
-			client = new Client(this.commande.getIdClient());
-		}*/
-
 		//On créer les différents panels du haut
 		this.setLayout(new GridLayout(2, 1));//On défini la popup avec un layout en grid
 
@@ -161,14 +152,14 @@ public class FenetreVente extends JDialog {
 
 		//On créer et ajoute les composants du panelGrilleNord
 		JLabel lblClient = new JLabel("Client (code) : ");
-		lblFournisseurCode = new JLabel("Aucun client sélectionné");
+		lblClientCode = new JLabel("Aucun client sélectionné");
 		this.btnRechercher = new JButton("Rechercher");
 		JLabel lblDate = new JLabel("Date : ");
 		this.jdcDate = new JDateChooser();
 		this.jdcDate.setEnabled(false);
 
 		panelGrilleNord.add(lblClient);
-		panelGrilleNord.add(lblFournisseurCode);
+		panelGrilleNord.add(lblClientCode);
 		panelGrilleNord.add(btnRechercher);
 		panelGrilleNord.add(lblDate);
 		panelGrilleNord.add(jdcDate);
@@ -229,7 +220,8 @@ public class FenetreVente extends JDialog {
 		chEtat = new Choice();
 		chEtat.add("En cours");
 		chEtat.add("Terminer");
-
+		//chEtat.add("Invalide");
+		
 		gauche1.add(lblTauxTva);
 		gauche1.add(chTauxTva);
 		gauche1.add(prctTva);
@@ -321,9 +313,6 @@ public class FenetreVente extends JDialog {
 	/**
 	 * Méthode qui initialise les écouteurs.
 	 */
-
-
-
 	private void initEcouteurs(){
 
 		tableau.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
@@ -399,6 +388,12 @@ public class FenetreVente extends JDialog {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				if(client.getIdClient() == null){
+					JOptionPane.showMessageDialog(frame,
+						"La commande en cour n'a pas de client associer.",
+						"Commande invalide",
+						JOptionPane.ERROR_MESSAGE);
+				}
 				dispose();
 			}
 		});
@@ -409,7 +404,7 @@ public class FenetreVente extends JDialog {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new VenteSelectionClient();
+				new SelectionClientCommande();
 
 			}
 		});
@@ -427,7 +422,7 @@ public class FenetreVente extends JDialog {
 	/**
 	 * Méthode qui récupère l'ensemble des produits qui sont dans la commande.
 	 */
-	static void getProduitsCommande(){
+	public static void getProduitsCommande(){
 		listeLignesCommande.clear();
 		try {
 			Connection cn = DatabaseConnection.getCon();
@@ -443,7 +438,7 @@ public class FenetreVente extends JDialog {
 				int qte = rs.getInt("quantite");
 				double total = pHT*qte;
 
-				FenetreVente.listeLignesCommande.add(new LignesCommande(refProduit, nomProduit, categorieProduit, pHT, qte, total));
+				PanelLigneCommande.listeLignesCommande.add(new LignesCommande(refProduit, nomProduit, categorieProduit, pHT, qte, total));
 			}
 
 			maj();
@@ -487,52 +482,10 @@ public class FenetreVente extends JDialog {
 			}
 
 			maj();
-			this.calculerTotal();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-
-	/**
-	 * Méthode qui remplit les différents label avec les caractéristiques de la commande.
-	 */
-	private void preRemplir(){
-
-		//On remplit le nom du fournisseur
-		if(client.getIdClient().equals("")){
-			lblFournisseurCode.setText("Sélectionner un founisseur");
-		}
-		else{
-			lblFournisseurCode.setText(client.getNomClient()+" ("+client.getIdClient()+")");
-		}
-
-		//On remplit la date
-		this.jdcDate.setDate(this.commande.getDate());
-
-		//On selectionne de base le montant de TVA approprié à la commande (si non 0%)
-		if(this.commande.getTauxTVA() != 0){
-			this.chTauxTva.select(String.valueOf(this.commande.getTauxTVA()));
-		}
-
-		//On selectionne de base le type de paiement
-		if(this.commande.getTypePaiement() != null){
-			this.chPaiement.select(this.commande.getTypePaiement());
-		}
-
-		//On affiche le taux remise de base
-		if(this.commande.getRemise() != 0){
-			this.txtRemise.setValue((Double) this.commande.getRemise());
-		}
-
-		//On remplit la date de livraison
-		if(this.commande.getDate() != null){
-			this.jdcDateLivr.setDate(this.commande.getDate());
-		}
-
-		//On effectue les calculs
-		this.calculerTotal();
-	}
-
 
 	/**
 	 * Méthode qui calcule le total de la commande.
@@ -612,7 +565,7 @@ public class FenetreVente extends JDialog {
 	 * @param f, le Fournisseur à changer.
 	 */
 	public static void setClient(Client cli){
-		lblFournisseurCode.setText(cli.getNomClient()+" ("+cli.getIdClient()+")");
+		lblClientCode.setText(cli.getNomClient()+" ("+cli.getIdClient()+")");
 		client = cli;
 	}
 
@@ -630,7 +583,7 @@ public class FenetreVente extends JDialog {
 			while(rs.next()){
 				client.setidClient(rs.getString("IDCLIENT"));
 				client.setNom(rs.getString("NOMCLIENT"));
-				lblFournisseurCode.setText(client.getNomClient()+" ("+client.getIdClient()+")");
+				lblClientCode.setText(client.getNomClient()+" ("+client.getIdClient()+")");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();

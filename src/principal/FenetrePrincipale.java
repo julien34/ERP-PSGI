@@ -27,11 +27,10 @@ import achat.vues.PanelTVA;
 import components.ButtonTabComponent;
 import jdbc.DatabaseConnection;
 import jdbc.FenetreConnexion;
-import vente.FenetreVente;
-import vente.PanelClient;
-import vente.PanelCommandes;
-import vente.InterfaceDevis;
-import vente.PanelVente;
+import vente.vue.PanelClient;
+import vente.vue.PanelCommandes;
+import vente.vue.PanelLigneCommande;
+import vente.vue.PanelVente;
 
 public class FenetrePrincipale extends JFrame
 {
@@ -91,8 +90,7 @@ public class FenetrePrincipale extends JFrame
    	//Vente
    	private static PanelVente panelVente;
    	private static PanelClient panelClient;
-   	private static InterfaceDevis InterfaceDevis;
-   	private static FenetreVente fenetreVente;
+   	private static PanelLigneCommande fenetreVente;
    	private static PanelCommandes panelCommandes;
    	
    	//Production
@@ -173,7 +171,6 @@ public class FenetrePrincipale extends JFrame
    		
 	   		//Ventes
 	   		panelClient = new PanelClient(framePrincipale);
-	   		InterfaceDevis = new InterfaceDevis(framePrincipale);
 	   		panelCommandes = new PanelCommandes(framePrincipale);
    	}
    	
@@ -366,10 +363,6 @@ public class FenetrePrincipale extends JFrame
    		
    	}
    	
-   	public static InterfaceDevis getInterfaceDevis(){
-		return InterfaceDevis;
-   		
-   	}
 
 	public void connexionOpened()
 	{

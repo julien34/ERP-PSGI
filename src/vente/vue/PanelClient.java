@@ -1,6 +1,7 @@
-package vente;
+package vente.vue;
 
 import java.awt.BorderLayout;
+import java.awt.Choice;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -31,13 +32,14 @@ import achat.modeles.Fournisseur;
 import achat.vues.PanelFournisseur;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
-import vente.ModifierClients;
+import vente.controlleur.AjouterClient;
+import vente.controlleur.ModifierClients;
 import vente.model.Client;
 
 public class PanelClient extends JPanel{
-	
+
 	private static FenetrePrincipale framePrincipale;
-	
+
 	private JPanel contenu = new JPanel(new BorderLayout(10,10));
 	private JPanel panelBouttons = new JPanel(new FlowLayout(FlowLayout.CENTER,40,0));
 	private JPanel panelRecherche;
@@ -45,49 +47,49 @@ public class PanelClient extends JPanel{
 	private JButton bt_ajouter = new JButton("Ajouter");
 	private JButton bt_modifier = new JButton("Modifier");
 	private JButton bt_supprimer = new JButton("Supprimer");
-	
-//	private JButton bt_rech= new JButton("Rechercher");
+
+	//	private JButton bt_rech= new JButton("Rechercher");
 	private JButton bt_tous= new JButton("Tous");
-	
+
 	private static JTextField txtRecherche;
 	private JLabel lblRecherche;
-	
+
 	private JPanel panelGrid = new JPanel();
-	
+
 	private int clientChoisi = -1;
 	//private AjouterClient ajouter_p = new AjouterClient();
 	//private ModifierClients modifier_p = new ModifierClients(null);
-	
+
 	//GridLayout qui contient les informations des Clients
 	private static JTable tableClient;
-	
+
 	private JScrollPane scrollPane;
 	private final static String[] nomColonnes = {"Id","Nom","Prenom","Adresse","Email","Telehpone","Categorie"};
 	private static DefaultTableModel modelTableClient = new DefaultTableModel(0,7){
 		Class[] types = {String.class, String.class, String.class,String.class,String.class,String.class,String.class};
-		
-        @Override
-        public Class getColumnClass(int columnIndex) 
-        {
-            return Integer.class;
-        }
-        
-        @Override
-        public boolean isCellEditable(int row, int column)
-        {  
-            return false;  
-        }
+
+		@Override
+		public Class getColumnClass(int columnIndex) 
+		{
+			return Integer.class;
+		}
+
+		@Override
+		public boolean isCellEditable(int row, int column)
+		{  
+			return false;  
+		}
 	};
 	private Dimension dimensionBouttons = new Dimension(140,26);
 	private Dimension dimensionTable = new Dimension(540, 224);
-	
+
 	public PanelClient(FenetrePrincipale framePrincipale){
 		this.framePrincipale = framePrincipale;
-		
+
 		initElements();
 		initHandlers();
 	}
-	
+
 	private void initElements() {
 		tableClient = new JTable(modelTableClient);
 		tableClient.setAutoCreateRowSorter(true); //permet de trier les colonnes
@@ -95,17 +97,17 @@ public class PanelClient extends JPanel{
 		tableClient.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane = new JScrollPane(tableClient);
 		tableClient.setPreferredScrollableViewportSize(dimensionTable);
-		
+
 		this.panelGrid = new JPanel(new GridLayout(2,1));
 		this.panelRecherche = new JPanel();
-		
+
 		lblRecherche = new JLabel("Rechercher : ");
 		txtRecherche = new JTextField(20);
-		
+
 		add(panelRecherche);
 		add(panelGrid);
 		add(contenu);
-		
+
 		contenu.add("North",panelRecherche);
 		contenu.add("Center",scrollPane);
 		contenu.add("South",panelBouttons);
@@ -116,80 +118,74 @@ public class PanelClient extends JPanel{
 		bt_modifier.setPreferredSize(dimensionBouttons);
 		panelBouttons.add(bt_supprimer);
 		bt_supprimer.setPreferredSize(dimensionBouttons);
-		
+
 		panelRecherche.add(lblRecherche);
 		panelRecherche.add(txtRecherche);
 		//panelRecherche.add(bt_rech);
 		//panelRecherche.add(bt_tous);
-	
+
 		panelGrid.add(contenu);
-        bt_modifier.setEnabled(false);
-        bt_supprimer.setEnabled(false);
+		bt_modifier.setEnabled(false);
+		bt_supprimer.setEnabled(false);
 	}
-	 
+
 	public void initHandlers(){
-		
+
 		tableClient.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
 		{
 			public void valueChanged(ListSelectionEvent e) 
-		    {
+			{
 				if (e.getValueIsAdjusting()) return;			        
-		        ListSelectionModel selection = (ListSelectionModel) e.getSource();
-		        clientChoisi = selection.getMinSelectionIndex();
-		        
-		        //D�sactiver certains boutons si on ne selectionne aucune ligne
-		        
-		        if(!selection.isSelectionEmpty()){
-		            bt_modifier.setEnabled(true);
-			        bt_supprimer.setEnabled(true);
-		        }
-			    else{
-		        bt_modifier.setEnabled(false);
-		        bt_supprimer.setEnabled(false);
-			    }
-		    }
+				ListSelectionModel selection = (ListSelectionModel) e.getSource();
+				clientChoisi = selection.getMinSelectionIndex();
+
+				//D�sactiver certains boutons si on ne selectionne aucune ligne
+
+				if(!selection.isSelectionEmpty()){
+					bt_modifier.setEnabled(true);
+					bt_supprimer.setEnabled(true);
+				}
+				else{
+					bt_modifier.setEnabled(false);
+					bt_supprimer.setEnabled(false);
+				}
+			}
 		});
-		
+
 		//Action Event des boutons
 		bt_ajouter.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-			new AjouterClient(framePrincipale);
+				new AjouterClient(framePrincipale);
 			}
 		});
-		
-		/*bt_rech.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){
-				majTableauRecherche();
-			}
-		});*/
-		
+
 		txtRecherche.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				majTableauRecherche();
 			}
 		});
-	
-		
+
+
 		bt_modifier.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{ 
-			    String id = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 0));
-			    String nom = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 1));
-			    String prenom = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 2));
-			    String adresse = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 3));
-			    String mail = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 4));
-			    String tel = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 5));
-			    String categ = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 6));
-			    
-			    Client client = new Client(id,nom,prenom,adresse,mail,tel,categ);
-			    //ModifierClients
+				String id = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 0));
+				String nom = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 1));
+				String prenom = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 2));
+				String adresse = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 3));
+				String mail = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 4));
+				String tel = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 5));
+				String categ = String.valueOf(modelTableClient.getValueAt(tableClient.convertRowIndexToModel(clientChoisi), 6));
+
+				Client client = new Client(id,nom,prenom,adresse,mail,tel,categ);
+				//ModifierClients
 				new ModifierClients(framePrincipale, client);
 				//revalidate();
 			}
 		});
-		
+
 		bt_supprimer.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
@@ -213,13 +209,13 @@ public class PanelClient extends JPanel{
 			}
 		});	
 	}
-	
+
 	//replit le tablea client avec la base de donn�es vente_clients
 	public static void remplirtableClient(){
 		modelTableClient.setDataVector(DatabaseConnection.remplirListeClient(), nomColonnes);
 		tableClient.getRowSorter().toggleSortOrder(0);
 	}
-	
+
 	/**
 	 * Met a jour la ligne du tableau client selectionner
 	 * @param id
@@ -244,17 +240,17 @@ public class PanelClient extends JPanel{
 			modelTableClient.setValueAt(categorie, tableClient.convertRowIndexToModel(ligneChoisieTemp), 6);
 		}
 	}
-	
+
 	public static void majTableauRecherche(){
-		
-	String recherche;
-	recherche =	txtRecherche.getText();
-	
-	if(recherche.equals(""))
-		remplirtableClient();
+
+		String recherche;
+		recherche =	txtRecherche.getText();
+
+		if(recherche.equals(""))
+			remplirtableClient();
 		else
-	modelTableClient.setDataVector(DatabaseConnection.rechercherListeClient(recherche), nomColonnes);
+			modelTableClient.setDataVector(DatabaseConnection.rechercherListeClient(recherche), nomColonnes);
 	}
-	
+
 }
 

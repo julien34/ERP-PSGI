@@ -1,5 +1,6 @@
-package vente;
+package vente.controlleur;
 
+import java.awt.Choice;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -20,7 +21,7 @@ import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 
 public class AjouterClient extends JDialog{
-	
+
 	private static FenetrePrincipale frame;
 	JPanel contenuPanel = new JPanel(new GridLayout(5,1));
 	JPanel panelFlow1 = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -29,39 +30,40 @@ public class AjouterClient extends JDialog{
 	JPanel panelFlow4 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	JPanel panelFlow5 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 
-	 //elements dans la page d'ajout de nouveaux clients
-	 //Libeles du nom, prenom, email, tel
-	 JLabel lbl_id = new JLabel("Id");
-	 JLabel lbl_nom = new JLabel("Nom");
-	 JLabel lbl_prenom = new JLabel("Prenom");
-	 JLabel lbl_adresse = new JLabel("Adresse");
-	 JLabel lbl_email = new JLabel("Email");
-	 JLabel lbl_tel = new JLabel("Telephone");
-	 JLabel lbl_categorie = new JLabel("Categorie");
-	 JLabel lbl_vide = new JLabel(" ");
-	 
-	 //text box pour le nom, prenom, adresse, email, telephone du nouveau client
-	 JTextField txt_id = new JTextField(10);
-	 JTextField txt_nom = new JTextField(10);
-	 JTextField txt_prenom = new JTextField(10);
-	 JTextField txt_adresse = new JTextField(10);
-	 JTextField txt_email = new JTextField(10);
-	 JTextField txt_tel = new JTextField(10);
-	 JTextField txt_categorie = new JTextField(10);
+	//elements dans la page d'ajout de nouveaux clients
+	//Libeles du nom, prenom, email, tel
+	JLabel lbl_id = new JLabel("Id");
+	JLabel lbl_nom = new JLabel("Nom");
+	JLabel lbl_prenom = new JLabel("Prenom");
+	JLabel lbl_adresse = new JLabel("Adresse");
+	JLabel lbl_email = new JLabel("Email");
+	JLabel lbl_tel = new JLabel("Telephone");
+	JLabel lbl_categorie = new JLabel("Categorie");
+	JLabel lbl_vide = new JLabel(" ");
+
+	//text box pour le nom, prenom, adresse, email, telephone du nouveau client
+	JTextField txt_id = new JTextField(10);
+	JTextField txt_nom = new JTextField(10);
+	JTextField txt_prenom = new JTextField(10);
+	JTextField txt_adresse = new JTextField(10);
+	JTextField txt_email = new JTextField(10);
+	JTextField txt_tel = new JTextField(10);
+	JTextField txt_categorie = new JTextField(10);
+	private Choice chCategorie;
 	
-	 //Bouton de validation et bouton d'annulation de la saisie d'un nouveau client
-	 private JButton bt_valider = new JButton("Valider");
-	 private JButton bt_annuler = new JButton("Annuler");
-	
-	 public AjouterClient(FenetrePrincipale frame){
+	//Bouton de validation et bouton d'annulation de la saisie d'un nouveau client
+	private JButton bt_valider = new JButton("Valider");
+	private JButton bt_annuler = new JButton("Annuler");
+
+	public AjouterClient(FenetrePrincipale frame){
 		super(frame,"Ajouter un client");
 		this.frame = frame;
-		
+
 		initFrame();
 		initElement();
 		initHandlers();
-	 }
-	
+	}
+
 	public void initFrame(){
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(512,288);	
@@ -76,9 +78,11 @@ public class AjouterClient extends JDialog{
 		contenuPanel.add(panelFlow3);
 		contenuPanel.add(panelFlow4);
 		contenuPanel.add(panelFlow5);
-		 /*panelFlow1.add(lbl_id);
+		/*panelFlow1.add(lbl_id);
 		 panelFlow1.add(txt_id);*/
-
+		chCategorie = new Choice();
+		chCategorie.add("Particulier");
+		chCategorie.add("Entreprise");
 		panelFlow1.add(lbl_nom);
 		panelFlow1.add(txt_nom);
 		panelFlow1.add(lbl_prenom);
@@ -90,7 +94,7 @@ public class AjouterClient extends JDialog{
 		panelFlow3.add(lbl_tel);
 		panelFlow3.add(txt_tel);
 		panelFlow3.add(lbl_categorie);
-		panelFlow3.add(txt_categorie);
+		panelFlow3.add(chCategorie);
 		panelFlow4.add(lbl_vide);
 		panelFlow4.add(lbl_vide);
 		panelFlow4.add(lbl_vide);
@@ -99,7 +103,7 @@ public class AjouterClient extends JDialog{
 		panelFlow5.add(bt_annuler);
 		setVisible(true);
 	}
-	
+
 	//Action Event
 	public void initHandlers(){
 		txt_id.addKeyListener(new KeyAdapter(){
@@ -111,13 +115,13 @@ public class AjouterClient extends JDialog{
 				else bt_valider.setEnabled(false);
 			}
 		});
-		
+
 		bt_annuler.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
-				setVisible(false);
+				dispose();
 			}
 		});
-		
+
 		bt_valider.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				String id = txt_id.getText();
@@ -126,8 +130,10 @@ public class AjouterClient extends JDialog{
 				String adresse = txt_adresse.getText();
 				String email = txt_email.getText();
 				String tel = txt_tel.getText();
-				String categorie = txt_categorie.getText();
-				
+				String categorie = null;
+				if(chCategorie.getSelectedItem().equals("Entreprise")) categorie = "2";
+				else if(chCategorie.getSelectedItem().equals("Particulier"))categorie = "1";
+
 				if(DatabaseConnection.requete("INSERT INTO VENTE_CLIENTS(idclient, nomclient, prenomclient, adresseclient, emailclient, telclient, codecategorieclient) VALUES (sequence_client.NEXTVAL,'"+nom+"','"+prenom+"','"+adresse+"','"+email+"','"+tel+"','"+categorie+"')")){
 					frame.getPanelClient().remplirtableClient();
 					setVisible(false);

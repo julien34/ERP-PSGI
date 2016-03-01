@@ -1,4 +1,4 @@
-package vente;
+package vente.vue;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -48,18 +48,16 @@ public class PanelCommandes extends JPanel{
 	private String commandeChoisit;
 	private static Object[][] tabCo;
 	private static Object[] titres = {"N� Commande","Acheteur","Date", "Montant", "Etat"};
-
 	private static JTable tableau = new JTable(new DefaultTableModel());
 	private static UneditableTableModel modele = new UneditableTableModel(0,5);
 	private static JScrollPane scrollPane  = new JScrollPane(tableau);
-
-	private static JButton btnNouveau, btnModifier, btnSupprimer;
-	private static JTextField txtRechercheCommande, txtRechercheClient, txtRechercheMontant;
-
+	private JButton btnNouveau;
+	private static JButton btnModifier, btnSupprimer;
+	private static JTextField txtRechercheCommande;
+	private static JTextField txtRechercheClient;
+	private static JTextField txtRechercheMontant;
 	private int index;
-
-	//private Commande commande;
-	private static JDateChooser jdcDate;
+	private JDateChooser jdcDate;
 	private static String dateRecherche = "";
 
 
@@ -238,7 +236,7 @@ public class PanelCommandes extends JPanel{
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
-				new FenetreVente((int)myId);
+				new PanelLigneCommande((int)myId);
 			}
 		});
 
@@ -250,7 +248,7 @@ public class PanelCommandes extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				Commande co = listeCommandes.get(tableau.getSelectedRow());
 				int idCo = Integer.parseInt(co.getIdCommande());
-				new FenetreVente(idCo);
+				new PanelLigneCommande(idCo);
 			}
 		});
 

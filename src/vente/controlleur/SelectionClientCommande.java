@@ -1,4 +1,4 @@
-package vente;
+package vente.controlleur;
 
 
 import java.awt.BorderLayout;
@@ -22,10 +22,11 @@ import javax.swing.JPanel;
 
 import jdbc.DatabaseConnection;
 import vente.model.Client;
+import vente.vue.PanelLigneCommande;
 import achat.modeles.Fournisseur;
 import achat.vues.PanelCommande;
 
-public class VenteSelectionClient extends JFrame{
+public class SelectionClientCommande extends JFrame{
 	private static Client client;
 	private JButton btnValider, btnAnnuler;
 	private ScrollPane scrollPane;
@@ -36,7 +37,7 @@ public class VenteSelectionClient extends JFrame{
 	/**
 	 * Constructeur sans param�tre de la classe.
 	 */
-	public VenteSelectionClient(){
+	public SelectionClientCommande(){
 		this.getClient();//On r�cup�re les Client sur la base de donn�es
 		this.initFenetre();//On initie la fenetre
 		this.initComposants();//On initie les composants de la fenetre
@@ -128,9 +129,9 @@ public class VenteSelectionClient extends JFrame{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				VenteSelectionClient.setClientChoisit(VenteSelectionClient.this.clientBDD.get(VenteSelectionClient.this.jListClient.getSelectedIndex()));
-				FenetreVente.lblFournisseurCode.setText(getClientChoisit( client)+" ( "+getIDClientChoisit( client)+" )");
-				FenetreVente.setClient(client);
+				SelectionClientCommande.setClientChoisit(SelectionClientCommande.this.clientBDD.get(SelectionClientCommande.this.jListClient.getSelectedIndex()));
+				PanelLigneCommande.lblClientCode.setText(getClientChoisit( client)+" ( "+getIDClientChoisit( client)+" )");
+				PanelLigneCommande.setClient(client);
 				dispose(); 
 			}
 		});
@@ -150,10 +151,10 @@ public class VenteSelectionClient extends JFrame{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				
-				VenteSelectionClient.this.btnValider.setEnabled(true);//On active le bouton valider
+				SelectionClientCommande.this.btnValider.setEnabled(true);//On active le bouton valider
 				//Double clic
 				if(e.getClickCount()%2==0){
-					VenteSelectionClient.setClientChoisit(VenteSelectionClient.this.clientBDD.get(VenteSelectionClient.this.jListClient.getSelectedIndex()));
+					SelectionClientCommande.setClientChoisit(SelectionClientCommande.this.clientBDD.get(SelectionClientCommande.this.jListClient.getSelectedIndex()));
 					dispose();
 				}
 			}

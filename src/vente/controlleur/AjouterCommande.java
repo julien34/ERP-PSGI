@@ -1,4 +1,4 @@
-package vente;
+package vente.controlleur;
 
 
 import java.awt.Dimension;
@@ -92,7 +92,6 @@ public class AjouterCommande extends JDialog{
 			
 			if(DatabaseConnection.requete("CALL procedure('"+numProd+"',"+nom+",'"+quantite+"')"))
 			{
-				FenetrePrincipale.getInterfaceDevis().raffraichirListe(numProd,nom,quantite);
 				JOptionPane.showMessageDialog(null, "Produit ajout� avec succ�s.", "Ajout de produit", JOptionPane.INFORMATION_MESSAGE);
 			}
 			else JOptionPane.showMessageDialog(null, "Erreur d'ajout du produit. V�rifiez vos variables.", "Ajout de produit", JOptionPane.WARNING_MESSAGE);

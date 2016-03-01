@@ -1,4 +1,4 @@
-package vente;
+package vente.vue;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -46,11 +46,6 @@ public class PanelVente extends JPanel
 		{
 			public void actionPerformed(ActionEvent e)
 			{ new PanelClient(framePrincipale); }
-		});
-		interfaceDevis.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{ new InterfaceDevis(framePrincipale); }
-		});			
+		});	
 	}
 }
