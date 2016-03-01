@@ -119,6 +119,10 @@ public class PanelLigneCommande extends JDialog {
 		this.setVisible(true);
 	}
 
+	/**
+	 * Methode qui recupere l'etat des commande
+	 * @return etat
+	 */
 	private String getEtatC(){
 		String etat = null;
 		try {

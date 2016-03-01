@@ -78,7 +78,7 @@ public class PanelCommandes extends JPanel{
 		listeCommandes.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT co.idCommande, co.dateCommande,co.etatCommande, co.tauxTVA, co.remise, co.typePaiement, cli.idClient, cli.nomClient, SUM(p.prixVente*lc.quantite) AS montantTotal FROM vente_Commande co LEFT JOIN vente_clients cli ON cli.idClient = co.idClient LEFT JOIN vente_LigneCommande lc ON lc.idCommande = co.idCommande LEFT JOIN Produit p ON p.code = lc.codeProduit GROUP BY co.idCommande, co.dateCommande,co.etatCommande, co.tauxTVA, co.remise, co.typePaiement, cli.idClient, cli.nomCLient ORDER BY co.dateCommande DESC");
+			PreparedStatement pst = cn.prepareStatement("SELECT co.idCommande, co.dateCommande,co.etatCommande, co.tauxTVA, co.remise, co.typePaiement, cli.idClient, cli.nomClient, SUM(((p.prixVente*lc.quantite ) +((co.tauxTVA /100)*(p.prixVente*lc.quantite)))- (((p.prixVente*lc.quantite ) +((co.tauxTVA /100)*(p.prixVente*lc.quantite))))*(co.remise/100)) AS montantTotal FROM vente_Commande co LEFT JOIN vente_clients cli ON cli.idClient = co.idClient LEFT JOIN vente_LigneCommande lc ON lc.idCommande = co.idCommande LEFT JOIN Produit p ON p.code = lc.codeProduit GROUP BY co.idCommande, co.dateCommande,co.etatCommande, co.tauxTVA, co.remise, co.typePaiement, cli.idClient, cli.nomCLient ORDER BY co.dateCommande DESC");
 			ResultSet rs = pst.executeQuery();
 
 			while(rs.next()){
@@ -320,7 +320,8 @@ public class PanelCommandes extends JPanel{
 		
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT c.idcommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.typePaiement, cl.IDCLIENT, cl.NOMCLIENT, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM vente_Commande c LEFT JOIN VENTE_CLIENTS cl ON cl.IDCLIENT = c.IDCLIENT LEFT JOIN vente_ligneCommande lc ON lc.idcommande = c.idcommande LEFT JOIN Produit p ON p.code = lc.codeProduit WHERE UPPER(c.idcommande) LIKE UPPER(?) AND UPPER(cl.NOMCLIENT) LIKE UPPER(?) AND c.dateCommande LIKE ? GROUP BY c.idcommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.typePaiement, cl.IDCLIENT, cl.NOMCLIENT HAVING COALESCE(SUM(p.prixAchat*lc.quantite),0) LIKE ? ORDER BY c.dateCommande DESC");
+			String sql = "SUM(((p.prixVente*lc.quantite ) +((c.tauxTVA /100)*(p.prixVente*lc.quantite)))- (((p.prixVente*lc.quantite ) +((c.tauxTVA /100)*(p.prixVente*lc.quantite))))*(c.remise/100))";
+			PreparedStatement pst = cn.prepareStatement("SELECT c.idcommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.typePaiement, cl.IDCLIENT, cl.NOMCLIENT," +sql+ "AS montantTotal FROM vente_Commande c LEFT JOIN VENTE_CLIENTS cl ON cl.IDCLIENT = c.IDCLIENT LEFT JOIN vente_ligneCommande lc ON lc.idcommande = c.idcommande LEFT JOIN Produit p ON p.code = lc.codeProduit WHERE UPPER(c.idcommande) LIKE UPPER(?) AND UPPER(cl.NOMCLIENT) LIKE UPPER(?) AND c.dateCommande LIKE ? GROUP BY c.idcommande, c.dateCommande, c.etatCommande, c.tauxTVA, c.remise, c.typePaiement, cl.IDCLIENT, cl.NOMCLIENT HAVING COALESCE("+sql+",0) LIKE ? ORDER BY c.dateCommande DESC");
 			pst.setString(1, "%"+ txtRechercheCommande.getText()+"%");
 			pst.setString(2, "%"+txtRechercheClient.getText()+"%");
 			pst.setString(3, "%"+dateRecherche+"%");
