@@ -140,7 +140,7 @@ public class PanelCommandes extends JPanel{
 		modele.setDataVector(tabCo,titres);
 	}
 
-
+	
 	private void initElements(){
 
 		this.setLayout(new BorderLayout());
