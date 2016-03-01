@@ -64,6 +64,9 @@ public class AjouterClient extends JDialog{
 		initHandlers();
 	}
 
+	/**
+	 * Initialise la fenetre
+	 */
 	public void initFrame(){
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(512,288);	
@@ -71,6 +74,10 @@ public class AjouterClient extends JDialog{
 		setResizable(false);
 		setVisible(true);
 	}
+	
+	/**
+	 * Initialise les elements
+	 */
 	public void initElement(){
 		add(contenuPanel);
 		contenuPanel.add(panelFlow1);
@@ -104,7 +111,9 @@ public class AjouterClient extends JDialog{
 		setVisible(true);
 	}
 
-	//Action Event
+	/**
+	 * gere les listeners
+	 */
 	public void initHandlers(){
 		txt_id.addKeyListener(new KeyAdapter(){
 			public void keyReleased(KeyEvent e){

@@ -37,7 +37,6 @@ import principal.FenetrePrincipale;
 
 import com.toedter.calendar.JDateChooser;
 
-import achat.modeles.UneditableTableModel;
 import vente.controlleur.AjouterProduitCommande;
 import vente.controlleur.SelectionClientCommande;
 import vente.model.*;
@@ -61,7 +60,7 @@ public class PanelLigneCommande extends JDialog {
 	private Choice chTauxTva, chPaiement, chEtat;
 	
 	//On créer la JTable et son modèle avec le scrollPane
-	private static UneditableTableModel modele = new UneditableTableModel(0,5);
+	private static TableModel modele = new TableModel(0,5);
 	private JTable tableau = new JTable(modele);
 	private JScrollPane scrollPane;
 
@@ -82,8 +81,8 @@ public class PanelLigneCommande extends JDialog {
 
 
 	/**
-	 * Constructeur avec en paramètre une commande de type CommandesFournisseur. Modifie une commande existante.
-	 * @param cmd, une commande de type CommandesFournisseur. Modifie la commande passée en paramètre.
+	 * Constructeur avec en paramètre une commande de type Commandes. Modifie une commande existante.
+	 * @param cmd, une commande de type Commandes. Modifie la commande passée en paramètre.
 	 */
 	public PanelLigneCommande(int idCommande){
 		listeLignesCommande.clear();
@@ -403,7 +402,7 @@ public class PanelLigneCommande extends JDialog {
 		});
 
 
-		//Bouton de recherche de fournisseur
+		//Bouton de recherche de client
 		this.btnRechercher.addActionListener(new ActionListener() {
 
 			@Override
@@ -565,8 +564,8 @@ public class PanelLigneCommande extends JDialog {
 	}
 
 	/**
-	 * Méthode qui change le fournisseur avec celui sélectionné dans la liste.
-	 * @param f, le Fournisseur à changer.
+	 * Méthode qui change le client avec celui sélectionné dans la liste.
+	 * @param cli, le client à changer.
 	 */
 	public static void setClient(Client cli){
 		lblClientCode.setText(cli.getNomClient()+" ("+cli.getIdClient()+")");
@@ -574,8 +573,8 @@ public class PanelLigneCommande extends JDialog {
 	}
 
 	/**
-	 * Méthode qui change le fournisseur avec celui sélectionné dans la liste.
-	 * @param f, le Fournisseur à changer.
+	 * Méthode qui change le Client avec celui sélectionné dans la liste.
+	 * @param idCli, le Client à changer.
 	 */
 	public static void getClientById(int idCli){
 		try {

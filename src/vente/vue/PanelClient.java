@@ -28,8 +28,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-import achat.modeles.Fournisseur;
-import achat.vues.PanelFournisseur;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 import vente.controlleur.AjouterClient;
@@ -90,6 +88,9 @@ public class PanelClient extends JPanel{
 		initHandlers();
 	}
 
+	/**
+	 *  Méthode qui initialise les éléments
+	 */
 	private void initElements() {
 		tableClient = new JTable(modelTableClient);
 		tableClient.setAutoCreateRowSorter(true); //permet de trier les colonnes
@@ -129,6 +130,9 @@ public class PanelClient extends JPanel{
 		bt_supprimer.setEnabled(false);
 	}
 
+	/**
+	 * Methode qui gère les listeners
+	 */
 	public void initHandlers(){
 
 		tableClient.getSelectionModel().addListSelectionListener(new ListSelectionListener() 
@@ -210,7 +214,9 @@ public class PanelClient extends JPanel{
 		});	
 	}
 
-	//replit le tablea client avec la base de donn�es vente_clients
+	/**
+	 * Methode qui remplit le tablea client avec la base de donn�es vente_clients
+	 */
 	public static void remplirtableClient(){
 		modelTableClient.setDataVector(DatabaseConnection.remplirListeClient(), nomColonnes);
 		tableClient.getRowSorter().toggleSortOrder(0);
@@ -241,6 +247,9 @@ public class PanelClient extends JPanel{
 		}
 	}
 
+	/**
+	 * Methode qui remplit le tableau normalement si la recherche est vide ou sinon effectue la recherche
+	 */
 	public static void majTableauRecherche(){
 
 		String recherche;

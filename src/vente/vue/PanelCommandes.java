@@ -32,15 +32,11 @@ import javax.swing.table.DefaultTableModel;
 
 import com.toedter.calendar.JDateChooser;
 
-import achat.modeles.CommandesFournisseur;
-import achat.modeles.Fournisseur;
-import achat.modeles.UneditableTableModel;
-import achat.vues.PanelCommande;
-import achat.vues.popup.popCommande.PopupCommande;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 import vente.model.Commande;
 import vente.model.LignesCommande;
+import vente.model.TableModel;
 
 public class PanelCommandes extends JPanel{
 
@@ -49,7 +45,7 @@ public class PanelCommandes extends JPanel{
 	private static Object[][] tabCo;
 	private static Object[] titres = {"N� Commande","Acheteur","Date", "Montant", "Etat"};
 	private static JTable tableau = new JTable(new DefaultTableModel());
-	private static UneditableTableModel modele = new UneditableTableModel(0,5);
+	private static TableModel modele = new TableModel(0,5);
 	private static JScrollPane scrollPane  = new JScrollPane(tableau);
 	private JButton btnNouveau;
 	private static JButton btnModifier, btnSupprimer;
@@ -69,11 +65,18 @@ public class PanelCommandes extends JPanel{
 		this.initElements();
 		initEcouteurs();
 	}
-
+	
+	/**
+	 * Getter de la liste des commandes.
+	 * @return, la liste des commandes.
+	 */
 	public static ArrayList<Commande> getListeCommande(){
 		return listeCommandes;
 	}
 
+	/**
+	 * Méthode qui récupère l'ensemble des commandes de la base de données et les ajoute dans une ArrayList.
+	 */
 	public static void getCommande() {
 		listeCommandes.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
 		try {
@@ -82,14 +85,14 @@ public class PanelCommandes extends JPanel{
 			ResultSet rs = pst.executeQuery();
 
 			while(rs.next()){
-				String refCommande, refFournisseur , nomFournisseur, montantTotal, etatCommande, typePaiement;
+				String refCommande, refClient , nomClient, montantTotal, etatCommande, typePaiement;
 				float tauxTva, remise;
 				Date date;
 
 				refCommande = rs.getString("idCommande");
 				date = rs.getDate("dateCommande");
-				refFournisseur = rs.getString("idClient");
-				nomFournisseur = rs.getString("nomClient");
+				refClient = rs.getString("idClient");
+				nomClient = rs.getString("nomClient");
 				etatCommande = rs.getString("etatCommande");
 				tauxTva = rs.getFloat("tauxTva");
 				remise = rs.getFloat("remise");
@@ -104,13 +107,17 @@ public class PanelCommandes extends JPanel{
 					montantTotal = rs.getString("montantTotal")+" €";
 				}
 
-				listeCommandes.add(new Commande(refCommande, refFournisseur, nomFournisseur, date, etatCommande,montantTotal, tauxTva,remise,typePaiement ));
+				listeCommandes.add(new Commande(refCommande, refClient, nomClient, date, etatCommande,montantTotal, tauxTva,remise,typePaiement ));
 
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Méthode qui remplit le tableau avec les valeurs de l'arraylist, mais aussi la JTable.
+	 */
 	public static void remplirTableau(){
 
 		maj();
@@ -123,11 +130,14 @@ public class PanelCommandes extends JPanel{
 		scrollPane.setViewportView(tableau);
 	}
 
+	/**
+	 * Méthode qui met à jour le tableau de commandes.
+	 */
 	public static void maj(){
 		int nbDeCo = listeCommandes.size();//On calcule la taille de l'arrylist pour cr�er un tableau ad�quat
 		tabCo = new Object[nbDeCo][5];//On cr�er le tableau de la taille r�cup�r�e 
 
-		//On remplit ce dernier avec les CommandesFournisseur r�cup�r�es
+		//On remplit ce dernier avec les Commandes r�cup�r�es
 		for(Commande cf : listeCommandes){
 			tabCo[listeCommandes.indexOf(cf)][0] = cf.getIdCommande();
 			tabCo[listeCommandes.indexOf(cf)][1] = cf.getNomClient();
@@ -138,7 +148,9 @@ public class PanelCommandes extends JPanel{
 		modele.setDataVector(tabCo,titres);
 	}
 
-
+	/**
+	 * Intitialise les elements.
+	 */
 	private void initElements(){
 
 		this.setLayout(new BorderLayout());
@@ -152,7 +164,7 @@ public class PanelCommandes extends JPanel{
 
 		JLabel lblRechercheCommande = new JLabel("N� Commande : ");
 		txtRechercheCommande = new JTextField(10);
-		JLabel lblRechercheFournisseur = new JLabel("Client : ");
+		JLabel lblRechercheClient = new JLabel("Client : ");
 		txtRechercheClient = new JTextField(10);
 		JLabel lblRechercheDate = new JLabel("Date : ");
 		JLabel lblRechercheMontant = new JLabel("Montant : ");
@@ -166,7 +178,7 @@ public class PanelCommandes extends JPanel{
 
 		panelRechercheNord.add(lblRechercheCommande);
 		panelRechercheNord.add(txtRechercheCommande);
-		panelRechercheNord.add(lblRechercheFournisseur);
+		panelRechercheNord.add(lblRechercheClient);
 		panelRechercheNord.add(txtRechercheClient);
 		panelRechercheNord.add(lblRechercheDate);
 		panelRechercheNord.add(jdcDate);
@@ -184,7 +196,8 @@ public class PanelCommandes extends JPanel{
 		this.add(panelRechercheNord, BorderLayout.NORTH);
 		this.add(panelGrilleCentre, BorderLayout.CENTER);
 		setBtn(true);
-	}  
+	} 
+	
 	/**
 	 * Méthode qui initialise les écouteurs.
 	 */
@@ -314,6 +327,9 @@ public class PanelCommandes extends JPanel{
 				});
 	}
 	
+	/**
+	 * Méthode qui récupère l'ensemble des commandes de la base de données selon la recherche des champs et les ajoute dans une ArrayList.
+	 */
 	public static void getCommandeRecherche(){
 		
 		listeCommandes.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
@@ -329,14 +345,14 @@ public class PanelCommandes extends JPanel{
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
-				String refCommande, refFournisseur, nomFournisseur, montantTotal, etatCommande, typePaiement;
+				String refCommande, refClient, nomClient, montantTotal, etatCommande, typePaiement;
 				double tauxTva, remise;
 				Date date, dateLivr;
 				
 				refCommande = rs.getString("idCommande");
 				date = rs.getDate("dateCommande");
-				refFournisseur = rs.getString("idClient");
-				nomFournisseur = rs.getString("nomClient");
+				refClient = rs.getString("idClient");
+				nomClient = rs.getString("nomClient");
 				etatCommande = rs.getString("etatCommande");
 				tauxTva = rs.getFloat("tauxTva");
 				remise = rs.getFloat("remise");
@@ -351,7 +367,7 @@ public class PanelCommandes extends JPanel{
 					montantTotal = rs.getString("montantTotal")+" €";
 				}
 
-				listeCommandes.add(new Commande(refCommande, refFournisseur, nomFournisseur, date, etatCommande,montantTotal, tauxTva,remise,typePaiement ));
+				listeCommandes.add(new Commande(refCommande, refClient, nomClient, date, etatCommande,montantTotal, tauxTva,remise,typePaiement ));
 				
 			}
 		} catch (SQLException e) {
@@ -359,6 +375,10 @@ public class PanelCommandes extends JPanel{
 		}
 	}
 	
+	/**
+	 * Methode qui supprime la commande sur la ligne concernée du JTable
+	 * @param id idComande
+	 */
 	private void supprimerCom(int id){
 		Connection cn = DatabaseConnection.getCon();
 

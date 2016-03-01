@@ -29,16 +29,17 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 
+import achat.modeles.Produit;
 import jdbc.DatabaseConnection;
+import vente.model.Categories;
 import vente.model.Client;
-import achat.modeles.Categorie;
 import vente.model.LignesCommande;
 import vente.vue.PanelLigneCommande;
-import achat.modeles.Produit; 
+
 
 public class AjouterProduitCommande extends JDialog{
 	private ArrayList<Produit> listeProduits = new ArrayList<Produit>();
-	private ArrayList<Categorie> listeCategorie = new ArrayList<Categorie>();
+	private ArrayList<Categories> listeCategorie = new ArrayList<Categories>();
 	private JButton btnAjouter, btnAnnuler;
 	private JTextField txtNomProduitRecherche;
 	private JSpinner txtQte;
@@ -52,7 +53,7 @@ public class AjouterProduitCommande extends JDialog{
 	//private int i = Integer.parseInt(getLastIdCommande());
 	
 	/**
-	 * Constructeur d'une Popup d'ajout de ligne commande fournisseur.
+	 * Constructeur d'une Popup d'ajout de ligne commande.
 	 */
 	public AjouterProduitCommande(int numCommande){
 		this.numCommande = numCommande;
@@ -128,6 +129,9 @@ public class AjouterProduitCommande extends JDialog{
 	}
 	
 	
+	/**
+	 * Methode qui gère les listeners
+	 */
 	private void initEcouteurs(){
 		
 		//Bouton annuler
@@ -222,14 +226,14 @@ public class AjouterProduitCommande extends JDialog{
 				String codeCat = rs.getString("code");
 				String nomCat = rs.getString("nom");
 				
-				this.listeCategorie.add(new Categorie(codeCat, nomCat));
+				this.listeCategorie.add(new Categories(codeCat, nomCat));
 			}
 			
 			this.chCategorieRecherche.add("Toutes");
 			this.chCategorieRecherche.select("Toutes");
 			
 			//On boucle dans la liste pour afficher dans le Choice
-			for (Categorie l : listeCategorie){
+			for (Categories l : listeCategorie){
 				this.chCategorieRecherche.add(l.getNom());
 			}
 			
@@ -333,21 +337,5 @@ public class AjouterProduitCommande extends JDialog{
 
 	}
 	
-	/*private void getLastIdCommande(){
-		  String dernierId = null;
-		   try {
-		    Connection cn = DatabaseConnection.getCon();
-		    Statement st;
-		    st = cn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-		    ResultSet rs = st.executeQuery("SELECT IDCOMMANDE, CODEPRODUIT, QUANTITE FROM vente_ligneCommande WHERE IDCOMMANDE= (SELECT MAX(IDCOMMANDE) FROM vente_ligneCommande)) ");
-		    rs.next();
-		    String refProduit = rs.getString("IDCOMMANDE");
-		    
-		   } catch (SQLException e) {
-		    // TODO Auto-generated catch block
-		    e.printStackTrace();
-		   }
-		   
-		 }*/
 
 }

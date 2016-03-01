@@ -23,8 +23,6 @@ import javax.swing.JPanel;
 import jdbc.DatabaseConnection;
 import vente.model.Client;
 import vente.vue.PanelLigneCommande;
-import achat.modeles.Fournisseur;
-import achat.vues.PanelCommande;
 
 public class SelectionClientCommande extends JFrame{
 	private static Client client;
@@ -111,10 +109,18 @@ public class SelectionClientCommande extends JFrame{
 		//PanelCommande.getClient(client);
 	}
 	
+	/**
+	 * @param cli
+	 * @return cli.getNomClient()
+	 */
 	private static String getClientChoisit(Client cli){
 		return cli.getNomClient();
 	}
 	
+	/**
+	 * @param cli
+	 * @return cli.getIdClient()
+	 */
 	private static String getIDClientChoisit(Client cli){
 		return cli.getIdClient();
 	}

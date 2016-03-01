@@ -19,6 +19,8 @@ public class ModifierClients extends JDialog
 	private JPanel panelFlow5 = new JPanel(new FlowLayout(FlowLayout.CENTER));
 	private String value1,value2,value3,value4,value5,value6,value7;
 	private int codeClient;
+	
+	private JButton modifier;
 	private Choice chCategorie;
 	JButton retour = new JButton("Retour");	
 
@@ -61,6 +63,7 @@ public class ModifierClients extends JDialog
 		this.frame = frame;
 		initElements();
 		initFrame();
+		initHandlers();
 		codeClient = Integer.parseInt(client.getIdClient());
 		Nom.setText(client.getNomClient());
 		Prenom.setText(client.getPrenomClient());
@@ -75,6 +78,9 @@ public class ModifierClients extends JDialog
 		}
 	}
 
+	/**
+	 * Initialise la fenetre
+	 */
 	public void initFrame(){
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setSize(512,288);	
@@ -82,10 +88,14 @@ public class ModifierClients extends JDialog
 		setResizable(false);
 		setVisible(true);
 	}
+	
+	/**
+	 * Initialise les element de la fenetre
+	 */
 	public void initElements()
 	{
 		//Cr�ation des boutons
-		JButton modifier = new JButton("Modifier");	
+		modifier = new JButton("Modifier");	
 		JLabel error = new JLabel("");	
 		chCategorie = new Choice();
 		chCategorie.add("Particulier");
@@ -119,7 +129,13 @@ public class ModifierClients extends JDialog
 		panelFlow4.add(modifier);
 		panelFlow4.add(retour);		
 		panelFlow5.add(error);
-
+	}
+	
+	/**
+	 * gère les listeners
+	 */
+	public void initHandlers(){
+		
 		retour.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)

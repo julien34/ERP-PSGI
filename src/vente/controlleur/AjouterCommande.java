@@ -51,7 +51,10 @@ public class AjouterCommande extends JDialog{
 			initElement();
 			initHandlers();
 		}
-
+		
+		/**
+		 * Initialise la fenetre
+		 */
 		public void initFrame(){
 			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			setSize(512,288);	
@@ -60,6 +63,9 @@ public class AjouterCommande extends JDialog{
 			setVisible(true);
 		}
 		
+		/**
+		 * Initialise les elements
+		 */
 		public void initElement(){
 			add(contenuPanel);
 			contenuPanel.add(panelFlow1);
@@ -79,6 +85,9 @@ public class AjouterCommande extends JDialog{
 			setVisible(true);
 		}
 		
+		/**
+		 * gere les listeners
+		 */
 		public void  initHandlers(){
 			
 			bt_valider.addActionListener(new ActionListener()
@@ -106,12 +115,5 @@ public class AjouterCommande extends JDialog{
 			});
 			
 		}
-		/**
-		 * Méthode qui change le fournisseur avec celui sélectionné dans la liste.
-		 * @param f, le Fournisseur à changer.
-		 */
-		/*public static void getClient(Client cli){
-			clienCommande = cli;
-			txtRechercheClient.setText(cli.idclient + " " + cli.nomclient + " " + cli.prenomclient);
-		}*/
+
 }
