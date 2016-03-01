@@ -105,11 +105,11 @@ public class FenetreVente extends JDialog {
 	private void initFenetre(){
 
 		//On donne un titre selon la provenance du clic (si cmd en paramètre alors modification)
-		if(EtatCom() == null){
-			this.setTitle("Nouvelle commande de vente n°"+idCommandeEnCour);
+		if(this.commande == null){
+			this.setTitle("Nouvelle commande de vente");
 		}
 		else {
-			this.setTitle("Modification de la commande de vente n°"+idCommandeEnCour);
+			this.setTitle("Modification de la commande de vente n°"+this.commande.getIdCommande()+" du "+this.commande.getDate());
 		}
 
 		this.setSize(850, 650);
@@ -120,27 +120,6 @@ public class FenetreVente extends JDialog {
 		this.setVisible(true);
 	}
 
-	/**
-	 * Methode qui permet de savoir si la commande est nouvelle ou non 
-	 * @return etat commande
-	 */
-	private String EtatCom(){
-		
-		String result = null;
-		try {
-			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT etatCommande FROM vente_Commande WHERE idCommande = ?");
-			pst.setInt(1, idCommandeEnCour);
-			ResultSet rs = pst.executeQuery();
-			rs.next();
-			result = rs.getString("etatCommande");
-			
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
 
 	/**
 	 * Méthode qui initialise l'ensemble de tous les panels et composants de la fenetre.
@@ -461,18 +440,33 @@ public class FenetreVente extends JDialog {
 	 * Méthode qui récupère l'ensemble des produits qui sont dans la commande.
 	 */
 	private void setInfoCommande(){
+		String txTVA = null;
 		try {
 			Connection cn = DatabaseConnection.getCon();
 			PreparedStatement pst = cn.prepareStatement("SELECT * FROM vente_Commande WHERE idCommande = ?");
 			pst.setInt(1, idCommandeEnCour);
 			ResultSet rs = pst.executeQuery();
 			while(rs.next()){
-				txtRemise.setValue(Double.valueOf(rs.getString("remise")));
+				if(rs.getString("remise") != null){
+					txtRemise.setValue(Double.valueOf(rs.getString("remise")));
+				}
+				else{
+					txtRemise.setValue(0);
+				}
 				//jdcDate.setDate((Date)rs.getString("dateCommande");
-				chTauxTva.select(rs.getString("tauxTVA"));
+				if(rs.getString("tauxTVA") == null){
+					txTVA = "0.0";
+				}
+				else if(rs.getString("tauxTVA").endsWith("0")){
+					txTVA = rs.getString("tauxTVA") + ".0";
+				} 
+				else txTVA= rs.getString("tauxTVA");
+				chTauxTva.select(txTVA);
 				chPaiement.select(rs.getString("typePaiement"));
 				chEtat.select(rs.getString("etatcommande"));
-				getClientById(Integer.parseInt(rs.getString("idCLient")));
+				if(rs.getString("idCLient") != null){
+					getClientById(Integer.parseInt(rs.getString("idCLient")));
+				}
 			}
 
 			maj();
@@ -555,42 +549,40 @@ public class FenetreVente extends JDialog {
 	 * Méthode qui ajoute dans la base de donnée une nouvelle commande (vide).
 	 */
 	private void ajouterCommande(Commande c){
-
 		//On vérifie si la commande est dans l'arraylist des commandes
-
-		/*if(this.commande.getTauxTVA() == null){
-				this.chTauxTva.select("0.0");//TVA à 0 si vide
-			}
-
-			if(this.jdcDateLivr.getDate() == null || this.jdcDateLivr.getDate().before(this.jdcDate.getDate())){
-				this.jdcDateLivr.setDate(this.commande.getDate());//Date de livraison = date de création si vide ou antérieur à la création
-			}*/
-
-		this.calculerTotal();//On calcule el total de la commande
-		try {
-			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("UPDATE vente_commande SET idClient = ?,dateCommande = ?,etatCommande = ?, tauxTVA = ?, remise = ?, typePaiement = ? WHERE idCommande = ?");
-			pst.setString(1, client.getIdClient());
-			pst.setDate(2, getCurrentDate());
-			pst.setString(3,chEtat.getSelectedItem());
-			pst.setDouble(4, Double.valueOf(this.chTauxTva.getSelectedItem()));
-			pst.setDouble(5, (Double) this.txtRemise.getValue());
-			//pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
-			pst.setString(6,chPaiement.getSelectedItem());//this.chPaiement.getSelectedItem());
-			pst.setInt(7, idCommandeEnCour);
-
-			pst.executeQuery();
-
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if(client.getIdClient() == null){
+			JOptionPane.showMessageDialog(frame,
+					"veuillez renseigner le client.",
+					"Commande invalide",
+					JOptionPane.ERROR_MESSAGE);
 		}
+		else{
+			this.calculerTotal();//On calcule el total de la commande
+			try {
+				Connection cn = DatabaseConnection.getCon();
+				PreparedStatement pst = cn.prepareStatement("UPDATE vente_commande SET idClient = ?,dateCommande = ?,etatCommande = ?, tauxTVA = ?, remise = ?, typePaiement = ? WHERE idCommande = ?");
+				pst.setString(1, client.getIdClient());
+				pst.setDate(2, getCurrentDate());
+				pst.setString(3,chEtat.getSelectedItem());
+				pst.setDouble(4, Double.valueOf(this.chTauxTva.getSelectedItem()));
+				pst.setDouble(5, (Double) this.txtRemise.getValue());
+				//pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
+				pst.setString(6,chPaiement.getSelectedItem());//this.chPaiement.getSelectedItem());
+				pst.setInt(7, idCommandeEnCour);
 
-		PanelCommandes.getCommande();
-		PanelCommandes.maj();
-		setBtnEnabled(false);
-		//PanelCommandes.setBtn(false); //set les bts modifier et annuler 
-		setClient(new Client());
-		dispose();
+				pst.executeQuery();
+
+				PanelCommandes.getCommande();
+				PanelCommandes.maj();
+				setBtnEnabled(false);
+				//PanelCommandes.setBtn(false); //set les bts modifier et annuler 
+				setClient(new Client());
+				dispose();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private static java.sql.Date getCurrentDate() {

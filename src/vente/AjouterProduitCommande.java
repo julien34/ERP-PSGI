@@ -145,7 +145,7 @@ public class AjouterProduitCommande extends JDialog{
 			public void actionPerformed(ActionEvent e) {
 				AjouterProduitCommande.this.setLigne();
 				ajoutLigneCommande(AjouterProduitCommande.this.ligneCommande);
-;
+				FenetreVente.getProduitsCommande();
 			}
 		});
 		
@@ -275,7 +275,7 @@ public class AjouterProduitCommande extends JDialog{
 		//On cr�er la ligne de commande
 		this.ligneCommande = new LignesCommande(refProduit, nomProduit, categorieProduit, pHT, qte, total);
 		//FenetreVente.addArrayListLigneCommande(ligneCommande);
-		FenetreVente.getProduitsCommande();
+		
 		System.out.println(refProduit);
 		System.out.println(nomProduit);
 		System.out.println(categorieProduit);

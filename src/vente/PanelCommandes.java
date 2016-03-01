@@ -80,7 +80,7 @@ public class PanelCommandes extends JPanel{
 		listeCommandes.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT co.idCommande, co.dateCommande,co.etatCommande, co.tauxTVA, co.remise, co.typePaiement, cli.idClient, cli.nomClient, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM vente_Commande co LEFT JOIN vente_clients cli ON cli.idClient = co.idClient LEFT JOIN vente_LigneCommande lc ON lc.idCommande = co.idCommande LEFT JOIN Produit p ON p.code = lc.codeProduit GROUP BY co.idCommande, co.dateCommande,co.etatCommande, co.tauxTVA, co.remise, co.typePaiement, cli.idClient, cli.nomCLient ORDER BY co.dateCommande DESC");
+			PreparedStatement pst = cn.prepareStatement("SELECT co.idCommande, co.dateCommande,co.etatCommande, co.tauxTVA, co.remise, co.typePaiement, cli.idClient, cli.nomClient, SUM(p.prixVente*lc.quantite) AS montantTotal FROM vente_Commande co LEFT JOIN vente_clients cli ON cli.idClient = co.idClient LEFT JOIN vente_LigneCommande lc ON lc.idCommande = co.idCommande LEFT JOIN Produit p ON p.code = lc.codeProduit GROUP BY co.idCommande, co.dateCommande,co.etatCommande, co.tauxTVA, co.remise, co.typePaiement, cli.idClient, cli.nomCLient ORDER BY co.dateCommande DESC");
 			ResultSet rs = pst.executeQuery();
 
 			while(rs.next()){
@@ -140,7 +140,7 @@ public class PanelCommandes extends JPanel{
 		modele.setDataVector(tabCo,titres);
 	}
 
-	
+
 	private void initElements(){
 
 		this.setLayout(new BorderLayout());
