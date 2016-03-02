@@ -211,7 +211,7 @@ public class PanelLigneCommande extends JDialog {
 		JLabel lblEtat = new JLabel("Etat de la commande : ");
 		chEtat = new Choice();
 		chEtat.add("En cours");
-		chEtat.add("Terminer");
+		chEtat.add("Terminée");
 		//chEtat.add("Invalide");
 		
 		gauche1.add(lblTauxTva);
@@ -387,6 +387,9 @@ public class PanelLigneCommande extends JDialog {
 						PanelCommandes.supprimerCom(idCommandeEnCour);
 						dispose();
 					}
+				}
+				else{
+					dispose();
 				}
 			}
 		});
