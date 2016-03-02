@@ -14,6 +14,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -29,6 +30,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.toedter.calendar.JDateChooser;
 
+import achat.vues.PanelCommande;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 import vente.model.Commande;
@@ -291,7 +293,7 @@ public class PanelCommandes extends JPanel{
 			@Override
 			public void propertyChange(PropertyChangeEvent evt) {
 				if("date".equals(evt.getPropertyName())){
-					//initDate();//On change la date si elle est vide
+					initDate();//On change la date si elle est vide
 					getCommandeRecherche();
 					maj();
 				}
@@ -364,6 +366,22 @@ public class PanelCommandes extends JPanel{
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Méthode qui change la date si elle est vide ou l'attribut avec son contenue si elle est remplie.
+	 */
+	private void initDate(){
+		
+		if(jdcDate.getDate() == null){
+			dateRecherche = "";
+		}
+		else{
+			SimpleDateFormat formater = null;
+			Date aujourdhui = new Date(jdcDate.getDate().getTime());
+			formater = new SimpleDateFormat("dd/MM/yy");
+			dateRecherche = String.valueOf(formater.format(aujourdhui));
 		}
 	}
 
