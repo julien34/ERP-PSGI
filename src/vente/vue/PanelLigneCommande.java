@@ -52,7 +52,6 @@ public class PanelLigneCommande extends JDialog {
 	public static JLabel lblClientCode;
 	private JSpinner txtRemise;
 	private JButton btnCalculerTotal, btnValider, btnAnnuler, btnRechercher, btnAjouter, btnModifier, btnSupprimer;
-	private JDateChooser jdcDateLivr, jdcDate;
 	private Choice chTauxTva, chPaiement, chEtat;
 	
 	//On créer la JTable et son modèle avec le scrollPane
@@ -153,15 +152,10 @@ public class PanelLigneCommande extends JDialog {
 		JLabel lblClient = new JLabel("Client (code) : ");
 		lblClientCode = new JLabel("Aucun client sélectionné");
 		this.btnRechercher = new JButton("Rechercher");
-		JLabel lblDate = new JLabel("Date : ");
-		this.jdcDate = new JDateChooser();
-		this.jdcDate.setEnabled(false);
 
 		panelGrilleNord.add(lblClient);
 		panelGrilleNord.add(lblClientCode);
 		panelGrilleNord.add(btnRechercher);
-		panelGrilleNord.add(lblDate);
-		panelGrilleNord.add(jdcDate);
 
 		//On créer et on ajoute les composants du panelGrilleCentre
 		modele.setDataVector(tabLignesCo,titres);
@@ -208,7 +202,6 @@ public class PanelLigneCommande extends JDialog {
 		JLabel lblPrCent = new JLabel("%");
 		this.txtRemise = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 100.0, 0.5)); //valeur - min - max - saut;
 		JLabel lblDateLivr = new JLabel("Date de livraison : ");
-		this.jdcDateLivr = new JDateChooser();
 		JLabel lblPaiement = new JLabel("Type de paiement : ");
 		this.chPaiement = new Choice();
 		chPaiement.add("Chèque");
@@ -227,12 +220,10 @@ public class PanelLigneCommande extends JDialog {
 		gauche2.add(lblRemise);
 		gauche2.add(txtRemise);
 		gauche2.add(lblPrCent);
-		gauche3.add(lblDateLivr);
-		gauche3.add(this.jdcDateLivr);
-		gauche4.add(lblPaiement);
-		gauche4.add(chPaiement);
-		gauche5.add(lblEtat);
-		gauche5.add(chEtat);
+		gauche3.add(lblPaiement);
+		gauche3.add(chPaiement);
+		gauche4.add(lblEtat);
+		gauche4.add(chEtat);
 
 		panelParametrageCentreGauche.add(gauche1);
 		panelParametrageCentreGauche.add(gauche2);
