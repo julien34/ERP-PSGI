@@ -574,8 +574,13 @@ public class PopupCommande extends JDialog {
 	public void setBtnEnabled(Boolean b){
 		btnModifier.setEnabled(b);
 		btnSupprimer.setEnabled(b);
+		//setBtnValidationCommandeEnable();
 	}
-	
+	public void setBtnValidationCommandeEnable(){
+		if(this.commande.getEtatCommande().equals("Validée")){
+			btnValiderCommande.setEnabled(false);
+		}
+	}
 	
 	/**
 	 * Méthode qui permet de supprimer une ligne dans la JTable mais aussi dans la base de donnée.
@@ -642,7 +647,7 @@ public class PopupCommande extends JDialog {
 			
 			 try {
 					Connection cn = DatabaseConnection.getCon();
-					PreparedStatement pst = cn.prepareStatement("INSERT INTO DevisFournisseur(refDEvis,datedevis,reffournisseur,etatdevis,tauxtva,remise,typepaiement,refcommande)  VALUES(seqRefDevis.NEXTVAL,CURRENT_DATE,?,?,?,?,?,?)");
+					PreparedStatement pst = cn.prepareStatement("INSERT INTO DevisFournisseurs(refDEvis,datedevis,reffournisseur,etatdevis,tauxtva,remise,typepaiement,refcommande)  VALUES(seqRefDevis.NEXTVAL,CURRENT_DATE,?,?,?,?,?,?)");
 					pst.setString(1, fournisseur.getRef());
 					pst.setString(2, "En cours");
 					pst.setDouble(3, Double.valueOf(this.chTauxTva.getSelectedItem()));
