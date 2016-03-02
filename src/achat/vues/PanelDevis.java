@@ -63,7 +63,7 @@ public class PanelDevis extends JPanel{
 	private static JTextField txtRechercheCommande, txtRechercheFournisseur, txtRechercheMontant;
 	private static JDateChooser jdcDate;
 	private static String dateRecherche = "";
-
+	private FenetrePrincipale fe;
 	public PanelDevis(FenetrePrincipale f){
 		
 		//On récupère l'ensemble des founisseurs présents dans la BDD
@@ -77,12 +77,13 @@ public class PanelDevis extends JPanel{
 				
 		//On initialise l'ensemble des écouteurs
 		this.initEcouteurs();
+		fe=f;
 	}
 	
 	
 	/**
-	 * Getter de la liste des commandes.
-	 * @return, la liste des commandes.
+	 * Getter de la liste des devis.
+	 * @return, la liste des devis.
 	 */
 	public static ArrayList<DevisFournisseur> getListeCommande(){
 		return listeDevis;
@@ -90,13 +91,13 @@ public class PanelDevis extends JPanel{
 	
 	
 	/**
-	 * Méthode qui récupère l'ensemble des commandes de la base de données et les ajoute dans une ArrayList.
+	 * Méthode qui récupère l'ensemble des devis de la base de données et les ajoute dans une ArrayList.
 	 */
 	public static void getCommande(){
 		listeDevis.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT d.refDevis, d.dateDevis, d.etatDevis, d.tauxTVA, d.remise, d.typePaiement, d.refCommande, f.refFournisseur, f.nomFournisseur, c.montantTotal FROM DevisFournisseurs d LEFT JOIN Fournisseurs f ON f.refFournisseur = d.refFournisseur LEFT join CommandesFournisseur c on d.refCommande= c.refCommande GROUP BY d.refDevis, d.dateDevis, d.etatdevis, d.tauxTVA, d.remise, d.typePaiement,d.refCommande f.refFournisseur, f.nomFournisseur ORDER BY d.dateDevis DESC");
+			PreparedStatement pst = cn.prepareStatement("SELECT d.refDevis, d.dateDevis, d.etatDevis, d.tauxTVA, d.remise, d.typePaiement, d.refCommande, f.refFournisseur, f.nomFournisseur, c.montantTotal FROM DevisFournisseurs d LEFT JOIN Fournisseurs f ON f.refFournisseur = d.refFournisseur LEFT join CommandesFournisseur c on d.refCommande = c.refCommande GROUP BY d.refDevis, d.dateDevis, d.etatdevis, d.tauxTVA, d.remise, d.typePaiement,d.refCommande f.refFournisseur, f.nomFournisseur ORDER BY d.dateDevis DESC");
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
@@ -264,8 +265,8 @@ public class PanelDevis extends JPanel{
 		panelRechercheNord.add(txtRechercheMontant);
 		
 		panelGrille.add(scrollPane);
-		panelBouton.add(btnNouveau);
-		panelBouton.add(btnModifier);
+		//panelBouton.add(btnNouveau);
+		//panelBouton.add(btnModifier);
 		panelBouton.add(btnAnnuler);
 		panelBouton.add(btnValiderCommande);
 		
@@ -314,7 +315,7 @@ public class PanelDevis extends JPanel{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				//new PopupCommande(listeDevis.get(tableau.getSelectedRow()));
+				//new PopupCommande(listeDevis.get(tableau.getSelectedRow()).getRefCommande());
 			}
 		});
 		this.btnValiderCommande.addActionListener(new ActionListener(){
@@ -323,6 +324,17 @@ public class PanelDevis extends JPanel{
                validationCommande(listeDevis.get(tableau.getSelectedRow()));
                 maj();
             }
+		});
+		this.btnAnnuler.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				annulationCommande(listeDevis.get(tableau.getSelectedRow()));
+				maj();
+				
+			}
+
+			
 		});
 		
 		/*-------------------------*/
@@ -403,7 +415,7 @@ public class PanelDevis extends JPanel{
         try {
 				Connection cn = DatabaseConnection.getCon();
 				PreparedStatement pst = cn.prepareStatement("UPDATE DevisFournisseurs SET EtatDevis = ? WHERE refDevis = ?");
-				pst.setString(1, "Validée");
+				pst.setString(1, "Validé");
 				pst.setInt(2, devisFournisseur.getRefDevis());
 				pst.executeQuery();
 			} catch (SQLException e) {
@@ -412,4 +424,28 @@ public class PanelDevis extends JPanel{
 			
 			devisFournisseur.setEtatDevis("Validée");
     }
+	private void annulationCommande(DevisFournisseur devisFournisseur) {
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("UPDATE DevisFournisseurs SET EtatDevis = ? WHERE refDevis = ?");
+			pst.setString(1, "Annulé");
+			pst.setInt(2, devisFournisseur.getRefDevis());
+			pst.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try {
+			Connection cn = DatabaseConnection.getCon();
+			PreparedStatement pst = cn.prepareStatement("UPDATE commandesFournisseur SET EtatCommande = ? WHERE refCommande = ?");
+			pst.setString(1, "Annulée");
+			pst.setString(2, devisFournisseur.getRefCommande());
+			pst.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		devisFournisseur.setEtatDevis("Annulé");
+		
+		
+		
+	}
 }
