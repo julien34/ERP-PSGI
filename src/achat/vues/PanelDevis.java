@@ -443,12 +443,6 @@ public class PanelDevis extends JPanel{
 			e.printStackTrace();
 		}
 		devisFournisseur.setEtatDevis("Annulé");
-		ArrayList<CommandesFournisseur> listeCommande = fe.getPanelCommande().getCommandes();
-		for(CommandesFournisseur c :listeCommande){
-			if(c.getRefCommande().equals(devisFournisseur.getRefCommande())){
-				c.setEtatCommande("Annulée");
-			}
-		}
 		
 		
 	}

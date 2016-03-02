@@ -378,4 +378,10 @@ public class PanelCommande extends JPanel{
 			PanelCommande.dateRecherche = String.valueOf(formater.format(aujourdhui));
 		}
 	}
+
+
+	public ArrayList<CommandesFournisseur> getCommandes() {
+		// TODO Auto-generated method stub
+		return listeCommandes;
+	}
 }
