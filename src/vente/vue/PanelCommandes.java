@@ -200,11 +200,16 @@ public class PanelCommandes extends JPanel{
 				commandeChoisit = String.valueOf(modele.getValueAt(tableau.convertRowIndexToModel(index), 0));
 				//D�sactiver certains boutons si on ne selectionne aucune ligne
 
+				System.out.print("testazd");
 				if(!selection.isSelectionEmpty()){
 					setBtn(true);
+					btnModifier.setEnabled(true);
+					btnSupprimer.setEnabled(true);
 				}
 				else{
 					setBtn(false);
+					btnModifier.setEnabled(false);
+					btnSupprimer.setEnabled(false);
 				}
 			}
 		});

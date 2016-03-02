@@ -546,7 +546,7 @@ public class PanelLigneCommande extends JDialog {
 				PanelCommandes.getCommande();
 				PanelCommandes.maj();
 				setBtnEnabled(false);
-				PanelCommandes.setBtn(false); //set les bts modifier et annuler 
+				//PanelCommandes.setBtn(false); //set les bts modifier et annuler 
 				setClient(new Client());
 				dispose();
 
