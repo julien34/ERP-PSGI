@@ -62,7 +62,7 @@ public class PanelClient extends JPanel{
 	private static JTable tableClient;
 
 	private JScrollPane scrollPane;
-	private final static String[] nomColonnes = {"Id","Nom","Prenom","Adresse","Email","Telehpone","Categorie"};
+	private final static String[] nomColonnes = {"Id","Nom","Prenom","Adresse","Email","Telephone","Categorie"};
 	private static DefaultTableModel modelTableClient = new DefaultTableModel(0,7){
 		Class[] types = {String.class, String.class, String.class,String.class,String.class,String.class,String.class};
 
