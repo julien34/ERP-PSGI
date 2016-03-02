@@ -389,7 +389,7 @@ public class PanelLigneCommande extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				if(client.getIdClient() == null){
 					int option = JOptionPane.showConfirmDialog(frame,
-							"La commande en cour n'a pas de client associer et sera supprimer.",
+							"La commande en cours n'a pas de client associé et sera supprimé.",
 							"Commande invalide", JOptionPane.YES_NO_OPTION);
 					if(option == JOptionPane.YES_OPTION)
 					{
