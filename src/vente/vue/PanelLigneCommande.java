@@ -9,12 +9,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -27,8 +25,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -392,12 +388,15 @@ public class PanelLigneCommande extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if(client.getIdClient() == null){
-					JOptionPane.showMessageDialog(frame,
-						"La commande en cour n'a pas de client associer.",
-						"Commande invalide",
-						JOptionPane.ERROR_MESSAGE);
+					int option = JOptionPane.showConfirmDialog(frame,
+							"La commande en cour n'a pas de client associer et sera supprimer.",
+							"Commande invalide", JOptionPane.YES_NO_OPTION);
+					if(option == JOptionPane.YES_OPTION)
+					{
+						PanelCommandes.supprimerCom(idCommandeEnCour);
+						dispose();
+					}
 				}
-				dispose();
 			}
 		});
 
@@ -539,8 +538,7 @@ public class PanelLigneCommande extends JDialog {
 				pst.setString(3,chEtat.getSelectedItem());
 				pst.setDouble(4, Double.valueOf(this.chTauxTva.getSelectedItem()));
 				pst.setDouble(5, (Double) this.txtRemise.getValue());
-				//pst.setDate(5, new Date(this.jdcDateLivr.getDate().getTime()));
-				pst.setString(6,chPaiement.getSelectedItem());//this.chPaiement.getSelectedItem());
+				pst.setString(6,chPaiement.getSelectedItem());
 				pst.setInt(7, idCommandeEnCour);
 
 				pst.executeQuery();
@@ -548,7 +546,7 @@ public class PanelLigneCommande extends JDialog {
 				PanelCommandes.getCommande();
 				PanelCommandes.maj();
 				setBtnEnabled(false);
-				//PanelCommandes.setBtn(false); //set les bts modifier et annuler 
+				PanelCommandes.setBtn(false); //set les bts modifier et annuler 
 				setClient(new Client());
 				dispose();
 
@@ -558,6 +556,10 @@ public class PanelLigneCommande extends JDialog {
 		}
 	}
 
+	/**
+	 * Retourne la date d'aujourd'hui
+	 * @return Date d'aujourd'hui
+	 */
 	private static java.sql.Date getCurrentDate() {
 		java.util.Date today = new java.util.Date();
 		return new java.sql.Date(today.getTime());

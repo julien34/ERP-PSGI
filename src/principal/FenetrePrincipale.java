@@ -30,7 +30,6 @@ import jdbc.FenetreConnexion;
 import vente.vue.PanelClient;
 import vente.vue.PanelCommandes;
 import vente.vue.PanelLigneCommande;
-import vente.vue.PanelVente;
 
 public class FenetrePrincipale extends JFrame
 {
@@ -64,8 +63,7 @@ public class FenetrePrincipale extends JFrame
         //sous menu entreprise , client
         
         
-        static JMenuItem menuVentesClients = new JMenuItem("Interface de clients");
-       // static JMenuItem menuVentesDevis = new JMenuItem("Interface de devis");
+        static JMenuItem menuVentesClients = new JMenuItem("Clients");
         	        
         //Production
         private static JMenu menu_production = new JMenu("Production");
@@ -88,7 +86,6 @@ public class FenetrePrincipale extends JFrame
    	public static PanelTVA panelTVA = null;
    	
    	//Vente
-   	private static PanelVente panelVente;
    	private static PanelClient panelClient;
    	private static PanelLigneCommande fenetreVente;
    	private static PanelCommandes panelCommandes;

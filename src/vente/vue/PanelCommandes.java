@@ -7,8 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.Connection;
@@ -16,7 +14,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -35,7 +32,6 @@ import com.toedter.calendar.JDateChooser;
 import jdbc.DatabaseConnection;
 import principal.FenetrePrincipale;
 import vente.model.Commande;
-import vente.model.LignesCommande;
 import vente.model.TableModel;
 
 public class PanelCommandes extends JPanel{
@@ -56,16 +52,15 @@ public class PanelCommandes extends JPanel{
 	private JDateChooser jdcDate;
 	private static String dateRecherche = "";
 
-
+	/**
+	 * Constructeur de la fenetre de gestion des commandes
+	 * @param f FenetrePrincipale frame 
+	 */
 	public PanelCommandes(FenetrePrincipale f){
-
-		//getCommande();
-		//remplirTableau();
-
 		this.initElements();
 		initEcouteurs();
 	}
-	
+
 	/**
 	 * Getter de la liste des commandes.
 	 * @return, la liste des commandes.
@@ -98,7 +93,6 @@ public class PanelCommandes extends JPanel{
 				remise = rs.getFloat("remise");
 				typePaiement = rs.getString("typePaiement");
 
-
 				//Montant total non vide
 				if (rs.getString("montantTotal") == null){
 					montantTotal = "Pas de produits";
@@ -106,15 +100,13 @@ public class PanelCommandes extends JPanel{
 				else {
 					montantTotal = rs.getString("montantTotal")+" €";
 				}
-
 				listeCommandes.add(new Commande(refCommande, refClient, nomClient, date, etatCommande,montantTotal, tauxTva,remise,typePaiement ));
-
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Méthode qui remplit le tableau avec les valeurs de l'arraylist, mais aussi la JTable.
 	 */
@@ -152,11 +144,8 @@ public class PanelCommandes extends JPanel{
 	 * Intitialise les elements.
 	 */
 	private void initElements(){
-
 		this.setLayout(new BorderLayout());
-
 		JPanel panelRechercheNord = new JPanel();
-
 		JPanel panelGrilleCentre = new JPanel(new GridLayout(2,1));
 		JPanel panelGrille = new JPanel();
 		JPanel panelBouton = new JPanel();
@@ -169,12 +158,10 @@ public class PanelCommandes extends JPanel{
 		JLabel lblRechercheDate = new JLabel("Date : ");
 		JLabel lblRechercheMontant = new JLabel("Montant : ");
 		txtRechercheMontant = new JTextField(5);
-		
+
 		btnNouveau= new JButton("Nouveau");
 		btnModifier = new JButton("Modifier");
 		btnSupprimer = new JButton("Supprimer");
-
-
 
 		panelRechercheNord.add(lblRechercheCommande);
 		panelRechercheNord.add(txtRechercheCommande);
@@ -197,7 +184,7 @@ public class PanelCommandes extends JPanel{
 		this.add(panelGrilleCentre, BorderLayout.CENTER);
 		setBtn(true);
 	} 
-	
+
 	/**
 	 * Méthode qui initialise les écouteurs.
 	 */
@@ -283,57 +270,57 @@ public class PanelCommandes extends JPanel{
 				}
 			}
 		});
-		
+
 		txtRechercheCommande.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-				
+
 				getCommandeRecherche();
 				maj();
 			}
 		});
-		
+
 		//Ecouteur de la Date
-				jdcDate.addPropertyChangeListener(new PropertyChangeListener() {
-					
-					@Override
-					public void propertyChange(PropertyChangeEvent evt) {
-						if("date".equals(evt.getPropertyName())){
-							//initDate();//On change la date si elle est vide
-							getCommandeRecherche();
-							maj();
-						}
-					}
-				});
-				
-				//Txt nom du client
-				txtRechercheClient.addKeyListener(new KeyAdapter() {
-					@Override
-					public void keyReleased(KeyEvent e) {
-					//	PanelCommande.this.initDate();//On change la date si elle est vide
-						getCommandeRecherche();
-						maj();
-					}
-				});
-				
-				//Txt du montant de la commande
-				txtRechercheMontant.addKeyListener(new KeyAdapter() {
-					@Override
-					public void keyReleased(KeyEvent e) {
-						//PanelCommande.this.initDate();//On change la date si elle est vide
-						getCommandeRecherche();
-						maj();
-					}
-				});
+		jdcDate.addPropertyChangeListener(new PropertyChangeListener() {
+
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				if("date".equals(evt.getPropertyName())){
+					//initDate();//On change la date si elle est vide
+					getCommandeRecherche();
+					maj();
+				}
+			}
+		});
+
+		//Txt nom du client
+		txtRechercheClient.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				//	PanelCommande.this.initDate();//On change la date si elle est vide
+				getCommandeRecherche();
+				maj();
+			}
+		});
+
+		//Txt du montant de la commande
+		txtRechercheMontant.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				//PanelCommande.this.initDate();//On change la date si elle est vide
+				getCommandeRecherche();
+				maj();
+			}
+		});
 	}
-	
+
 	/**
 	 * Méthode qui récupère l'ensemble des commandes de la base de données selon la recherche des champs et les ajoute dans une ArrayList.
 	 */
 	public static void getCommandeRecherche(){
-		
+
 		listeCommandes.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
-		
+
 		try {
 			Connection cn = DatabaseConnection.getCon();
 			String sql = "SUM(((p.prixVente*lc.quantite ) +((c.tauxTVA /100)*(p.prixVente*lc.quantite)))- (((p.prixVente*lc.quantite ) +((c.tauxTVA /100)*(p.prixVente*lc.quantite))))*(c.remise/100))";
@@ -343,12 +330,12 @@ public class PanelCommandes extends JPanel{
 			pst.setString(3, "%"+dateRecherche+"%");
 			pst.setString(4, "%"+txtRechercheMontant.getText()+"%");
 			ResultSet rs = pst.executeQuery();
-			
+
 			while(rs.next()){
 				String refCommande, refClient, nomClient, montantTotal, etatCommande, typePaiement;
 				double tauxTva, remise;
 				Date date, dateLivr;
-				
+
 				refCommande = rs.getString("idCommande");
 				date = rs.getDate("dateCommande");
 				refClient = rs.getString("idClient");
@@ -357,8 +344,8 @@ public class PanelCommandes extends JPanel{
 				tauxTva = rs.getFloat("tauxTva");
 				remise = rs.getFloat("remise");
 				typePaiement = rs.getString("typePaiement");
-				
-				
+
+
 				//Montant total non vide
 				if (rs.getString("montantTotal") == null){
 					montantTotal = "Pas de produits";
@@ -368,18 +355,18 @@ public class PanelCommandes extends JPanel{
 				}
 
 				listeCommandes.add(new Commande(refCommande, refClient, nomClient, date, etatCommande,montantTotal, tauxTva,remise,typePaiement ));
-				
+
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Methode qui supprime la commande sur la ligne concernée du JTable
 	 * @param id idComande
 	 */
-	private void supprimerCom(int id){
+	public static void supprimerCom(int id){
 		Connection cn = DatabaseConnection.getCon();
 
 		PreparedStatement pst;
