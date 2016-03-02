@@ -359,6 +359,9 @@ public class FenetrePrincipale extends JFrame
 		return panelClient;
    		
    	}
+   	public PanelCommande getPanelCommande(){
+   		return panelCommande;
+   	}
    	
 
 	public void connexionOpened()

@@ -97,7 +97,7 @@ public class PanelDevis extends JPanel{
 		listeDevis.clear();//On efface l'arraylist pour éviter d'ajouter une deuxième fois les éléments
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT d.refDevis, d.dateDevis, d.etatDevis, d.tauxTVA, d.remise, d.typePaiement, d.refCommande, f.refFournisseur, f.nomFournisseur, c.montantTotal FROM DevisFournisseurs d LEFT JOIN Fournisseurs f ON f.refFournisseur = d.refFournisseur LEFT join CommandesFournisseur c on d.refCommande = c.refCommande GROUP BY d.refDevis, d.dateDevis, d.etatdevis, d.tauxTVA, d.remise, d.typePaiement,d.refCommande f.refFournisseur, f.nomFournisseur ORDER BY d.dateDevis DESC");
+			PreparedStatement pst = cn.prepareStatement("SELECT d.refDevis, d.dateDevis, d.etatDevis, d.tauxTVA, d.remise, d.typePaiement, d.refCommande, f.refFournisseur, f.nomFournisseur, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM DevisFournisseurs d LEFT JOIN Fournisseurs f ON f.refFournisseur = d.refFournisseur LEFT join CommandesFournisseur c on d.refCommande = c.refCommande LEFT JOIN LignesCommandeFournisseur lc ON lc.refCommande = c.refCommande LEFT JOIN Produit p ON p.code = lc.refProduit GROUP BY d.refDevis, d.dateDevis, d.etatdevis, d.tauxTVA, d.remise, d.typePaiement,d.refCommande, f.refFournisseur, f.nomFournisseur ORDER BY d.dateDevis DESC");
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
@@ -106,16 +106,15 @@ public class PanelDevis extends JPanel{
 				double tauxTva, remise;
 				Date date;
 				
-				refDevis= rs.getInt("refCommande");
-				date = rs.getDate("dateCommande");
+				refDevis= rs.getInt("refDevis");
+				date = rs.getDate("datedevis");
 				refFournisseur = rs.getString("refFournisseur");
 				nomFournisseur = rs.getString("nomFournisseur");
-				etatCommande = rs.getString("etatCommande");
+				etatCommande = rs.getString("etatDevis");
 				tauxTva = rs.getDouble("tauxTva");
 				remise = rs.getDouble("remise");
-				//dateLivr = rs.getDate("dateLivr");
 				typePaiement = rs.getString("typePaiement");
-				//refCommande= rs.getString("refCommande"); a décommenter lors de la modification de la bdd
+				refCommande= rs.getString("refCommande"); 
 				
 				//Montant total non vide
 				if (rs.getString("montantTotal") == null){
@@ -163,7 +162,7 @@ public class PanelDevis extends JPanel{
 				tauxTva = rs.getDouble("tauxTva");
 				remise = rs.getDouble("remise");
 				typePaiement = rs.getString("typePaiement");
-				//refCommande= rs.getString("refCommande"); a décommenter lors de la modification de la bdd
+				refCommande= rs.getString("refCommande");
 				
 				
 				//Montant total non vide
@@ -267,8 +266,8 @@ public class PanelDevis extends JPanel{
 		panelGrille.add(scrollPane);
 		//panelBouton.add(btnNouveau);
 		//panelBouton.add(btnModifier);
-		panelBouton.add(btnAnnuler);
 		panelBouton.add(btnValiderCommande);
+		panelBouton.add(btnAnnuler);
 		
 		panelGrilleCentre.add(panelGrille);
 		panelGrilleCentre.add(panelBouton);
@@ -391,7 +390,7 @@ public class PanelDevis extends JPanel{
 	 * @param b, un booléen.
 	 */
 	public static void setBtn(boolean b){
-		btnModifier.setEnabled(b);
+		btnValiderCommande.setEnabled(b);
 		btnAnnuler.setEnabled(b);
 	}
 	
@@ -444,7 +443,12 @@ public class PanelDevis extends JPanel{
 			e.printStackTrace();
 		}
 		devisFournisseur.setEtatDevis("Annulé");
-		
+		ArrayList<CommandesFournisseur> listeCommande = fe.getPanelCommande().getCommandes();
+		for(CommandesFournisseur c :listeCommande){
+			if(c.getRefCommande().equals(devisFournisseur.getRefCommande())){
+				c.setEtatCommande("Annulée");
+			}
+		}
 		
 		
 	}

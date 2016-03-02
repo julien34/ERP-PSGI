@@ -574,7 +574,7 @@ public class PopupCommande extends JDialog {
 	public void setBtnEnabled(Boolean b){
 		btnModifier.setEnabled(b);
 		btnSupprimer.setEnabled(b);
-		//setBtnValidationCommandeEnable();
+		setBtnValidationCommandeEnable();
 	}
 	public void setBtnValidationCommandeEnable(){
 		if(this.commande.getEtatCommande().equals("Validée")){
