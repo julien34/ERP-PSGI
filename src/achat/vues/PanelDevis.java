@@ -142,10 +142,11 @@ public class PanelDevis extends JPanel{
 		
 		try {
 			Connection cn = DatabaseConnection.getCon();
-			PreparedStatement pst = cn.prepareStatement("SELECT d.refDevis, d.dateDevis, d.etatDevis, d.tauxTVA, d.remise, d.typePaiement, d.refCommande, f.refFournisseur, f.nomFournisseur FROM DevisFournisseurs d LEFT JOIN Fournisseurs f ON f.refFournisseur = d.refFournisseur WHERE UPPER(d.refDevis) LIKE UPPER(?) AND UPPER(f.nomFournisseur) LIKE UPPER(?) AND d.datedevis LIKE ? GROUP BY d.refDevis, d.dateDevis, d.etatdevis, d.tauxTVA, d.remise, d.typePaiement, d.refCommande, f.refFournisseur, f.nomFournisseur ORDER BY d.dateDevis DESC");
+			PreparedStatement pst = cn.prepareStatement("SELECT d.refDevis, d.dateDevis, d.etatDevis, d.tauxTVA, d.remise, d.typePaiement, f.refFournisseur, f.nomFournisseur, SUM(p.prixAchat*lc.quantite) AS montantTotal FROM DevisFournisseurs d LEFT JOIN Fournisseurs f ON f.refFournisseur = d.refFournisseur LEFT JOIN LignesCommandeFournisseur lc ON lc.refCommande = d.refCommande LEFT JOIN Produit p ON p.code = lc.refProduit WHERE UPPER(d.refDevis) LIKE UPPER(?) AND UPPER(f.nomFournisseur) LIKE UPPER(?) AND d.dateDevis LIKE ? GROUP BY d.refdevis, d.datedevis, d.etatdevis, d.tauxTVA, d.remise, d.typePaiement, f.refFournisseur, f.nomFournisseur HAVING COALESCE(SUM(p.prixAchat*lc.quantite),0) LIKE ? ORDER BY d.dateDevis DESC");
 			pst.setString(1, "%"+PanelDevis.txtRechercheCommande.getText()+"%");
 			pst.setString(2, "%"+PanelDevis.txtRechercheFournisseur.getText()+"%");
 			pst.setString(3, "%"+PanelDevis.dateRecherche+"%");
+			pst.setString(4, "%"+PanelDevis.txtRechercheMontant+"%");
 			ResultSet rs = pst.executeQuery();
 			
 			while(rs.next()){
@@ -174,7 +175,6 @@ public class PanelDevis extends JPanel{
 				}
 
 				listeDevis.add(new DevisFournisseur(refDevis, date, refFournisseur, nomFournisseur, montantTotal, etatCommande, tauxTva, remise, typePaiement,refCommande));
-				
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -321,7 +321,7 @@ public class PanelDevis extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e){
                validationCommande(listeDevis.get(tableau.getSelectedRow()));
-                maj();
+               maj();
             }
 		});
 		this.btnAnnuler.addActionListener(new ActionListener(){
@@ -340,13 +340,13 @@ public class PanelDevis extends JPanel{
 		/*ECOUTEURS DE LA RECHERCHE*/
 		/*-------------------------*/
 		
-		//Txt numéro de la commande
+		//Txt numéro du devis
 		txtRechercheCommande.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				PanelDevis.this.initDate();//On change la date si elle est vide
-				PanelDevis.getCommandeRecherche();
-				PanelDevis.maj();
+				getCommandeRecherche();
+				maj();
 			}
 		});
 		
@@ -357,8 +357,8 @@ public class PanelDevis extends JPanel{
 			public void propertyChange(PropertyChangeEvent evt) {
 				if("date".equals(evt.getPropertyName())){
 					PanelDevis.this.initDate();//On change la date si elle est vide
-					PanelDevis.getCommandeRecherche();
-					PanelDevis.maj();
+					getCommandeRecherche();
+					maj();
 				}
 			}
 		});
@@ -368,8 +368,8 @@ public class PanelDevis extends JPanel{
 			@Override
 			public void keyReleased(KeyEvent e) {
 				PanelDevis.this.initDate();//On change la date si elle est vide
-				PanelDevis.getCommandeRecherche();
-				PanelDevis.maj();
+				getCommandeRecherche();
+				maj();
 			}
 		});
 		
@@ -378,8 +378,8 @@ public class PanelDevis extends JPanel{
 			@Override
 			public void keyReleased(KeyEvent e) {
 				PanelDevis.this.initDate();//On change la date si elle est vide
-				PanelDevis.getCommandeRecherche();
-				PanelDevis.maj();
+				getCommandeRecherche();
+				maj();
 			}
 		});
 	}
